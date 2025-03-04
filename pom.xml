@@ -42,6 +42,13 @@
          <version>2.11.3</version>
      </dependency>
 
+     <!-- Library for string similarity  -->
+      <dependency>
+    <groupId>info.debatty</groupId>
+    <artifactId>java-string-similarity</artifactId>
+    <version>RELEASE</version>
+</dependency>
+
     
     
 </dependencies>
