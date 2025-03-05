@@ -1,57 +1,90 @@
 package views;
 
+import java.util.ArrayList;
+
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import my_weather.HourlyPeriod;
+
 
 public class TodayScene {
   // main scene
   Scene scene;
 
   // display text
-  TextField temperature, weather;
+  TextField temperature, weather, unitSeparatorBar;
+
+  // images
+  Image weatherIcon;
 
   // scene blocking
-  HBox sceneBox;
+  HBox sceneBox, headerContainer;
   VBox sidebar, mainView;
   
   // temperature unit buttons
-  Button fahrenheit_btn, celsius_btn;
-  HBox unit_container;
+  Button fahrenheitBtn, celsiusBtn;
+  HBox unitContainer;
 
   // store the temperature and forecast
   int fahrenheit, celsius;
   String forecast;
 
-  public TodayScene() {
-    // create the sidebar
+  
+  // init all components
+  private void initComponents() {
     sidebar = new VBox();
+    mainView = new VBox();
+    sceneBox = new HBox(sidebar, mainView);
+		scene = new Scene(sceneBox, 1440, 1024);
+
+    temperature = new TextField();
+    weather = new TextField();
+
+    fahrenheitBtn = new Button("°F");
+    celsiusBtn = new Button("°C");
+    unitSeparatorBar = new TextField("|");
+
+    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn);
+    headerContainer = new HBox(temperature, unitContainer);
+  }
+
+  public TodayScene(ArrayList<HourlyPeriod> forecast) {
+    initComponents();
+
+    // create the sidebar
     sidebar.setMinWidth(256);
     sidebar.setStyle("-fx-background-color: #D9D9D9");
 
     // create the main view
-    mainView = new VBox();
     mainView.setMinWidth(1440 - 256);
     mainView.setStyle("-fx-background-color: #FFFFFF");
-
-    // make text fields
-		temperature = new TextField();
-		weather = new TextField();
 
     // initialize the buttons
     initialize_unit_buttons();
 
-    // add all elements
-    mainView.getChildren().addAll(temperature, weather, unit_container);
+    // initialize text fields
+    initialize_text_fields();
 
-    // create the scene
-    sceneBox = new HBox(sidebar, mainView);
-		scene = new Scene(sceneBox, 1440, 1024);
+    // add all elements
+    mainView.getChildren().addAll(temperature, weather, unitContainer);
 
     // add global css
-    scene.getStylesheets().add("css/buttons.css");
+    scene.getStylesheets().add("css/baseScene.css");
+    scene.getStylesheets().add("css/tempHeader.css");
+
+    // populate fields with forecast
+    applyForecast(forecast);
+  }
+
+  private void applyForecast(ArrayList<HourlyPeriod> forecast) {
+    HourlyPeriod now = forecast.getFirst();
+
+    setFahrenheight(now.temperature);
+    setForecast(now.shortForecast);
   }
 
   public Scene getScene() {
@@ -77,35 +110,38 @@ public class TodayScene {
 
   private void setUnitFahrenheit() {
     temperature.setText(String.format("%d", fahrenheit));
-    fahrenheit_btn.setDisable(true);
-    celsius_btn.setDisable(false);
+    fahrenheitBtn.setDisable(true);
+    celsiusBtn.setDisable(false);
     temperature.requestFocus();
   }
 
   private void setUnitCelcius() {
     temperature.setText(String.format("%d", celsius));
-    fahrenheit_btn.setDisable(false);
-    celsius_btn.setDisable(true);
+    fahrenheitBtn.setDisable(false);
+    celsiusBtn.setDisable(true);
     temperature.requestFocus();
   }
 
   private void initialize_unit_buttons() {
-    // create the buttons
-    fahrenheit_btn = new Button("°F");
-    celsius_btn = new Button("°C");
-
-    // create their container
-    unit_container = new HBox(fahrenheit_btn, celsius_btn);
-
     // set on click actions
-    fahrenheit_btn.setOnAction(e -> {
+    fahrenheitBtn.setOnAction(e -> {
       setUnitFahrenheit();
     });
-    celsius_btn.setOnAction(e -> {
+    celsiusBtn.setOnAction(e -> {
       setUnitCelcius();
     });
 
     // initialize default to fahrenheit
     setUnitFahrenheit();
+  }
+
+  private void initialize_text_fields() {
+    // set non editable
+    temperature.setEditable(false);
+    weather.setEditable(false);
+    unitSeparatorBar.setEditable(false);
+
+    // add specific style classes
+    temperature.getStyleClass().add("temperature-field");
   }
 }

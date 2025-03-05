@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
  * Get a {@code javafx.scene.image} based on the closest match to a {@code string}
  * and the resource {@code .png} in {@code /resouces/icons/}
  */
-class IconResolver {
+public class IconResolver {
   private final static NormalizedLevenshtein stringComp = new NormalizedLevenshtein();
 
   public IconResolver() {}

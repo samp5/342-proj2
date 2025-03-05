@@ -3,11 +3,13 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.stage.Stage;
+import my_weather.HourlyPeriod;
 import views.ThreeDayScene;
 import views.TodayScene;
 import weather.Period;
@@ -29,17 +31,16 @@ public class JavaFX extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle("I'm a professional Weather App!");
 
-		ArrayList<Period> forecast = WeatherAPI.getForecast("LOT",77,70);
+		ArrayList<HourlyPeriod> forecast = my_weather.MyWeatherAPI.getHourlyForecast("LOT",77,70);
 		if (forecast == null){
 			throw new RuntimeException("Forecast did not load");
 		}
 
-    todayScene = new TodayScene();
+    
+    todayScene = new TodayScene(forecast);
     threeDayScene = new ThreeDayScene();
 
     currentScene = todayScene.getScene();
-    todayScene.setFahrenheight(forecast.get(0).temperature);
-    todayScene.setForecast(forecast.get(0).shortForecast);
 
 		primaryStage.setScene(currentScene);
 		primaryStage.show();
