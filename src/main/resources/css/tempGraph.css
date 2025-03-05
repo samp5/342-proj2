@@ -1,0 +1,28 @@
+.chart-series-line {
+  -fx-background-color: transparent;
+  -fx-padding: 30px;
+  -fx-border-color: transparent;
+}
+
+.chart-content {
+  -fx-padding: 30px;
+  -fx-background-color: transparent;
+}
+ 
+.axis-tick-mark {
+    -fx-stroke: transparent;
+}
+
+/*
+* Line width
+*/
+.chart-series-area-line {    
+    -fx-stroke-width: 8px;
+}
+
+/* Line Color */
+.default-color0.chart-series-area-fill { -fx-fill: #ffcc0022} 
+
+/* Fill color */
+.default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
+
