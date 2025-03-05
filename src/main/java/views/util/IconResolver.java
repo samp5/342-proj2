@@ -1,3 +1,5 @@
+package views.util;
+
 import info.debatty.java.stringsimilarity.*;
 import java.io.FileNotFoundException;
 import java.nio.file.Files;
@@ -50,7 +52,7 @@ public class IconResolver {
 
       // get the path to icons
       Path dirPath =
-          Paths.get(getClass().getResource("icons").toURI());
+          Paths.get(getClass().getResource("/icons").toURI());
 
       // walk the path and graph all *.pngs
       List<Path> paths =
@@ -60,11 +62,13 @@ public class IconResolver {
       Path bestMatch = null;
       double bestScore = 0;
 
-      for (Path img_name : paths) {
+      for (Path img_path : paths) {
+        String name = img_path.getFileName().toString();
+        name.replace(".png", "");
         double distance =
-            distance(img_name.getFileName().toString().replace(".png", ""), short_forecast);
+            distance(name, short_forecast);
         if (1.0 - distance > bestScore) {
-          bestMatch = img_name;
+          bestMatch = img_path;
           bestScore = 1.0 - distance;
         }
       }
