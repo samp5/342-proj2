@@ -1,0 +1,28 @@
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
+}
+
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.button{
+  -fx-border-color: transparent;
+  -fx-border-width: 0;
+  -fx-background-radius: 0;
+  -fx-background-color: transparent;
+  -fx-font-color: rgb(0, 0, 0);
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+}
+
+.button:pressed {
+  -fx-background-color: black;
+  -fx-text-fill: white;
+}
+
+.button:disabled {
+  -fx-opacity: 1;
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+}

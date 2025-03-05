@@ -63,6 +63,4 @@ class IconResolver {
 
     return null;
   }
-
-
 }
