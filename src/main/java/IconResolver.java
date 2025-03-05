@@ -1,22 +1,31 @@
 import info.debatty.java.stringsimilarity.*;
+import java.io.FileNotFoundException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.scene.image.Image;
 
+/**
+ * Get a {@code javafx.scene.image} based on the closest match to a {@code string}
+ * and the resource {@code .png} in {@code /resouces/icons/}
+ */
 class IconResolver {
-  private static NormalizedLevenshtein stringComp = new NormalizedLevenshtein();
+  private final static NormalizedLevenshtein stringComp = new NormalizedLevenshtein();
 
   public IconResolver() {}
 
-  public Image getIcon(String short_forecast) {
+  /**
+   * @param short_forecast a string representing the forecast
+   * @return A {@code javafx.scene.image} from the closest matching file in {@code /resouces/icons/}
+   */
+  public Image getIcon(String short_forecast) throws FileNotFoundException {
 
     Path path = getFilePath(short_forecast);
 
     try {
-      System.err.println(path.toAbsolutePath().toString());
       Image image =
           new Image(path.subpath(path.getNameCount() - 2, path.getNameCount()).toString());
       return image;
@@ -32,15 +41,21 @@ class IconResolver {
   }
 
 
-  private Path getFilePath(String short_forecast) {
+  /**
+   * @param short_forecast {@code String} representing the pattern to match against
+   */
+  private Path getFilePath(String short_forecast) throws FileNotFoundException {
 
     try {
 
+      // get the path to icons
       Path dirPath =
           Paths.get(getClass().getResource("icons").toURI());
 
+      // walk the path and graph all *.pngs
       List<Path> paths =
-          Files.walk(dirPath).collect(Collectors.toList());
+          Files.walk(dirPath).filter(path -> path.getFileName().toString().endsWith(".png"))
+              .collect(Collectors.toList());
 
       Path bestMatch = null;
       double bestScore = 0;
@@ -54,13 +69,18 @@ class IconResolver {
         }
       }
 
+      if (bestMatch == null) {
+        throw new FileNotFoundException();
+      }
+
       return bestMatch;
 
     } catch (Exception e) {
+
       e.printStackTrace();
-      System.exit(1);
+
+      throw new FileNotFoundException();
     }
 
-    return null;
   }
 }
