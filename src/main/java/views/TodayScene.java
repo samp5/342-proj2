@@ -26,24 +26,31 @@ public class TodayScene {
   String forecast;
 
   public TodayScene() {
+    // create the sidebar
     sidebar = new VBox();
     sidebar.setMinWidth(256);
     sidebar.setStyle("-fx-background-color: #D9D9D9");
 
+    // create the main view
     mainView = new VBox();
     mainView.setMinWidth(1440 - 256);
     mainView.setStyle("-fx-background-color: #FFFFFF");
 
+    // make text fields
 		temperature = new TextField();
 		weather = new TextField();
 
+    // initialize the buttons
     initialize_unit_buttons();
 
+    // add all elements
     mainView.getChildren().addAll(temperature, weather, unit_container);
 
+    // create the scene
     sceneBox = new HBox(sidebar, mainView);
 		scene = new Scene(sceneBox, 1440, 1024);
 
+    // add global css
     scene.getStylesheets().add("css/buttons.css");
   }
 
