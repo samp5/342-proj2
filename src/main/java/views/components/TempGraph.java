@@ -1,22 +1,25 @@
 package views.components;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
-
-import javafx.scene.chart.LineChart;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
+import javafx.scene.text.Font;
+import javafx.util.StringConverter;
 import my_weather.HourlyPeriod;
 
 /**
  * TempGraph holds state for a temperature
  * line graph. The component can be obtained via {@code TempGraph.component()}
  */
-class TempGraph {
+public class TempGraph {
   Vector<DataPoint> data;
   TemperatureLimits temp_limits;
+  Hour min_hour;
 
   /**
    * Minimum and maximum {@code Temperature}s
@@ -24,7 +27,7 @@ class TempGraph {
   public class TemperatureLimits {
     Temperature min_temp;
     Temperature max_temp;
-    static final double PAD_PERCENT = 0.1;
+    static final double PAD_PERCENT = 0.5;
 
     public TemperatureLimits(Temperature min, Temperature max) {
       min_temp = min;
@@ -125,7 +128,7 @@ class TempGraph {
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
     @SuppressWarnings({"rawtypes", "unchecked"})
     public XYChart.Data asPoint() {
-      XYChart.Data data = new XYChart.Data(this.hour.hour, this.temp.temp);
+      XYChart.Data data = new XYChart.Data(this.hour(), this.temperature());
       return data;
     }
 
@@ -166,6 +169,7 @@ class TempGraph {
 
     int min_temp = Integer.MAX_VALUE;
     int max_temp = Integer.MIN_VALUE;
+    int min_hour = Integer.MAX_VALUE;
 
     for (HourlyPeriod h : data) {
 
@@ -179,11 +183,15 @@ class TempGraph {
       if (h.temperature > max_temp) {
         max_temp = h.temperature;
       }
+      if (h.startTime.getHours() < min_hour) {
+        min_hour = h.startTime.getHours();
+      }
 
       this.data.add(new DataPoint(h.startTime.getHours(), h.temperature));
     }
 
     this.temp_limits = new TemperatureLimits(new Temperature(min_temp), new Temperature(max_temp));
+    this.min_hour = new Hour(min_hour);
 
     // Sort by hour data
     Collections.sort(this.data);
@@ -194,7 +202,7 @@ class TempGraph {
    *
    */
   @SuppressWarnings("unchecked")
-  public LineChart<Number, Number> component() {
+  public AreaChart<Number, Number> component() {
 
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
@@ -202,12 +210,12 @@ class TempGraph {
     NumberAxis hourAxis = new NumberAxis(data.firstElement().hour(), data.lastElement().hour(), 1);
     NumberAxis tempAxis = new NumberAxis(temp_limits.min() - temp_limits.pad(),
         temp_limits.max() + temp_limits.pad(),
-        temp_limits.intervalWithSteps(15));
+        10);
 
-    TempGraph.styleTimeAxis(hourAxis);
-    TempGraph.styleTempAxis(tempAxis);
+    this.styleTimeAxis(hourAxis);
+    this.styleTempAxis(tempAxis);
 
-    LineChart<Number, Number> lineChart = new LineChart<>(hourAxis, tempAxis);
+    AreaChart<Number, Number> areaChart = new AreaChart<>(hourAxis, tempAxis);
 
     XYChart.Series<Number, Number> series = new XYChart.Series<>();
 
@@ -215,11 +223,11 @@ class TempGraph {
       series.getData().add(d.asPoint());
     }
 
-    lineChart.getData().addAll(series);
+    areaChart.getData().addAll(series);
 
-    TempGraph.styleChart(lineChart);
+    TempGraph.styleChart(areaChart);
 
-    return lineChart;
+    return areaChart;
   };
 
   /**
@@ -237,31 +245,67 @@ class TempGraph {
   /**
    * Style the given {@code NumberAxis}
    */
-  static public void styleTimeAxis(NumberAxis hours) {
+  public void styleTimeAxis(NumberAxis hours) {
 
-    // TODO: Finish this styling
     hours.setMinorTickVisible(false);
     hours.setLabel("");
+    hours.setBorder(Border.EMPTY);
+    hours.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 20));
+    int min_hour = this.min_hour.value();
+    hours.setTickLabelFormatter(new StringConverter<Number>() {
+
+      @Override
+      public String toString(Number object) {
+        if (object.intValue() == min_hour) {
+          return "Now";
+        } else if (object.intValue() == 12) {
+          return String.format("%d pm", 12);
+        } else if (object.intValue() > 12) {
+          return String.format("%d pm", object.intValue() % 12);
+        } else {
+          return String.format("%d am", object.intValue());
+        }
+      }
+
+      @Override
+      public Number fromString(String string) {
+        throw new UnsupportedOperationException("Unimplemented method 'fromString'");
+      }
+    });
   }
 
   /**
    * Style the given {@code NumberAxis}
    */
-  static public void styleTempAxis(NumberAxis temp) {
+  public void styleTempAxis(NumberAxis temp) {
 
-    // TODO: Finish this styling
     temp.setMinorTickVisible(false);
     temp.setLabel("");
+    temp.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 18));
+    temp.setBorder(Border.EMPTY);
+    temp.setTickLabelFormatter(new StringConverter<Number>() {
+      @Override
+      public String toString(Number object) {
+        return String.format("%d °", object.intValue());
+      }
+
+      @Override
+      public Number fromString(String string) {
+        throw new UnsupportedOperationException("Unimplemented method 'fromString'");
+      }
+    });
   }
 
   /**
    * Style the given {@code LineChart}
    */
-  static public void styleChart(LineChart<Number, Number> component) {
-
-    // TODO: Finish this styling
+  static public void styleChart(AreaChart<Number, Number> component) {
     component.setHorizontalGridLinesVisible(false);
     component.setVerticalGridLinesVisible(false);
+    component.setLegendVisible(false);
+    component.setBackground(Background.EMPTY);
+    component.setBorder(Border.EMPTY);
+    component.setCreateSymbols(false);
   }
 
 

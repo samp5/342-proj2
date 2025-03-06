@@ -42,8 +42,12 @@ public class JavaFX extends Application {
 
     currentScene = todayScene.getScene();
 
-		primaryStage.setScene(currentScene);
-		primaryStage.show();
-	}
+    primaryStage.addEventHandler(NavigationEvent.NAVIGATE, event -> {
+      primaryStage.setScene(event.getTargetScene());
+    });
+
+    primaryStage.setScene(currentScene);
+    primaryStage.show();
+  }
 
 }
