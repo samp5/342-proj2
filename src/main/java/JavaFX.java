@@ -2,10 +2,13 @@ import javafx.application.Application;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import my_weather.HourlyPeriod;
 import views.ThreeDayScene;
 import views.TodayScene;
 import views.components.sidebar.NavigationEvent;
+import views.components.sidebar.Sidebar;
+
 import java.util.ArrayList;
 
 public class JavaFX extends Application {
@@ -30,7 +33,15 @@ public class JavaFX extends Application {
     todayScene = new TodayScene(forecast);
     threeDayScene = new ThreeDayScene(forecast);
 
+    Sidebar globalSidebar = Sidebar.fromScenes(
+      new Pair<String, Scene>("Daily Forecast", todayScene.getScene()),
+      new Pair<String, Scene>("Three Day Forecast", threeDayScene.getScene())
+    );
+    todayScene.setSidebar(globalSidebar);
+    threeDayScene.setSidebar(globalSidebar);
+
     currentScene = todayScene.getScene();
+    todayScene.setActiveScene();
 
     primaryStage.addEventHandler(NavigationEvent.NAVIGATE, event -> {
       primaryStage.setScene(event.getTargetScene());

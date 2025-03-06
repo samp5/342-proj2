@@ -44,7 +44,8 @@ public class TodayScene {
 
   // scene blocking
   HBox sceneBox, headerContainer;
-  VBox sidebar, mainView;
+  VBox sidebarBox, mainView;
+  Sidebar sidebar;
 
   // temperature unit buttons
   Button fahrenheitBtn, celsiusBtn;
@@ -78,7 +79,7 @@ public class TodayScene {
     mainView.getChildren().addAll(humidChart); // needs to be added here, as will otherwise be NULL
 
     // initialize buttons and text fields
-    initialize_side_bar();
+    //initialize_side_bar();
     initialize_unit_buttons();
     initialize_text_fields();
 
@@ -129,7 +130,7 @@ public class TodayScene {
    * during initialization
    */
   private void initComponents() {
-    sidebar = new VBox(); // mostly ignored for now
+    sidebarBox = new VBox(); // mostly ignored for now
 
     temperatureTxt = new TextField(); // populated later
     forecastTxt = new TextField(); // populated later
@@ -148,7 +149,7 @@ public class TodayScene {
     mainView = new VBox(headerContainer, forecastTxt);
 
     // entire scene blocks
-    sceneBox = new HBox(sidebar, mainView);
+    sceneBox = new HBox(sidebarBox, mainView);
     scene = new Scene(sceneBox, 1440, 1024);
   }
 
@@ -240,20 +241,12 @@ public class TodayScene {
     celsiusBtn.getStyleClass().add("temperature-button");
   }
 
-  private void initialize_side_bar() {
+  public void setSidebar(Sidebar sidebar) {
+    this.sidebar = sidebar;
+  }
 
-    ArrayList<Section> sections = new ArrayList<>();
-    ArrayList<NavigationTarget> forecastNavTargets = new ArrayList<>();
-    NavigationTarget daily = new NavigationTarget(this.scene, "Daily Forecast");
-    NavigationTarget threeDay = new NavigationTarget(this.scene, "Three Day Forecast");
-    forecastNavTargets.add(daily);
-    forecastNavTargets.add(threeDay);
-    Section forecasts = new Section("Forecast", forecastNavTargets);
-    sections.add(forecasts);
-
-    Sidebar sidebar = new Sidebar(sections);
-    this.sidebar.getChildren().add(sidebar.component());
-
+  public void setActiveScene() {
+    this.sidebarBox.getChildren().add(sidebar.component());
   }
 
   /**
@@ -318,8 +311,8 @@ public class TodayScene {
 
     // CONTAINERS
     // - the sidebar
-    sidebar.setMinWidth(256);
-    sidebar.setStyle("-fx-background-color: #D9D9D9");
+    sidebarBox.setMinWidth(256);
+    sidebarBox.setStyle("-fx-background-color: #D9D9D9");
     // - main view
     mainView.setMinWidth(1440 - 256);
     mainView.setStyle("-fx-background-color: #FFFFFF");

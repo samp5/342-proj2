@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 
 public class Sidebar {
 
@@ -100,6 +102,21 @@ public class Sidebar {
     container = new VBox(header.component());
     container.getChildren()
         .addAll(sections.stream().map(section -> section.component()).collect(Collectors.toList()));
+  }
+
+  @SafeVarargs
+  public static Sidebar fromScenes(Pair<String, Scene> ...namedScenes) {
+    ArrayList<Section> sections = new ArrayList<>();
+    ArrayList<NavigationTarget> forecastNavTargets = new ArrayList<>();
+
+    for (Pair<String, Scene> namedScene: namedScenes) {
+      forecastNavTargets.add(new NavigationTarget(namedScene.getValue(), namedScene.getKey()));
+    }
+
+    Section forecasts = new Section("Forecast", forecastNavTargets);
+    sections.add(forecasts);
+
+    return new Sidebar(sections);
   }
 
   public void addSection(Section section) {
