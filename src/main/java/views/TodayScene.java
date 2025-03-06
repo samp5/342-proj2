@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
+import views.components.TempGraph.TempUnit;
 import views.components.HumidityGraph;
 import views.components.sidebar.Sidebar;
 import views.util.IconResolver;
@@ -54,6 +55,7 @@ public class TodayScene {
   // graph for today's temperature, data that made it
   TempGraph tempGraph;
   AreaChart<Number, Number> tempChart;
+  AreaChart<Number, Number> humidChart;
   ArrayList<HourlyPeriod> currentForecast;
 
   /**
@@ -70,15 +72,11 @@ public class TodayScene {
     currentForecast = forecast;
     applyForecast();
     mainView.getChildren().addAll(tempChart); // needs to be added here, as will otherwise be NULL
-
+    mainView.getChildren().addAll(humidChart); // needs to be added here, as will otherwise be NULL
+                                            
     // initialize buttons and text fields
     initialize_unit_buttons();
     initialize_text_fields();
-
-    // populate fields with forecast
-    applyForecast(forecast);
-    mainView.getChildren().addAll(tempGraph); // needs to be added here, as will otherwise be NULL
-    mainView.getChildren().addAll(humidGraph); // needs to be added here, as will otherwise be NULL
 
     // add styles now that all elements exist
     styleComponents();
@@ -108,10 +106,10 @@ public class TodayScene {
     }
     weatherIcon.setImage(icon);
 
-    TempGraph tGraph = new TempGraph(forecast, forecast.getFirst().startTime);
-    tempGraph = tGraph.component();
-    HumidityGraph hGraph = new HumidityGraph(forecast, forecast.getFirst().startTime);
-    humidGraph = hGraph.component();
+    tempGraph = new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
+    tempChart = tempGraph.component();
+    HumidityGraph hGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
+    humidChart = hGraph.component();
   }
 
   /**
@@ -282,8 +280,8 @@ public class TodayScene {
 
     // GRAPHS
     // - temperature graph
-    tempGraph.setMaxWidth(1000);
-    humidGraph.setMaxWidth(1000);
+    tempChart.setMaxWidth(1000);
+    humidChart.setMaxWidth(1000);
 
     // CONTAINERS
     // - the sidebar
