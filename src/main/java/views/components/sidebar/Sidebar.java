@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
+import views.DayScene;
 
 public class Sidebar {
 
@@ -105,11 +106,11 @@ public class Sidebar {
   }
 
   @SafeVarargs
-  public static Sidebar fromScenes(Pair<String, Scene> ...namedScenes) {
+  public static Sidebar fromScenes(Pair<String, DayScene> ...namedScenes) {
     ArrayList<Section> sections = new ArrayList<>();
     ArrayList<NavigationTarget> forecastNavTargets = new ArrayList<>();
 
-    for (Pair<String, Scene> namedScene: namedScenes) {
+    for (Pair<String, DayScene> namedScene: namedScenes) {
       forecastNavTargets.add(new NavigationTarget(namedScene.getValue(), namedScene.getKey()));
     }
 

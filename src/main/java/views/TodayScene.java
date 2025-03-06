@@ -8,33 +8,21 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
 import views.components.TempGraph.TempUnit;
 import views.components.HumidityGraph;
-import views.components.sidebar.NavigationTarget;
-import views.components.sidebar.Section;
-import views.components.sidebar.Sidebar;
 import views.util.IconResolver;
 import views.util.TextUtils;
 
-public class TodayScene {
-  // void element to set focus to
-  Canvas focusVoid = new Canvas();
-
-  // main scene
-  Scene scene;
-
+public class TodayScene extends DayScene {
   // display text
   TextField temperatureTxt, forecastTxt, unitSeparatorBar;
 
@@ -43,9 +31,7 @@ public class TodayScene {
   ImageView weatherIcon;
 
   // scene blocking
-  HBox sceneBox, headerContainer;
-  VBox sidebarBox, mainView;
-  Sidebar sidebar;
+  HBox headerContainer;
 
   // temperature unit buttons
   Button fahrenheitBtn, celsiusBtn;
@@ -85,14 +71,11 @@ public class TodayScene {
 
     // add styles now that all elements exist
     styleComponents();
-    scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/tempHeader.css");
     scene.getStylesheets().add("css/tempGraph.css");
-    scene.getStylesheets().add("css/sidebar.css");
-    scene.getStylesheets().add("css/sidebarHeader.css");
 
     // void any focus that may exist
-    focusVoid.requestFocus();
+    voidFocus();
   }
 
   /**
@@ -118,19 +101,11 @@ public class TodayScene {
   }
 
   /**
-   * @return a {@code Scene} with the current weather state set by
-   *         {@code applyForecast}
-   */
-  public Scene getScene() {
-    return scene;
-  }
-
-  /**
    * initialize all components. most components will be added to or modified later
    * during initialization
    */
-  private void initComponents() {
-    sidebarBox = new VBox(); // mostly ignored for now
+  protected void initComponents() {
+    super.initComponents();
 
     temperatureTxt = new TextField(); // populated later
     forecastTxt = new TextField(); // populated later
@@ -142,15 +117,11 @@ public class TodayScene {
     weatherIcon = new ImageView();
 
     // containers for the unit buttons, temperature header
-    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn, focusVoid);
+    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn);
     headerContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
 
-    // main, right-side panel
-    mainView = new VBox(headerContainer, forecastTxt);
-
-    // entire scene blocks
-    sceneBox = new HBox(sidebarBox, mainView);
-    scene = new Scene(sceneBox, 1440, 1024);
+    // add components to the main view
+    mainView.getChildren().addAll(headerContainer, forecastTxt);
   }
 
   /**
@@ -184,7 +155,7 @@ public class TodayScene {
 
     updateTempGraph(TempUnit.Fahrenheit);
 
-    focusVoid.requestFocus();
+    voidFocus();
   }
 
   /**
@@ -197,7 +168,7 @@ public class TodayScene {
 
     updateTempGraph(TempUnit.Celsius);
 
-    focusVoid.requestFocus();
+    voidFocus();
   }
 
   /**
@@ -239,14 +210,6 @@ public class TodayScene {
     // add specific style classes
     fahrenheitBtn.getStyleClass().add("temperature-button");
     celsiusBtn.getStyleClass().add("temperature-button");
-  }
-
-  public void setSidebar(Sidebar sidebar) {
-    this.sidebar = sidebar;
-  }
-
-  public void setActiveScene() {
-    this.sidebarBox.getChildren().add(sidebar.component());
   }
 
   /**
@@ -310,13 +273,6 @@ public class TodayScene {
     humidChart.setMaxWidth(1000);
 
     // CONTAINERS
-    // - the sidebar
-    sidebarBox.setMinWidth(256);
-    sidebarBox.setStyle("-fx-background-color: #D9D9D9");
-    // - main view
-    mainView.setMinWidth(1440 - 256);
-    mainView.setStyle("-fx-background-color: #FFFFFF");
-    mainView.setPadding(new Insets(20));
     // - header box
     headerContainer.setAlignment(Pos.CENTER_LEFT);
     headerContainer.setPadding(new Insets(0));

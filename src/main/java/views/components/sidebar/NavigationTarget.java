@@ -1,15 +1,15 @@
 package views.components.sidebar;
 
 import javafx.geometry.Insets;
-import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import views.DayScene;
 
 public class NavigationTarget {
   public String displayName;
-  public Scene targetScene;
+  public DayScene targetScene;
 
-  public NavigationTarget(Scene target, String display) {
+  public NavigationTarget(DayScene target, String display) {
     this.displayName = display;
     this.targetScene = target;
   }
