@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
+import views.components.TempGraph.TempUnit;
 import views.components.sidebar.Sidebar;
 import views.util.IconResolver;
 import views.util.TextUtils;
@@ -48,10 +49,12 @@ public class TodayScene {
 
   // store the temperature and forecast
   int fahrenheit, celsius;
-  String forecast;
+  String shortForecast;
 
-  // graph for today's temperature
-  AreaChart<Number, Number> tempGraph;
+  // graph for today's temperature, data that made it
+  TempGraph tempGraph;
+  AreaChart<Number, Number> tempChart;
+  ArrayList<HourlyPeriod> currentForecast;
 
   /**
    * initialize a TodayScene
@@ -63,13 +66,14 @@ public class TodayScene {
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
 
+    // populate fields with forecast
+    currentForecast = forecast;
+    applyForecast();
+    mainView.getChildren().addAll(tempChart); // needs to be added here, as will otherwise be NULL
+
     // initialize buttons and text fields
     initialize_unit_buttons();
     initialize_text_fields();
-
-    // populate fields with forecast
-    applyForecast(forecast);
-    mainView.getChildren().addAll(tempGraph); // needs to be added here, as will otherwise be NULL
 
     // add styles now that all elements exist
     styleComponents();
@@ -84,16 +88,13 @@ public class TodayScene {
   }
 
   /**
-   * update the scene to use a new forecast
-   * 
-   * @param forecast an {@code ArrayList} of {@code HourlyPeriod} gathered from
-   *                 {@code MyWeatherAPI}
+   * update the scene with the {@code currentForecast}
    */
-  public void applyForecast(ArrayList<HourlyPeriod> forecast) {
-    HourlyPeriod now = forecast.getFirst();
+  public void applyForecast() {
+    HourlyPeriod now = currentForecast.getFirst();
 
     setTemp(now.temperature);
-    setForecast(now.shortForecast);
+    setShortForecast(now.shortForecast);
 
     try {
       icon = new IconResolver().getIcon(now.shortForecast);
@@ -102,8 +103,8 @@ public class TodayScene {
     }
     weatherIcon.setImage(icon);
 
-    TempGraph graph = new TempGraph(forecast, forecast.getFirst().startTime);
-    tempGraph = graph.component();
+    tempGraph = new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempGraph.TempUnit.Fahrenheit);
+    tempChart = tempGraph.component();
   }
 
   /**
@@ -147,8 +148,8 @@ public class TodayScene {
    * 
    * @param forecast string to set {@code forecast} to
    */
-  private void setForecast(String forecast) {
-    this.forecast = forecast;
+  private void setShortForecast(String forecast) {
+    shortForecast = forecast;
     forecastTxt.setText(forecast);
   }
 
@@ -170,6 +171,13 @@ public class TodayScene {
     temperatureTxt.setText(String.format("%d", fahrenheit));
     fahrenheitBtn.setDisable(true);
     celsiusBtn.setDisable(false);
+
+    int chartNdx = mainView.getChildren().indexOf(tempChart);
+    tempGraph.update(currentForecast, new Date(), TempUnit.Fahrenheit);
+    tempChart = tempGraph.component();
+    mainView.getChildren().remove(chartNdx);
+    mainView.getChildren().add(chartNdx, tempChart);
+
     focusVoid.requestFocus();
   }
 
@@ -180,6 +188,13 @@ public class TodayScene {
     temperatureTxt.setText(String.format("%d", celsius));
     fahrenheitBtn.setDisable(false);
     celsiusBtn.setDisable(true);
+
+    int chartNdx = mainView.getChildren().indexOf(tempChart);
+    tempGraph.update(currentForecast, new Date(), TempUnit.Celsius);
+    tempChart = tempGraph.component();
+    mainView.getChildren().remove(chartNdx);
+    mainView.getChildren().add(chartNdx, tempChart);
+
     focusVoid.requestFocus();
   }
 
@@ -241,6 +256,7 @@ public class TodayScene {
     //  - short forecast
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
     forecastTxt.setPadding(new Insets(10, 0, 0, 0));
+    forecastTxt.setAlignment(Pos.CENTER);
     setFitWidth(forecastTxt, 26);
 
     // BUTTONS
@@ -259,7 +275,7 @@ public class TodayScene {
 
     // GRAPHS
     // - temperature graph
-    tempGraph.setMaxWidth(1000);
+    tempGraph.component().setMaxWidth(1000);
 
     // CONTAINERS
     // - the sidebar
@@ -268,7 +284,7 @@ public class TodayScene {
     // - main view
     mainView.setMinWidth(1440 - 256);
     mainView.setStyle("-fx-background-color: #FFFFFF");
-    mainView.setPadding(new Insets(5));
+    mainView.setPadding(new Insets(20));
     // - header box
     headerContainer.setAlignment(Pos.CENTER_LEFT);
     headerContainer.setPadding(new Insets(0));

@@ -20,6 +20,10 @@ public class TempGraph {
   TemperatureLimits temp_limits;
   Date min_time;
   static long MILLISECONDS_IN_THREE_HOURS = 60 * 60 * 3 * 1000;
+  public enum TempUnit {
+    Fahrenheit,
+    Celsius,
+  }
 
   /**
    * Minimum and maximum {@code Temperature}s
@@ -27,7 +31,8 @@ public class TempGraph {
   public class TemperatureLimits {
     Temperature min_temp;
     Temperature max_temp;
-    static final double PAD_PERCENT = 0.5;
+    static final double PAD_PERCENT = 0.45;
+    static final double PAD_CONSTANT = 5;
 
     public TemperatureLimits(Temperature min, Temperature max) {
       min_temp = min;
@@ -57,8 +62,21 @@ public class TempGraph {
      *         {@code TemperatureLimits.min()}
      */
     public int pad() {
-      return (int) Math.floor(PAD_PERCENT * min());
+      return (int) Math.floor(PAD_PERCENT * min() + PAD_CONSTANT);
     }
+    
+    /**
+     * The vertical padding that should be included above and below
+     * the minimum and maximum values to ensure "breathing room"
+     * for the graph.
+     *
+     * @return integer value between {@code 0} and the value returned by
+     *         {@code TemperatureLimits.min()}
+     */
+    public int padDown() {
+      return (int) Math.floor(PAD_PERCENT * min() - PAD_CONSTANT);
+    }
+
 
     /**
      * The vertical padding that should be included above and below
@@ -148,9 +166,10 @@ public class TempGraph {
    * @param data {@code Iterable} container for {@code HourlyPeriod}
    * @param day  {@code Date} object representing the target day to generate the
    *             graph
+   * @param unit {@code TempUnit} which unit to use for the axis
    */
-  public <T extends Iterable<HourlyPeriod>> TempGraph(T data, Date day) {
-    initializeFromData(data, day);
+  public <T extends Iterable<HourlyPeriod>> TempGraph(T data, Date day, TempUnit unit) {
+    initializeFromData(data, day, unit);
   };
 
   /**
@@ -159,8 +178,9 @@ public class TempGraph {
    * @param data {@code Iterable} container for {@code HourlyPeriod}
    * @param day  {@code Date} object representing the target day to generate the
    *             graph
+   * @param unit {@code TempUnit} which unit to use for the axis
    */
-  private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, Date day) {
+  private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, Date day, TempUnit unit) {
     if (this.data != null) {
       this.data.clear();
     } else {
@@ -172,17 +192,22 @@ public class TempGraph {
 
     // we should only display the next 18 hours in 3 hour increments
     int point_to_collect = 18;
-
+    int temperature;
     for (HourlyPeriod h : data) {
-
-      if (h.temperature < min_temp) {
-        min_temp = h.temperature;
-      }
-      if (h.temperature > max_temp) {
-        max_temp = h.temperature;
+      if (unit == TempUnit.Celsius) {
+        temperature = (h.temperature - 32) * 5 / 9;
+      } else {
+        temperature = h.temperature;
       }
 
-      this.data.add(new DataPoint(h.startTime, h.temperature));
+      if (temperature < min_temp) {
+        min_temp = temperature;
+      }
+      if (temperature > max_temp) {
+        max_temp = temperature;
+      }
+
+      this.data.add(new DataPoint(h.startTime, temperature));
 
       if (this.data.size() >= point_to_collect) {
         break;
@@ -206,9 +231,16 @@ public class TempGraph {
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
     NumberAxis hourAxis = new NumberAxis(data.firstElement().time(), data.lastElement().time(),
         MILLISECONDS_IN_THREE_HOURS);
-    NumberAxis tempAxis = new NumberAxis(temp_limits.min() - temp_limits.pad(),
-        temp_limits.max() + temp_limits.pad(),
-        10);
+    NumberAxis tempAxis;
+    if (temp_limits.max() < 0) {
+      tempAxis = new NumberAxis(temp_limits.min() + temp_limits.padDown(),
+                 temp_limits.max() - temp_limits.padDown(),
+                 10);
+    } else {
+      tempAxis = new NumberAxis(temp_limits.min() - temp_limits.pad(),
+                 temp_limits.max() + temp_limits.pad(),
+                 10);
+    }
 
     this.styleTimeAxis(hourAxis);
     this.styleTempAxis(tempAxis);
@@ -237,8 +269,8 @@ public class TempGraph {
    *             graph
    *
    */
-  public <T extends Iterable<HourlyPeriod>> void update(T data, Date day) {
-    initializeFromData(data, day);
+  public <T extends Iterable<HourlyPeriod>> void update(T data, Date day, TempUnit unit) {
+    initializeFromData(data, day, unit);
   };
 
   /**
