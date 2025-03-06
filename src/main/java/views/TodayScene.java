@@ -2,13 +2,16 @@ package views;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -17,7 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
-
+import views.components.TempGraph;
 import views.util.IconResolver;
 import views.util.TextUtils;
 
@@ -48,12 +51,12 @@ public class TodayScene {
   int fahrenheit, celsius;
   String forecast;
 
+  // graph for today's temperature
+  AreaChart<Number, Number> tempGraph;
+
   // init all components
   private void initComponents() {
     sidebar = new VBox();
-    mainView = new VBox();
-    sceneBox = new HBox(sidebar, mainView);
-		scene = new Scene(sceneBox, 1440, 1024);
 
     temperature = new TextField();
     weather = new TextField();
@@ -66,6 +69,11 @@ public class TodayScene {
 
     unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn, focusVoid);
     headerContainer = new HBox(weatherIcon, temperature, unitContainer);
+
+    mainView = new VBox(headerContainer, weather);
+
+    sceneBox = new HBox(sidebar, mainView);
+		scene = new Scene(sceneBox, 1440, 1024);
   }
 
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
@@ -77,9 +85,6 @@ public class TodayScene {
 
     // initialize text fields
     initialize_text_fields();
-
-    // add all elements
-    mainView.getChildren().addAll(headerContainer, weather);
 
     // add global css
     scene.getStylesheets().add("css/baseScene.css");
@@ -108,6 +113,10 @@ public class TodayScene {
     weatherIcon.setFitWidth(150);
     weatherIcon.setX(100);
     weatherIcon.setY(100);
+
+    TempGraph graph = new TempGraph(forecast, new Date());
+    tempGraph = graph.component();
+    mainView.getChildren().addAll(tempGraph);
   }
 
   public Scene getScene() {
