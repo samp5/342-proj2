@@ -31,9 +31,9 @@ public class Sidebar {
 
     VBox coordInputBox;
     // text input
-    HBox xGridBox, yGridBox;
-    Text xGrid, yGrid;
-    TextField x, y;
+    HBox latBox, lonBox;
+    Text latLabel, lonLabel;
+    TextField latInput, lonInput;
 
     public Header() {
 
@@ -42,7 +42,7 @@ public class Sidebar {
       title = new Text(getTitle());
       styleTitle();
 
-      container = new VBox(title, xGridBox, yGridBox);
+      container = new VBox(title, latBox, lonBox);
       container.setPadding(new Insets(10, 0, 10, 10));
     }
 
@@ -51,45 +51,32 @@ public class Sidebar {
     }
 
     public void styleTitle() {
-      title.setFont(new Font("Atkinson Hyperlegible Bold", titleFontSize));
       title.getStyleClass().add("side-bar-header");
     }
-
-    public void styleInputBoxes() {
-      title.setFont(new Font("Atkinson Hyperlegible Bold", titleFontSize));
-      title.getStyleClass().add("side-bar-header");
-    }
-
 
     public void buildTextInput() {
-      x = new TextField("77");
-      y = new TextField("70");
+      latInput = new TextField("41.8781");
+      lonInput = new TextField("-87.6298");
 
-      x.setFont(new Font("Atkinson Hyperlegible Bold", 18));
-      y.setFont(new Font("Atkinson Hyperlegible Bold", 18));
+      latLabel = new Text("lat:");
+      lonLabel = new Text("lon:");
 
-      xGrid = new Text("x:");
-      yGrid = new Text("y:");
+      latInput.getStyleClass().add("coord-input");
+      lonInput.getStyleClass().add("coord-input");
 
-      xGrid.setFont(new Font("Atkinson Hyperlegible Bold", 18));
-      yGrid.setFont(new Font("Atkinson Hyperlegible Bold", 18));
+      latLabel.getStyleClass().addAll("coord-label");
+      lonLabel.getStyleClass().addAll("coord-label");
 
-      x.getStyleClass().addAll("side-bar-text", "side-bar-coord-input");
-      y.getStyleClass().addAll("side-bar-text", "side-bar-coord-input");
-      xGrid.getStyleClass().addAll("side-bar-text", "side-bar-coord-input");
-      yGrid.getStyleClass().addAll("side-bar-text", "side-bar-coord-input");
+      latBox = new HBox(latLabel, latInput);
+      lonBox = new HBox(lonLabel, lonInput);
 
+      latBox.setPadding(new Insets(0, 0, 0, 10));
+      lonBox.setPadding(new Insets(0, 0, 0, 10));
 
-      xGridBox = new HBox(xGrid, x);
-      yGridBox = new HBox(yGrid, y);
+      latBox.setAlignment(Pos.CENTER_LEFT);
+      lonBox.setAlignment(Pos.CENTER_LEFT);
 
-      xGridBox.setPadding(new Insets(0, 0, 0, 10));
-      yGridBox.setPadding(new Insets(0, 0, 0, 10));
-
-      xGridBox.setAlignment(Pos.CENTER_LEFT);
-      yGridBox.setAlignment(Pos.CENTER_LEFT);
-
-      coordInputBox = new VBox(xGridBox, yGridBox);
+      coordInputBox = new VBox(latBox, lonBox);
     }
   }
 
@@ -137,4 +124,3 @@ public class Sidebar {
   }
 
 }
-
