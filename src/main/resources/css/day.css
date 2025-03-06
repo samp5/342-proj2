@@ -1,0 +1,48 @@
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
+}
+
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.day-title-one-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+}
+.day-backdrop-one-day {
+  -fx-background-color: transparent;
+  -fx-padding: 10px, 10px, 10px,10px;
+}
+
+.day-temperature-text-one-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 40px;
+}
+
+.day-statistis-one-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18px;
+}
+
+.day-title-three-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+}
+.day-backdrop-three-day {
+  -fx-background-color: #EF2680;
+  -fx-background-radius: 50px;
+  -fx-background-insets: 20px 20px 20px 20px;
+  -fx-font-size: 18px;
+}
+
+.day-temperature-text-three-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 40;
+}
+
+.day-statistis-three-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18px;
+}
+
