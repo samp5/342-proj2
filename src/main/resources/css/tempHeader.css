@@ -10,3 +10,9 @@
   -fx-font-size: 32px;
   -fx-width: 10px;
 }
+
+.short-forecast {
+  -fx-border-width: 2px 0px 0px 0px;
+  -fx-border-color: rgb(0, 0, 0);
+  -fx-border-insets: 16px 0 0 16px;
+}

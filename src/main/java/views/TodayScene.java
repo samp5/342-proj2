@@ -8,7 +8,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.chart.AreaChart;
@@ -21,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
+import views.components.sidebar.Sidebar;
 import views.util.IconResolver;
 import views.util.TextUtils;
 
@@ -32,7 +32,7 @@ public class TodayScene {
   Scene scene;
 
   // display text
-  TextField temperature, weather, unitSeparatorBar;
+  TextField temperatureTxt, forecastTxt, unitSeparatorBar;
 
   // images
   Image icon;
@@ -121,8 +121,8 @@ public class TodayScene {
   private void initComponents() {
     sidebar = new VBox(); // mostly ignored for now
 
-    temperature = new TextField(); // populated later
-    weather = new TextField(); // populated later
+    temperatureTxt = new TextField();  // populated later
+    forecastTxt = new TextField();      // populated later
 
     fahrenheitBtn = new Button("°F"); // functionality added later
     celsiusBtn = new Button("°C"); // functionality added later
@@ -132,10 +132,10 @@ public class TodayScene {
 
     // containers for the unit buttons, temperature header
     unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn, focusVoid);
-    headerContainer = new HBox(weatherIcon, temperature, unitContainer);
+    headerContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
 
     // main, right-side panel
-    mainView = new VBox(headerContainer, weather);
+    mainView = new VBox(headerContainer, forecastTxt);
 
     // entire scene blocks
     sceneBox = new HBox(sidebar, mainView);
@@ -149,7 +149,7 @@ public class TodayScene {
    */
   private void setForecast(String forecast) {
     this.forecast = forecast;
-    weather.setText(forecast);
+    forecastTxt.setText(forecast);
   }
 
   /**
@@ -160,14 +160,14 @@ public class TodayScene {
   private void setTemp(int f) {
     fahrenheit = f;
     celsius = (f - 32) * 5 / 9;
-    temperature.setText(String.format("%d", f));
+    temperatureTxt.setText(String.format("%d", f));
   }
 
   /**
    * sets the displayed temperature to show in fahrenheit
    */
   private void setUnitFahrenheit() {
-    temperature.setText(String.format("%d", fahrenheit));
+    temperatureTxt.setText(String.format("%d", fahrenheit));
     fahrenheitBtn.setDisable(true);
     celsiusBtn.setDisable(false);
     focusVoid.requestFocus();
@@ -177,7 +177,7 @@ public class TodayScene {
    * sets the displayed temperature to show in celsius
    */
   private void setUnitCelcius() {
-    temperature.setText(String.format("%d", celsius));
+    temperatureTxt.setText(String.format("%d", celsius));
     fahrenheitBtn.setDisable(false);
     celsiusBtn.setDisable(true);
     focusVoid.requestFocus();
@@ -208,13 +208,14 @@ public class TodayScene {
    */
   private void initialize_text_fields() {
     // set non editable
-    temperature.setEditable(false);
-    weather.setEditable(false);
+    temperatureTxt.setEditable(false);
+    forecastTxt.setEditable(false);
     unitSeparatorBar.setEditable(false);
 
     // add specific style classes and required style
-    temperature.setFont(new Font("Atkinson Hyperlegible Bold", 75));
-    temperature.getStyleClass().add("temperature-field");
+    temperatureTxt.setFont(new Font("Atkinson Hyperlegible Bold", 75));
+    temperatureTxt.getStyleClass().add("temperature-field");
+    forecastTxt.getStyleClass().add("short-forecast");
     unitSeparatorBar.getStyleClass().add("unit-separator");
   }
 
@@ -223,20 +224,36 @@ public class TodayScene {
    */
   private void styleComponents() {
     // TEXT FIELDS
+<<<<<<< Updated upstream
     // - temp
     temperature.textProperty().addListener(new ChangeListener<String>() {
+=======
+    //  - temp
+    temperatureTxt.textProperty().addListener(new ChangeListener<String>() {
+>>>>>>> Stashed changes
       @Override
       public void changed(ObservableValue<? extends String> ob, String o, String n) {
-        setFitWidth(temperature);
+        setFitWidth(temperatureTxt);
       }
     });
+<<<<<<< Updated upstream
     setFitWidth(temperature);
     temperature.setPadding(new Insets(0));
     temperature.setAlignment(Pos.CENTER);
     // - unit sep bar
+=======
+    setFitWidth(temperatureTxt);
+    temperatureTxt.setPadding(new Insets(0));
+    temperatureTxt.setAlignment(Pos.CENTER);
+    //  - unit sep bar
+>>>>>>> Stashed changes
     unitSeparatorBar.setPrefWidth(16);
     unitSeparatorBar.setPadding(new Insets(0));
     unitSeparatorBar.setAlignment(Pos.CENTER);
+    //  - short forecast
+    forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
+    forecastTxt.setPadding(new Insets(10, 0, 0, 0));
+    setFitWidth(forecastTxt, 26); // TODO: comment line for full width, ask same
 
     // BUTTONS
     // - unit buttons
@@ -273,7 +290,13 @@ public class TodayScene {
     unitContainer.setPadding(new Insets(0, 0, 20, 0));
   }
 
+  private void setFitWidth(TextField t, double padding) {
+    double width = TextUtils.computeTextWidth(t.getFont(), t.getText(), 0.0D) + padding;
+    t.setMaxWidth(width);
+    t.setMinWidth(width);
+    t.setPrefWidth(width);
+  }
   private void setFitWidth(TextField t) {
-    t.setPrefWidth(TextUtils.computeTextWidth(t.getFont(), t.getText(), 0.0D) + 10);
+    setFitWidth(t, 10);
   }
 }
