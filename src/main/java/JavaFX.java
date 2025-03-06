@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import my_weather.HourlyPeriod;
 import views.ThreeDayScene;
 import views.TodayScene;
+import views.components.sidebar.NavigationEvent;
 import weather.Period;
 import weather.WeatherAPI;
 

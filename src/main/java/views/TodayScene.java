@@ -7,13 +7,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 
@@ -22,6 +25,9 @@ import views.util.TextUtils;
 
 
 public class TodayScene {
+  // void element to set focus to
+  Canvas focusVoid = new Canvas();
+
   // main scene
   Scene scene;
 
@@ -60,7 +66,7 @@ public class TodayScene {
 
     weatherIcon = new ImageView();
 
-    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn);
+    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn, focusVoid);
     headerContainer = new HBox(weatherIcon, temperature, unitContainer);
   }
 
@@ -83,6 +89,9 @@ public class TodayScene {
 
     // populate fields with forecast
     applyForecast(forecast);
+
+    // void whatever focus
+    focusVoid.requestFocus();
   }
 
   private void applyForecast(ArrayList<HourlyPeriod> forecast) {
@@ -128,14 +137,14 @@ public class TodayScene {
     temperature.setText(String.format("%d", fahrenheit));
     fahrenheitBtn.setDisable(true);
     celsiusBtn.setDisable(false);
-    temperature.requestFocus();
+    focusVoid.requestFocus();
   }
 
   private void setUnitCelcius() {
     temperature.setText(String.format("%d", celsius));
     fahrenheitBtn.setDisable(false);
     celsiusBtn.setDisable(true);
-    temperature.requestFocus();
+    focusVoid.requestFocus();
   }
 
   private void initialize_unit_buttons() {
@@ -176,17 +185,18 @@ public class TodayScene {
         temperature.setPrefWidth(TextUtils.computeTextWidth(temperature.getFont(), temperature.getText(), 0.0D) + 10);
       }
     });
-    temperature.setPadding(new Insets(10, 0, 0, 0));
-    temperature.setAlignment(Pos.CENTER_RIGHT);
+    temperature.setPadding(new Insets(0));
+    temperature.setAlignment(Pos.CENTER);
     //  - unit sep bar
-    unitSeparatorBar.setPrefWidth(20);
+    unitSeparatorBar.setPrefWidth(16);
+    unitSeparatorBar.setPadding(new Insets(0));
     unitSeparatorBar.setAlignment(Pos.CENTER);
 
     // BUTTONS
     //  - unit buttons
-    fahrenheitBtn.setPrefWidth(20);
+    fahrenheitBtn.setPrefWidth(32);
     fahrenheitBtn.setPadding(new Insets(5, 0, 5, 0));
-    celsiusBtn.setPrefWidth(20);
+    celsiusBtn.setPrefWidth(32);
     celsiusBtn.setPadding(new Insets(5, 0, 5, 0));
 
     // CONTAINERS
@@ -197,6 +207,12 @@ public class TodayScene {
     mainView.setMinWidth(1440 - 256);
     mainView.setStyle("-fx-background-color: #FFFFFF");
     mainView.setPadding(new Insets(5));
-    //  - 
+    //  - header box
+    headerContainer.setAlignment(Pos.CENTER_LEFT);
+    headerContainer.setPadding(new Insets(0));
+    //  - temp unit button box
+    unitContainer.setAlignment(Pos.CENTER_LEFT);
+    unitContainer.setMaxHeight(40);
+    unitContainer.setPadding(new Insets(0, 0, 20, 0));
   }
 }
