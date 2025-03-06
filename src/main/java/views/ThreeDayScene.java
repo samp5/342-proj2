@@ -9,11 +9,11 @@ public class ThreeDayScene {
   Integer focusedDay = 0;
   DaySummary threeDays;
 
-  private void initComponents() {}
-
+  private void initComponents() {
+  }
 
   private <T extends Collection<HourlyPeriod>> void initialized_days(T data) {
-    threeDays = new N_DaySummary(3, data);
+    // threeDays = new N_DaySummary(3, data);
   }
 
   public <T extends Collection<HourlyPeriod>> ThreeDayScene(T data) {

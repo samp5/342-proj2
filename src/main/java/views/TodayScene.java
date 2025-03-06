@@ -75,6 +75,9 @@ public class TodayScene {
     styleComponents();
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/tempHeader.css");
+    scene.getStylesheets().add("css/tempGraph.css");
+    scene.getStylesheets().add("css/sidebar.css");
+    scene.getStylesheets().add("css/sidebarHeader.css");
 
     // void any focus that may exist
     focusVoid.requestFocus();
@@ -99,7 +102,7 @@ public class TodayScene {
     }
     weatherIcon.setImage(icon);
 
-    TempGraph graph = new TempGraph(forecast, new Date());
+    TempGraph graph = new TempGraph(forecast, forecast.getFirst().startTime);
     tempGraph = graph.component();
   }
 
