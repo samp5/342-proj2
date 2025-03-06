@@ -15,7 +15,6 @@ import java.util.ArrayList;
 public class JavaFX extends Application {
   TodayScene todayScene;
   ThreeDayScene threeDayScene;
-  Scene currentScene;
 
   public static void main(String[] args) {
     launch(args);
@@ -41,7 +40,6 @@ public class JavaFX extends Application {
     todayScene.setSidebar(globalSidebar);
     threeDayScene.setSidebar(globalSidebar);
 
-    currentScene = todayScene.getScene();
     todayScene.setActiveScene();
 
     primaryStage.addEventHandler(NavigationEvent.NAVIGATE, event -> {
@@ -49,7 +47,7 @@ public class JavaFX extends Application {
       primaryStage.setScene(event.getTargetScene().getScene());
     });
 
-    primaryStage.setScene(currentScene);
+    primaryStage.setScene(todayScene.getScene());
     primaryStage.show();
   }
 

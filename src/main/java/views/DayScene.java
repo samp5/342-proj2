@@ -23,7 +23,7 @@ public abstract class DayScene {
     sidebarBox = new VBox();
     mainView = new VBox();
     sceneBox = new HBox(sidebarBox, mainView, focusVoid);
-    scene = new Scene(sceneBox, 1440, 1024);
+    scene = new Scene(sceneBox, 1440, 800);
 
     // styling
     // - the sidebar
