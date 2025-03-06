@@ -1,3 +1,21 @@
 .temperature-field {
-  -fx-font-size: 50pt;
+  -fx-margin: 0;
+}
+
+.temperature-button {
+  -fx-border-width: 1px;
+  -fx-border-color: rgb(0, 255, 0);
+}
+
+.unit-separator {
+  -fx-width: 10px;
+}
+
+HBox, VBox {
+  -fx-border-width: 1px;
+  -fx-border-color: rgb(0, 0, 0);
+}
+.text-field {
+  -fx-border-width: 1px;
+  -fx-border-color: rgb(255, 0, 0);
 }

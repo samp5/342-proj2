@@ -1,14 +1,24 @@
 package views;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
+
+import views.util.IconResolver;
+import views.util.TextUtils;
 
 
 public class TodayScene {
@@ -19,7 +29,8 @@ public class TodayScene {
   TextField temperature, weather, unitSeparatorBar;
 
   // images
-  Image weatherIcon;
+  Image icon;
+  ImageView weatherIcon;
 
   // scene blocking
   HBox sceneBox, headerContainer;
@@ -33,7 +44,6 @@ public class TodayScene {
   int fahrenheit, celsius;
   String forecast;
 
-  
   // init all components
   private void initComponents() {
     sidebar = new VBox();
@@ -48,20 +58,15 @@ public class TodayScene {
     celsiusBtn = new Button("°C");
     unitSeparatorBar = new TextField("|");
 
+    weatherIcon = new ImageView();
+
     unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn);
-    headerContainer = new HBox(temperature, unitContainer);
+    headerContainer = new HBox(weatherIcon, temperature, unitContainer);
   }
 
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
-
-    // create the sidebar
-    sidebar.setMinWidth(256);
-    sidebar.setStyle("-fx-background-color: #D9D9D9");
-
-    // create the main view
-    mainView.setMinWidth(1440 - 256);
-    mainView.setStyle("-fx-background-color: #FFFFFF");
+    styleComponents();
 
     // initialize the buttons
     initialize_unit_buttons();
@@ -70,7 +75,7 @@ public class TodayScene {
     initialize_text_fields();
 
     // add all elements
-    mainView.getChildren().addAll(temperature, weather, unitContainer);
+    mainView.getChildren().addAll(headerContainer, weather);
 
     // add global css
     scene.getStylesheets().add("css/baseScene.css");
@@ -85,6 +90,17 @@ public class TodayScene {
 
     setFahrenheight(now.temperature);
     setForecast(now.shortForecast);
+
+    try{
+      icon = new IconResolver().getIcon(now.shortForecast);
+    } catch (FileNotFoundException e) {
+      icon = new Image("icons/drizzle.png");
+    }
+    weatherIcon.setImage(icon);
+    weatherIcon.setPreserveRatio(true);
+    weatherIcon.setFitWidth(150);
+    weatherIcon.setX(100);
+    weatherIcon.setY(100);
   }
 
   public Scene getScene() {
@@ -133,6 +149,10 @@ public class TodayScene {
 
     // initialize default to fahrenheit
     setUnitFahrenheit();
+
+    // add specific style classes
+    fahrenheitBtn.getStyleClass().add("temperature-button");
+    celsiusBtn.getStyleClass().add("temperature-button");
   }
 
   private void initialize_text_fields() {
@@ -143,5 +163,40 @@ public class TodayScene {
 
     // add specific style classes
     temperature.getStyleClass().add("temperature-field");
+    unitSeparatorBar.getStyleClass().add("unit-separator");
+  }
+
+  private void styleComponents() {
+    // TEXT FIELDS
+    //  - temp
+    temperature.setFont(new Font("Atkinson Hyperlegible Bold", 75));
+    temperature.textProperty().addListener(new ChangeListener<String>() {
+      @Override
+      public void changed(ObservableValue<? extends String> ob, String o, String n) {
+        temperature.setPrefWidth(TextUtils.computeTextWidth(temperature.getFont(), temperature.getText(), 0.0D) + 10);
+      }
+    });
+    temperature.setPadding(new Insets(10, 0, 0, 0));
+    temperature.setAlignment(Pos.CENTER_RIGHT);
+    //  - unit sep bar
+    unitSeparatorBar.setPrefWidth(20);
+    unitSeparatorBar.setAlignment(Pos.CENTER);
+
+    // BUTTONS
+    //  - unit buttons
+    fahrenheitBtn.setPrefWidth(20);
+    fahrenheitBtn.setPadding(new Insets(5, 0, 5, 0));
+    celsiusBtn.setPrefWidth(20);
+    celsiusBtn.setPadding(new Insets(5, 0, 5, 0));
+
+    // CONTAINERS
+    //  - the sidebar
+    sidebar.setMinWidth(256);
+    sidebar.setStyle("-fx-background-color: #D9D9D9");
+    //  - main view
+    mainView.setMinWidth(1440 - 256);
+    mainView.setStyle("-fx-background-color: #FFFFFF");
+    mainView.setPadding(new Insets(5));
+    //  - 
   }
 }
