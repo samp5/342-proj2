@@ -53,29 +53,14 @@ public class TodayScene {
 
   // graph for today's temperature
   AreaChart<Number, Number> tempGraph;
+  
 
-  // init all components
-  private void initComponents() {
-    sidebar = new VBox();
-
-    temperature = new TextField();
-    weather = new TextField();
-
-    fahrenheitBtn = new Button("°F");
-    celsiusBtn = new Button("°C");
-    unitSeparatorBar = new TextField("|");
-
-    weatherIcon = new ImageView();
-
-    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn, focusVoid);
-    headerContainer = new HBox(weatherIcon, temperature, unitContainer);
-
-    mainView = new VBox(headerContainer, weather);
-
-    sceneBox = new HBox(sidebar, mainView);
-		scene = new Scene(sceneBox, 1440, 1024);
-  }
-
+  /**
+   * initialize a TodayScene
+   * to get the {@code Scene}, use {@code getScene()}
+   *
+   * @param forecast an {@code ArrayList} of {@code HourlyPeriod}, gathered from {@code MyWeatherAPI}
+   */
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
     styleComponents();
@@ -92,15 +77,21 @@ public class TodayScene {
 
     // populate fields with forecast
     applyForecast(forecast);
+    mainView.getChildren().addAll(tempGraph);  // needs to be added here, as will otherwise be NULL
 
     // void whatever focus
     focusVoid.requestFocus();
   }
 
-  private void applyForecast(ArrayList<HourlyPeriod> forecast) {
+
+  /**
+   * update the scene to use a new forecast
+   * @param forecast an {@code ArrayList} of {@code HourlyPeriod} gathered from {@code MyWeatherAPI}
+   */
+  public void applyForecast(ArrayList<HourlyPeriod> forecast) {
     HourlyPeriod now = forecast.getFirst();
 
-    setFahrenheight(now.temperature);
+    setTemp(now.temperature);
     setForecast(now.shortForecast);
 
     try{
@@ -109,37 +100,72 @@ public class TodayScene {
       icon = new Image("icons/drizzle.png");
     }
     weatherIcon.setImage(icon);
-    weatherIcon.setPreserveRatio(true);
-    weatherIcon.setFitWidth(150);
-    weatherIcon.setX(100);
-    weatherIcon.setY(100);
 
     TempGraph graph = new TempGraph(forecast, new Date());
     tempGraph = graph.component();
-    mainView.getChildren().addAll(tempGraph);
   }
 
+
+  /**
+   * @return a {@code Scene} with the current weather state set by {@code applyForecast}
+   */
   public Scene getScene() {
     return scene;
   }
 
-  public void setForecast(String forecast) {
+
+  /**
+   * initialize all components. most components will be added to or modified later during initialization
+   */
+  private void initComponents() {
+    sidebar = new VBox();  // mostly ignored for now
+
+    temperature = new TextField();  // populated later
+    weather = new TextField();      // populated later
+
+    fahrenheitBtn = new Button("°F");  // functionality added later
+    celsiusBtn = new Button("°C");     // functionality added later
+    unitSeparatorBar = new TextField("|");  // bar between the two buttons
+
+    weatherIcon = new ImageView();
+
+    // containers for the unit buttons, temperature header
+    unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn, focusVoid);
+    headerContainer = new HBox(weatherIcon, temperature, unitContainer);
+
+    // main, right-side panel
+    mainView = new VBox(headerContainer, weather);
+
+    // entire scene blocks
+    sceneBox = new HBox(sidebar, mainView);
+    scene = new Scene(sceneBox, 1440, 1024);
+  }
+
+  
+  /**
+   * sets the {@code forecast} string
+   * @param forecast string to set {@code forecast} to
+   */
+  private void setForecast(String forecast) {
     this.forecast = forecast;
     weather.setText(forecast);
   }
 
-  public void setFahrenheight(int f) {
+
+  /**
+   * sets the current temperature in fahrenheit
+   * @param f temperature in fahrenheit
+   */
+  private void setTemp(int f) {
     fahrenheit = f;
     celsius = (f - 32) * 5 / 9;
     temperature.setText(String.format("%d", f));
   }
 
-  public void setCelcius(int c) {
-    celsius = c;
-    fahrenheit = (c * 9 / 5) + 32;
-    temperature.setText(String.format("%d", c));
-  }
 
+  /**
+   * sets the displayed temperature to show in fahrenheit
+   */
   private void setUnitFahrenheit() {
     temperature.setText(String.format("%d", fahrenheit));
     fahrenheitBtn.setDisable(true);
@@ -147,6 +173,10 @@ public class TodayScene {
     focusVoid.requestFocus();
   }
 
+
+  /**
+   * sets the displayed temperature to show in celsius
+   */
   private void setUnitCelcius() {
     temperature.setText(String.format("%d", celsius));
     fahrenheitBtn.setDisable(false);
@@ -154,6 +184,10 @@ public class TodayScene {
     focusVoid.requestFocus();
   }
 
+
+  /**
+   * adds functionality and css to the unit switching buttons
+   */
   private void initialize_unit_buttons() {
     // set on click actions
     fahrenheitBtn.setOnAction(e -> {
@@ -171,6 +205,10 @@ public class TodayScene {
     celsiusBtn.getStyleClass().add("temperature-button");
   }
 
+
+  /**
+   * adds functionality and css to the text fields
+   */
   private void initialize_text_fields() {
     // set non editable
     temperature.setEditable(false);
@@ -182,6 +220,10 @@ public class TodayScene {
     unitSeparatorBar.getStyleClass().add("unit-separator");
   }
 
+
+  /**
+   * styles all components, sorted in groups
+   */
   private void styleComponents() {
     // TEXT FIELDS
     //  - temp
@@ -205,6 +247,13 @@ public class TodayScene {
     fahrenheitBtn.setPadding(new Insets(5, 0, 5, 0));
     celsiusBtn.setPrefWidth(32);
     celsiusBtn.setPadding(new Insets(5, 0, 5, 0));
+
+    // IMAGES
+    //  - weather icon
+    weatherIcon.setPreserveRatio(true);
+    weatherIcon.setFitWidth(150);
+    weatherIcon.setX(100);
+    weatherIcon.setY(100);
 
     // CONTAINERS
     //  - the sidebar
