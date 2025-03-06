@@ -20,6 +20,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
+import views.components.HumidityGraph;
 import views.components.sidebar.Sidebar;
 import views.util.IconResolver;
 import views.util.TextUtils;
@@ -52,6 +53,7 @@ public class TodayScene {
 
   // graph for today's temperature
   AreaChart<Number, Number> tempGraph;
+  AreaChart<Number, Number> humidGraph;
 
   /**
    * initialize a TodayScene
@@ -70,6 +72,7 @@ public class TodayScene {
     // populate fields with forecast
     applyForecast(forecast);
     mainView.getChildren().addAll(tempGraph); // needs to be added here, as will otherwise be NULL
+    mainView.getChildren().addAll(humidGraph); // needs to be added here, as will otherwise be NULL
 
     // add styles now that all elements exist
     styleComponents();
@@ -102,8 +105,10 @@ public class TodayScene {
     }
     weatherIcon.setImage(icon);
 
-    TempGraph graph = new TempGraph(forecast, forecast.getFirst().startTime);
-    tempGraph = graph.component();
+    TempGraph tGraph = new TempGraph(forecast, forecast.getFirst().startTime);
+    tempGraph = tGraph.component();
+    HumidityGraph hGraph = new HumidityGraph(forecast, forecast.getFirst().startTime);
+    humidGraph = hGraph.component();
   }
 
   /**
@@ -121,8 +126,8 @@ public class TodayScene {
   private void initComponents() {
     sidebar = new VBox(); // mostly ignored for now
 
-    temperatureTxt = new TextField();  // populated later
-    forecastTxt = new TextField();      // populated later
+    temperatureTxt = new TextField(); // populated later
+    forecastTxt = new TextField(); // populated later
 
     fahrenheitBtn = new Button("°F"); // functionality added later
     celsiusBtn = new Button("°C"); // functionality added later
@@ -224,7 +229,7 @@ public class TodayScene {
    */
   private void styleComponents() {
     // TEXT FIELDS
-    //  - temp
+    // - temp
     temperatureTxt.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ob, String o, String n) {
@@ -234,11 +239,11 @@ public class TodayScene {
     setFitWidth(temperatureTxt);
     temperatureTxt.setPadding(new Insets(0));
     temperatureTxt.setAlignment(Pos.CENTER);
-    //  - unit sep bar
+    // - unit sep bar
     unitSeparatorBar.setPrefWidth(16);
     unitSeparatorBar.setPadding(new Insets(0));
     unitSeparatorBar.setAlignment(Pos.CENTER);
-    //  - short forecast
+    // - short forecast
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
     forecastTxt.setPadding(new Insets(10, 0, 0, 0));
     setFitWidth(forecastTxt, 26);
@@ -260,6 +265,7 @@ public class TodayScene {
     // GRAPHS
     // - temperature graph
     tempGraph.setMaxWidth(1000);
+    humidGraph.setMaxWidth(1000);
 
     // CONTAINERS
     // - the sidebar
@@ -284,6 +290,7 @@ public class TodayScene {
     t.setMinWidth(width);
     t.setPrefWidth(width);
   }
+
   private void setFitWidth(TextField t) {
     setFitWidth(t, 10);
   }
