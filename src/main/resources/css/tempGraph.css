@@ -1,11 +1,24 @@
-.chart {
-    -fx-background-color: white;
-    -fx-padding: 30px;
-    -fx-border-color: transparent;
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
 }
 
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.chart {
+    -fx-background-color: transparent;
+    -fx-padding: 30px;
+    -fx-border-color: transparent;
+    -fx-font-family: "Atkinson Hyperlegible Regular";
+    -fx-font-size: 16px;
+}
+
+
 .chart-plot-background {
-    -fx-background-color: white;
+    -fx-background-color: transparent;
 }
 
 .axis-tick-mark {
@@ -24,4 +37,11 @@
 
 /* Line color */
 .temp-graph .default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
+
+
+/* Fill Color */
+.humid-graph .default-color0.chart-series-area-fill { -fx-fill: #4285F422} 
+
+/* Line color */
+.humid-graph .default-color0.chart-series-area-line { -fx-stroke: #4285F4; }
 
