@@ -1,6 +1,5 @@
 package views.components;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
 import javafx.scene.chart.AreaChart;
@@ -19,7 +18,8 @@ import my_weather.HourlyPeriod;
 public class TempGraph {
   Vector<DataPoint> data;
   TemperatureLimits temp_limits;
-  Hour min_hour;
+  Date min_time;
+  static long MILLISECONDS_IN_THREE_HOURS = 60 * 60 * 3 * 1000;
 
   /**
    * Minimum and maximum {@code Temperature}s
@@ -102,10 +102,10 @@ public class TempGraph {
 
   private class DataPoint implements Comparable<DataPoint> {
     private Temperature temp;
-    private Hour hour;
+    private Date date;
 
-    public DataPoint(int h, int t) {
-      this.hour = new Hour(h);
+    public DataPoint(Date day, int t) {
+      this.date = day;
       this.temp = new Temperature(t);
     }
 
@@ -117,26 +117,26 @@ public class TempGraph {
     }
 
     /**
-     * @return {@code int} value of the hour
+     * @return {@code long} UNIX-time value of this date
      */
-    public int hour() {
-      return this.hour.value();
+    public long time() {
+      return this.date.getTime();
     }
 
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public XYChart.Data asPoint() {
-      XYChart.Data data = new XYChart.Data(this.hour(), this.temperature());
+      XYChart.Data data = new XYChart.Data(this.time(), this.temperature());
       return data;
     }
 
     @Override
     public int compareTo(TempGraph.DataPoint arg0) {
-      if (this.hour() < arg0.hour()) {
+      if (this.time() < arg0.time()) {
         return -1;
-      } else if (this.hour() > arg0.hour()) {
+      } else if (this.time() > arg0.time()) {
         return 1;
       } else {
         return 0;
@@ -146,20 +146,20 @@ public class TempGraph {
 
   /**
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day {@code Date} object representing the target day to generate the graph
+   * @param day  {@code Date} object representing the target day to generate the
+   *             graph
    */
   public <T extends Iterable<HourlyPeriod>> TempGraph(T data, Date day) {
     initializeFromData(data, day);
   };
 
   /**
-   * Build container around {@code HourlyPeriod} extracting {@code Hour} and {@code Temperature}
-   * data
+   * Build container around {@code HourlyPeriod} extracting {@code DataPoint}s
    *
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day {@code Date} object representing the target day to generate the graph
+   * @param day  {@code Date} object representing the target day to generate the
+   *             graph
    */
-  @SuppressWarnings("deprecation")
   private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, Date day) {
     if (this.data != null) {
       this.data.clear();
@@ -169,13 +169,11 @@ public class TempGraph {
 
     int min_temp = Integer.MAX_VALUE;
     int max_temp = Integer.MIN_VALUE;
-    int min_hour = Integer.MAX_VALUE;
+
+    // we should only display the next 18 hours in 3 hour increments
+    int point_to_collect = 18;
 
     for (HourlyPeriod h : data) {
-
-      if (h.startTime.getDate() != day.getDate()) {
-        continue;
-      }
 
       if (h.temperature < min_temp) {
         min_temp = h.temperature;
@@ -183,22 +181,21 @@ public class TempGraph {
       if (h.temperature > max_temp) {
         max_temp = h.temperature;
       }
-      if (h.startTime.getHours() < min_hour) {
-        min_hour = h.startTime.getHours();
-      }
 
-      this.data.add(new DataPoint(h.startTime.getHours(), h.temperature));
+      this.data.add(new DataPoint(h.startTime, h.temperature));
+
+      if (this.data.size() >= point_to_collect) {
+        break;
+      }
     }
 
+    this.min_time = data.iterator().next().startTime;
     this.temp_limits = new TemperatureLimits(new Temperature(min_temp), new Temperature(max_temp));
-    this.min_hour = new Hour(min_hour);
-
-    // Sort by hour data
-    Collections.sort(this.data);
   }
 
   /**
-   * Get a {@code javafx.scene.chart.LineChart} representing this {@code TempGraph}
+   * Get a {@code javafx.scene.chart.LineChart} representing this
+   * {@code TempGraph}
    *
    */
   @SuppressWarnings("unchecked")
@@ -207,7 +204,8 @@ public class TempGraph {
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
-    NumberAxis hourAxis = new NumberAxis(data.firstElement().hour(), data.lastElement().hour(), 1);
+    NumberAxis hourAxis = new NumberAxis(data.firstElement().time(), data.lastElement().time(),
+        MILLISECONDS_IN_THREE_HOURS);
     NumberAxis tempAxis = new NumberAxis(temp_limits.min() - temp_limits.pad(),
         temp_limits.max() + temp_limits.pad(),
         10);
@@ -235,7 +233,8 @@ public class TempGraph {
    * will represent this state.
    *
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day {@code Date} object representing the target day to generate the graph
+   * @param day  {@code Date} object representing the target day to generate the
+   *             graph
    *
    */
   public <T extends Iterable<HourlyPeriod>> void update(T data, Date day) {
@@ -251,19 +250,22 @@ public class TempGraph {
     hours.setLabel("");
     hours.setBorder(Border.EMPTY);
     hours.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 20));
-    int min_hour = this.min_hour.value();
     hours.setTickLabelFormatter(new StringConverter<Number>() {
 
+      @SuppressWarnings("deprecation")
       @Override
       public String toString(Number object) {
-        if (object.intValue() == min_hour) {
+        Date time = new Date(object.longValue());
+        if (time.getTime() == min_time.getTime()) {
           return "Now";
-        } else if (object.intValue() == 12) {
+        } else if (time.getHours() == 12) {
           return String.format("%d pm", 12);
-        } else if (object.intValue() > 12) {
-          return String.format("%d pm", object.intValue() % 12);
+        } else if (time.getHours() == 0) {
+          return String.format("%d am", 12);
+        } else if (time.getHours() > 12) {
+          return String.format("%d pm", time.getHours() % 12);
         } else {
-          return String.format("%d am", object.intValue());
+          return String.format("%d am", time.getHours());
         }
       }
 
@@ -307,6 +309,5 @@ public class TempGraph {
     component.setBorder(Border.EMPTY);
     component.setCreateSymbols(false);
   }
-
 
 }
