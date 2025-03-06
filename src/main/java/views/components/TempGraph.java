@@ -302,6 +302,7 @@ public class TempGraph {
    * Style the given {@code LineChart}
    */
   static public void styleChart(AreaChart<Number, Number> component) {
+    component.getStyleClass().addAll("temp-graph");
     component.setHorizontalGridLinesVisible(false);
     component.setVerticalGridLinesVisible(false);
     component.setLegendVisible(false);

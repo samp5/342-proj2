@@ -19,9 +19,9 @@
     -fx-stroke-width: 8px;
 }
 
-/* Line Color */
-.default-color0.chart-series-area-fill { -fx-fill: #ffcc0022} 
+/* Fill Color */
+.temp-graph .default-color0.chart-series-area-fill { -fx-fill: #ffcc0022} 
 
-/* Fill color */
-.default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
+/* Line color */
+.temp-graph .default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
 
