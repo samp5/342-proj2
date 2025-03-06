@@ -22,6 +22,8 @@ import my_weather.HourlyPeriod;
 import views.components.TempGraph;
 import views.components.TempGraph.TempUnit;
 import views.components.HumidityGraph;
+import views.components.sidebar.NavigationTarget;
+import views.components.sidebar.Section;
 import views.components.sidebar.Sidebar;
 import views.util.IconResolver;
 import views.util.TextUtils;
@@ -70,11 +72,13 @@ public class TodayScene {
 
     // populate fields with forecast
     currentForecast = forecast;
+
     applyForecast();
     mainView.getChildren().addAll(tempChart); // needs to be added here, as will otherwise be NULL
     mainView.getChildren().addAll(humidChart); // needs to be added here, as will otherwise be NULL
-                                            
+
     // initialize buttons and text fields
+    initialize_side_bar();
     initialize_unit_buttons();
     initialize_text_fields();
 
@@ -236,6 +240,22 @@ public class TodayScene {
     celsiusBtn.getStyleClass().add("temperature-button");
   }
 
+  private void initialize_side_bar() {
+
+    ArrayList<Section> sections = new ArrayList<>();
+    ArrayList<NavigationTarget> forecastNavTargets = new ArrayList<>();
+    NavigationTarget daily = new NavigationTarget(this.scene, "Daily Forecast");
+    NavigationTarget threeDay = new NavigationTarget(this.scene, "Three Day Forecast");
+    forecastNavTargets.add(daily);
+    forecastNavTargets.add(threeDay);
+    Section forecasts = new Section("Forecast", forecastNavTargets);
+    sections.add(forecasts);
+
+    Sidebar sidebar = new Sidebar(sections);
+    this.sidebar.getChildren().add(sidebar.component());
+
+  }
+
   /**
    * adds functionality and css to the text fields
    */
@@ -323,4 +343,5 @@ public class TodayScene {
   private void setFitWidth(TextField t) {
     setFitWidth(t, 10);
   }
+
 }
