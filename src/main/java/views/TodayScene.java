@@ -63,23 +63,21 @@ public class TodayScene {
    */
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
-    styleComponents();
 
-    // initialize the buttons
+    // initialize buttons and text fields
     initialize_unit_buttons();
-
-    // initialize text fields
     initialize_text_fields();
-
-    // add global css
-    scene.getStylesheets().add("css/baseScene.css");
-    scene.getStylesheets().add("css/tempHeader.css");
 
     // populate fields with forecast
     applyForecast(forecast);
     mainView.getChildren().addAll(tempGraph);  // needs to be added here, as will otherwise be NULL
 
-    // void whatever focus
+    // add styles now that all elements exist
+    styleComponents();
+    scene.getStylesheets().add("css/baseScene.css");
+    scene.getStylesheets().add("css/tempHeader.css");
+
+    // void any focus that may exist
     focusVoid.requestFocus();
   }
 
@@ -215,7 +213,8 @@ public class TodayScene {
     weather.setEditable(false);
     unitSeparatorBar.setEditable(false);
 
-    // add specific style classes
+    // add specific style classes and required style
+    temperature.setFont(new Font("Atkinson Hyperlegible Bold", 75));
     temperature.getStyleClass().add("temperature-field");
     unitSeparatorBar.getStyleClass().add("unit-separator");
   }
@@ -227,13 +226,13 @@ public class TodayScene {
   private void styleComponents() {
     // TEXT FIELDS
     //  - temp
-    temperature.setFont(new Font("Atkinson Hyperlegible Bold", 75));
     temperature.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ob, String o, String n) {
-        temperature.setPrefWidth(TextUtils.computeTextWidth(temperature.getFont(), temperature.getText(), 0.0D) + 10);
+        setFitWidth(temperature);
       }
     });
+    setFitWidth(temperature);
     temperature.setPadding(new Insets(0));
     temperature.setAlignment(Pos.CENTER);
     //  - unit sep bar
@@ -255,6 +254,10 @@ public class TodayScene {
     weatherIcon.setX(100);
     weatherIcon.setY(100);
 
+    // GRAPHS
+    //  - temperature graph
+    tempGraph.setMaxWidth(1000);
+
     // CONTAINERS
     //  - the sidebar
     sidebar.setMinWidth(256);
@@ -270,5 +273,9 @@ public class TodayScene {
     unitContainer.setAlignment(Pos.CENTER_LEFT);
     unitContainer.setMaxHeight(40);
     unitContainer.setPadding(new Insets(0, 0, 20, 0));
+  }
+
+  private void setFitWidth(TextField t) {
+    t.setPrefWidth(TextUtils.computeTextWidth(t.getFont(), t.getText(), 0.0D) + 10);
   }
 }
