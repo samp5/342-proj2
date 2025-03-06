@@ -11,6 +11,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
+import views.components.sidebar.NavigationTarget;
+import views.components.sidebar.Section;
+import views.components.sidebar.Sidebar;
 
 
 public class TodayScene {
@@ -57,9 +60,7 @@ public class TodayScene {
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
 
-    // create the sidebar
-    sidebar.setMinWidth(256);
-    sidebar.setStyle("-fx-background-color: #D9D9D9");
+    initialize_side_bar();
 
     // create the main view
     mainView.setMinWidth(1440 - 256);
@@ -79,6 +80,8 @@ public class TodayScene {
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/tempHeader.css");
     scene.getStylesheets().add("css/tempGraph.css");
+    scene.getStylesheets().add("css/sidebarHeader.css");
+    scene.getStylesheets().add("css/sidebar.css");
 
     // populate fields with forecast
     applyForecast(forecast);
@@ -147,5 +150,19 @@ public class TodayScene {
 
     // add specific style classes
     temperature.getStyleClass().add("temperature-field");
+  }
+
+  private void initialize_side_bar() {
+    ArrayList<NavigationTarget> nav_targets = new ArrayList<>();
+    nav_targets.add(new NavigationTarget(this.scene, "Daily"));
+    Section forecast_section = new Section("Forecast", nav_targets);
+
+    ArrayList<Section> sections = new ArrayList<>();
+    sections.add(forecast_section);
+
+    Sidebar s = new Sidebar(sections);
+    sidebar.setMinWidth(256);
+    sidebar.setStyle("-fx-background-color: #D9D9D9");
+    sidebar.getChildren().add(s.component());
   }
 }

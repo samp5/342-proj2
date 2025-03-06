@@ -1,0 +1,14 @@
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
+}
+
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.navigation-target {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 26px;
+}

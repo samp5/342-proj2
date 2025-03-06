@@ -1,0 +1,26 @@
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
+}
+
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.side-bar-coord-text {
+  -fx-font-size: 18;
+  -fx-border-width: 0;
+  -fx-background-color: transparent;
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+}
+.side-bar-coord-label {
+}
+.side-bar-coord-input {
+}
+.side-bar-header {
+  -fx-font-size: 36;
+  -fx-border-width: 0;
+  -fx-background-color: transparent;
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+}
