@@ -177,11 +177,7 @@ public class TodayScene {
     fahrenheitBtn.setDisable(true);
     celsiusBtn.setDisable(false);
 
-    int chartNdx = mainView.getChildren().indexOf(tempChart);
-    tempGraph.update(currentForecast, new Date(), TempUnit.Fahrenheit);
-    tempChart = tempGraph.component();
-    mainView.getChildren().remove(chartNdx);
-    mainView.getChildren().add(chartNdx, tempChart);
+    updateTempGraph(TempUnit.Fahrenheit);
 
     focusVoid.requestFocus();
   }
@@ -194,13 +190,30 @@ public class TodayScene {
     fahrenheitBtn.setDisable(false);
     celsiusBtn.setDisable(true);
 
+    updateTempGraph(TempUnit.Celsius);
+
+    focusVoid.requestFocus();
+  }
+
+  /**
+   * updates the temperature graph
+   *
+   * @param unit unit to fill the graph with
+   */
+  private void updateTempGraph(TempUnit unit) {
+    // find the location of the current chart
     int chartNdx = mainView.getChildren().indexOf(tempChart);
-    tempGraph.update(currentForecast, new Date(), TempUnit.Celsius);
+    
+    // get the new graph 
+    tempGraph.update(currentForecast, new Date(), unit);
     tempChart = tempGraph.component();
+
+    // replace the old graph with the new one
     mainView.getChildren().remove(chartNdx);
     mainView.getChildren().add(chartNdx, tempChart);
 
-    focusVoid.requestFocus();
+    // re-set the max width again
+    tempChart.setMaxWidth(1000);
   }
 
   /**
