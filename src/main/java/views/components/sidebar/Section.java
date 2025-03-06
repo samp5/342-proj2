@@ -3,7 +3,10 @@ package views.components.sidebar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
+
+import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 public class Section {
   String title;
@@ -14,9 +17,13 @@ public class Section {
   public <T extends Collection<NavigationTarget>> Section(String title, T nav_targets) {
     this.title = title;
     this.navTargerts = new ArrayList<>(nav_targets);
-    box = new VBox();
+
+    Text section_header = new Text(this.title);
+    section_header.getStyleClass().add("section-header");
+    box = new VBox(section_header);
     box.getChildren()
         .addAll(this.navTargerts.stream().map(e -> e.component()).collect(Collectors.toList()));
+    box.setPadding(new Insets(0, 0, 0, 10));
   }
 
   public VBox component() {

@@ -8,7 +8,15 @@
   src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
 }
 
-.navigation-target {
+.section-header  {
   -fx-font-family: "Atkinson Hyperlegible Bold";
-  -fx-font-size: 26px;
+  -fx-font-size: 24px;
+  -fx-border-width: 2px 0px 0px 0px;
+  -fx-border-color: rgb(0, 0, 0);
+  -fx-border-insets: 16px 0 0 16px;
+  -fx-padding: 0 0 0 10px;
+}
+.navigation-target {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  -fx-font-size: 18px;
 }
