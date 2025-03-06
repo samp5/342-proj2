@@ -3,11 +3,11 @@ package views;
 import java.util.ArrayList;
 import java.util.Collection;
 import my_weather.HourlyPeriod;
-import views.components.DaySummary;
+//import views.components.DaySummary;
 
 public class ThreeDayScene {
   Integer focusedDay = 0;
-  DaySummary threeDays;
+  //DaySummary threeDays;
 
   private void initComponents() {
   }

@@ -224,36 +224,24 @@ public class TodayScene {
    */
   private void styleComponents() {
     // TEXT FIELDS
-<<<<<<< Updated upstream
-    // - temp
-    temperature.textProperty().addListener(new ChangeListener<String>() {
-=======
     //  - temp
     temperatureTxt.textProperty().addListener(new ChangeListener<String>() {
->>>>>>> Stashed changes
       @Override
       public void changed(ObservableValue<? extends String> ob, String o, String n) {
         setFitWidth(temperatureTxt);
       }
     });
-<<<<<<< Updated upstream
-    setFitWidth(temperature);
-    temperature.setPadding(new Insets(0));
-    temperature.setAlignment(Pos.CENTER);
-    // - unit sep bar
-=======
     setFitWidth(temperatureTxt);
     temperatureTxt.setPadding(new Insets(0));
     temperatureTxt.setAlignment(Pos.CENTER);
     //  - unit sep bar
->>>>>>> Stashed changes
     unitSeparatorBar.setPrefWidth(16);
     unitSeparatorBar.setPadding(new Insets(0));
     unitSeparatorBar.setAlignment(Pos.CENTER);
     //  - short forecast
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
     forecastTxt.setPadding(new Insets(10, 0, 0, 0));
-    setFitWidth(forecastTxt, 26); // TODO: comment line for full width, ask same
+    setFitWidth(forecastTxt, 26);
 
     // BUTTONS
     // - unit buttons
