@@ -3,12 +3,14 @@ package views;
 import java.util.ArrayList;
 
 import javafx.scene.Scene;
+import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import my_weather.HourlyPeriod;
+import views.components.TempGraph;
 
 
 public class TodayScene {
@@ -68,13 +70,15 @@ public class TodayScene {
 
     // initialize text fields
     initialize_text_fields();
+    TempGraph chart = new TempGraph(forecast, forecast.getFirst().startTime);
 
     // add all elements
-    mainView.getChildren().addAll(temperature, weather, unitContainer);
+    mainView.getChildren().addAll(temperature, weather, unitContainer, chart.component());
 
     // add global css
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/tempHeader.css");
+    scene.getStylesheets().add("css/tempGraph.css");
 
     // populate fields with forecast
     applyForecast(forecast);

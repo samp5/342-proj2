@@ -1,14 +1,13 @@
-.chart-series-line {
-  -fx-background-color: transparent;
-  -fx-padding: 30px;
-  -fx-border-color: transparent;
+.chart {
+    -fx-background-color: white;
+    -fx-padding: 30px;
+    -fx-border-color: transparent;
 }
 
-.chart-content {
-  -fx-padding: 30px;
-  -fx-background-color: transparent;
+.chart-plot-background {
+    -fx-background-color: white;
 }
- 
+
 .axis-tick-mark {
     -fx-stroke: transparent;
 }

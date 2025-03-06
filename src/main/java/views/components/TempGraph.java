@@ -1,15 +1,13 @@
 package views.components;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Vector;
 import javafx.scene.chart.AreaChart;
-import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.util.StringConverter;
 import my_weather.HourlyPeriod;
@@ -305,8 +303,9 @@ public class TempGraph {
     component.setHorizontalGridLinesVisible(false);
     component.setVerticalGridLinesVisible(false);
     component.setLegendVisible(false);
+    component.setBackground(Background.EMPTY);
+    component.setBorder(Border.EMPTY);
     component.setCreateSymbols(false);
-
   }
 
 
