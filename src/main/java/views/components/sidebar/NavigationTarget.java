@@ -17,7 +17,6 @@ public class NavigationTarget {
   public VBox component() {
     Text label = new Text(displayName);
     label.getStyleClass().add("navigation-target");
-    // label.setFont(new Font("Atkinson Hyperlegible Bold", 26));
     label.setOnMouseEntered(e -> {
       label.setUnderline(true);
     });

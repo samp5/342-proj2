@@ -13,10 +13,11 @@ import javafx.scene.text.Text;
 
 public class Sidebar {
 
+  // header
+  Header header;
+
   // sections
   ArrayList<Section> sections;
-
-  Header header;
 
   public class Header {
     static final int titleFontSize = 40;
@@ -91,7 +92,7 @@ public class Sidebar {
 
   // main vbox
   VBox container;
-  String navTitle = "Chicago, IL";
+  String title = "Chicago, IL";
 
   public <T extends Collection<Section>> Sidebar(T sections) {
     this.sections = new ArrayList<>(sections);
@@ -106,11 +107,11 @@ public class Sidebar {
   }
 
   public void setTitle(String title) {
-    this.navTitle = title;
+    this.title = title;
   }
 
   public String getTitle() {
-    return this.navTitle;
+    return this.title;
   }
 
   public VBox component() {
