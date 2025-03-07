@@ -71,8 +71,6 @@ public class TodayScene extends DayScene {
 
     // add styles now that all elements exist
     styleComponents();
-    scene.getStylesheets().add("css/tempHeader.css");
-    scene.getStylesheets().add("css/tempGraph.css");
 
     // void any focus that may exist
     voidFocus();
@@ -141,7 +139,7 @@ public class TodayScene extends DayScene {
    */
   private void setTemp(int f) {
     fahrenheit = f;
-    celsius = (f - 32) * 5 / 9;
+    celsius = (int)((f - 32.) * 5. / 9.);
     temperatureTxt.setText(String.format("%d", f));
   }
 
@@ -232,15 +230,18 @@ public class TodayScene extends DayScene {
    * styles all components, sorted in groups
    */
   private void styleComponents() {
+    scene.getStylesheets().add("css/tempHeader.css");
+    scene.getStylesheets().add("css/tempGraph.css");
+
     // TEXT FIELDS
     // - temp
     temperatureTxt.textProperty().addListener(new ChangeListener<String>() {
       @Override
       public void changed(ObservableValue<? extends String> ob, String o, String n) {
-        setFitWidth(temperatureTxt);
+        TextUtils.setFitWidth(temperatureTxt);
       }
     });
-    setFitWidth(temperatureTxt);
+    TextUtils.setFitWidth(temperatureTxt);
     temperatureTxt.setPadding(new Insets(0));
     temperatureTxt.setAlignment(Pos.CENTER);
     // - unit sep bar
@@ -251,7 +252,7 @@ public class TodayScene extends DayScene {
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
     forecastTxt.setPadding(new Insets(10, 0, 0, 0));
     forecastTxt.setAlignment(Pos.CENTER);
-    setFitWidth(forecastTxt, 26);
+    TextUtils.setFitWidth(forecastTxt, 26);
 
     // BUTTONS
     // - unit buttons
@@ -281,16 +282,4 @@ public class TodayScene extends DayScene {
     unitContainer.setMaxHeight(40);
     unitContainer.setPadding(new Insets(0, 0, 20, 0));
   }
-
-  private void setFitWidth(TextField t, double padding) {
-    double width = TextUtils.computeTextWidth(t.getFont(), t.getText(), 0.0D) + padding;
-    t.setMaxWidth(width);
-    t.setMinWidth(width);
-    t.setPrefWidth(width);
-  }
-
-  private void setFitWidth(TextField t) {
-    setFitWidth(t, 10);
-  }
-
 }

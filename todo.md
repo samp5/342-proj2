@@ -11,5 +11,7 @@
 - [ ] more filled space on one day view
 - [ ] 10 days
 - [ ] more graphs/scrollable one day
+- [ ] global unit "setting"
 - [ ] Handle no wifi
+- [ ] save on quit
 

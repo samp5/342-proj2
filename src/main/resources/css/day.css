@@ -28,11 +28,11 @@
 
 .day-title-three-day {
   -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 20;
 }
 .day-backdrop-three-day {
-  -fx-background-color: #EF2680;
+  -fx-background-color: #F8F9FA;
   -fx-background-radius: 50px;
-  -fx-background-insets: 20px 20px 20px 20px;
   -fx-font-size: 18px;
 }
 
@@ -41,7 +41,7 @@
   -fx-font-size: 40;
 }
 
-.day-statistis-three-day {
+.day-statistics-three-day {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 18px;
 }
