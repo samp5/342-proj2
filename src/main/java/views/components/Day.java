@@ -1,27 +1,29 @@
 package views.components;
 
 import views.util.IconResolver;
+import views.util.TextUtils;
 import views.components.TempGraph.TempUnit;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.function.Predicate;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Background;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import my_weather.HourlyPeriod;
 
 public class Day {
-  int fahrenheit, celsius;
+  Integer[] fahrenheit, celsius;
   String shortForecast;
   Date date;
   DayView viewType;
@@ -64,20 +66,40 @@ public class Day {
   public Day(ArrayList<HourlyPeriod> data, Date day) {
     this.date = day;
     this.currentForecast = data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
-    this.fahrenheit = currentForecast.getFirst().temperature;
-    this.celsius = (int) ((this.fahrenheit - 32) * 5.0 / 9.0);
+    this.fahrenheit = getMinMaxTemp(false);
+    this.celsius = getMinMaxTemp(true);
     this.unit = TempUnit.Fahrenheit;
     this.shortForecast = this.currentForecast.getFirst().shortForecast;
+  }
+
+  private Integer[] getMinMaxTemp(boolean celsius) {
+    Integer[] minMax = new Integer[] {null, null};
+    int temperature;
+    for (HourlyPeriod p : currentForecast) {
+      if (celsius) {
+        temperature = (int)((p.temperature - 32.) * 5. / 9.);
+      } else {
+        temperature = p.temperature;
+      }
+
+      if (minMax[0] == null || temperature < minMax[0]) {
+        minMax[0] = temperature;
+      }
+      if (minMax[1] == null || temperature > minMax[1]) {
+        minMax[1] = temperature;
+      }
+    }
+
+    return minMax;
   }
 
   public VBox component(DayView.DayViewType viewType) {
     this.viewType = new DayView(viewType);
     HBox title = dayTitle();
-    ImageView icon = getIcon();
-    Text temperature = getTemperature();
+    BorderPane icon = getIcon();
+    TextField temperature = getTemperature();
     VBox statistics = getStatistics();
-    HBox hbox = new HBox(icon, temperature);
-    VBox vbox = new VBox(title, hbox, statistics);
+    VBox vbox = new VBox(title, icon, temperature, statistics);
     vbox.getStyleClass().add("day-backdrop-" + this.viewType.toString());
 
     return vbox;
@@ -89,36 +111,42 @@ public class Day {
     String humidity_str = "Humidity: " + String.format("%d", forecast_now.relativeHumidity.value) + "%";
     String wind_str = "Wind: " + forecast_now.windSpeed + " " + forecast_now.windDirection;
 
-    Text precipitation = new Text(precipitation_str);
-    Text humidity = new Text(humidity_str);
-    Text wind = new Text(wind_str);
+    TextField precipitation = TextUtils.staticTextField(precipitation_str);
+    TextField humidity = TextUtils.staticTextField(humidity_str);
+    TextField wind = TextUtils.staticTextField(wind_str);
+
+    precipitation.setAlignment(Pos.CENTER);
+    humidity.setAlignment(Pos.CENTER);
+    wind.setAlignment(Pos.CENTER);
+
+    precipitation.setEditable(false);
 
     precipitation.getStyleClass().add("day-statistics-" + this.viewType.toString());
-    humidity.getStyleClass().add("day-statistics-" + this.viewType + toString());
+    humidity.getStyleClass().add("day-statistics-" + this.viewType.toString());
     wind.getStyleClass().add("day-statistics-" + this.viewType.toString());
 
     VBox statbox = new VBox(precipitation, humidity, wind);
     return statbox;
   }
 
-  public Text getTemperature() {
+  public TextField getTemperature() {
     String text = null;
     switch (this.unit) {
       case Celsius:
-        text = String.format("%d °", this.celsius);
+        text = String.format("%d-%d°C", this.celsius[0], this.celsius[1]);
         break;
       case Fahrenheit:
-        text = String.format("%d °", this.fahrenheit);
+        text = String.format("%d-%d°F", this.fahrenheit[0], this.fahrenheit[1]);
         break;
     }
 
-    Text tempText = new Text(text);
+    TextField tempText = TextUtils.staticTextField(text);
     tempText.getStyleClass().add("day-temperature-text-" + this.viewType.toString());
 
     return tempText;
   }
 
-  public ImageView getIcon() {
+  public BorderPane getIcon() {
     Image icon;
     ImageView weatherIcon = new ImageView();
     try {
@@ -129,7 +157,10 @@ public class Day {
     weatherIcon.setImage(icon);
 
     weatherIcon.setPreserveRatio(true);
-    return weatherIcon;
+    
+    BorderPane pane = new BorderPane();
+    pane.setCenter(weatherIcon);
+    return pane;
   }
 
   @SuppressWarnings("deprecation")
@@ -167,6 +198,7 @@ public class Day {
     title.getStyleClass().add("day-title-" + this.viewType.toString());
     HBox box = new HBox(title);
     box.setAlignment(Pos.CENTER);
+    box.setPadding(new Insets(10, 0, 0, 0));
     return box;
   }
 

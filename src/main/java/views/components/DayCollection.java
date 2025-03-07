@@ -43,7 +43,7 @@ public class DayCollection {
     HBox box = new HBox();
     box.getChildren().addAll(days.stream().map(d -> d.component(this.viewType)).toList());
     box.setPadding(new Insets(50));
+    box.setSpacing(60);
     return box;
   }
-
 }

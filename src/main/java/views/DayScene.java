@@ -28,10 +28,10 @@ public abstract class DayScene {
     // styling
     // - the sidebar
     sidebarBox.setMinWidth(256);
-    sidebarBox.setStyle("-fx-background-color: #D9D9D9");
+    sidebarBox.getStyleClass().add("sidebar");
     // - main view
     mainView.setMinWidth(1440 - 256);
-    mainView.setStyle("-fx-background-color: #FFFFFF");
+    mainView.getStyleClass().add("main-view");
     mainView.setPadding(new Insets(20));
 
     scene.getStylesheets().add("css/baseScene.css");
@@ -71,4 +71,11 @@ public abstract class DayScene {
     this.sidebarBox.getChildren().setAll(sidebar.component());
     voidFocus();
   }
+
+  /**
+   * updates the {@code DayScene} with a new set of data
+   *
+   * @param forecast the forecast to update from
+   */
+  public abstract void applyForecast();
 }
