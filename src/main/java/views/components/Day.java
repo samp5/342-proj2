@@ -107,9 +107,10 @@ public class Day {
   }
 
   public VBox getStatistics() {
-    String precipitation_str = "Precipitation: " + avgPrecipitation() + "%";
-    String humidity_str = "Humidity: " + avgRelHumidity() + "%";
-    String wind_str = "Wind: " + avgWindSpeed() + " mph";
+    int[] stats = parseStats();
+    String precipitation_str = "Precipitation: " + stats[0] + "%";
+    String humidity_str = "Humidity: " + stats[1] + "%";
+    String wind_str = "Wind: " + stats[2] + " mph";
 
     TextField precipitation = TextUtils.staticTextField(precipitation_str);
     TextField humidity = TextUtils.staticTextField(humidity_str);
@@ -128,26 +129,29 @@ public class Day {
     return statbox;
   }
 
-  private int avgPrecipitation() {
-    int total = 0;
-    for (HourlyPeriod p : currentForecast) total += p.probabilityOfPrecipitation.value;
-    return total / currentForecast.size();
-  }
+  private int[] parseStats() {
+    int maxPrep = 0;
+    int totalRelHumid = 0;
+    int totalWindspeed = 0;
 
-  private int avgRelHumidity() {
-    int total = 0;
-    for (HourlyPeriod p : currentForecast) total += p.relativeHumidity.value;
-    return total / currentForecast.size();
-  }
-
-  private int avgWindSpeed() {
-    int total = 0;
     for (HourlyPeriod p : currentForecast) {
+      // precipitation
+      if (p.probabilityOfPrecipitation.value > maxPrep) {
+        maxPrep = p.probabilityOfPrecipitation.value;
+      }
+
+      // relative humidity
+      totalRelHumid += p.relativeHumidity.value;
+
+      // wind speed
       Matcher m = Day.windPattern.matcher(p.windSpeed);
-      if (m.find()) total += Integer.parseInt(m.group(1));
-      else total += 0;
+      if (m.find()) totalWindspeed += Integer.parseInt(m.group(1));
+      else totalWindspeed += 0;
     }
-    return total / currentForecast.size();
+
+    // divide for averages
+    int size = currentForecast.size();
+    return new int[] {maxPrep, totalRelHumid / size, totalWindspeed / size};
   }
   
   public TextField getTemperature() {

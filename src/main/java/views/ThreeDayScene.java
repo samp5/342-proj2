@@ -20,7 +20,7 @@ public class ThreeDayScene extends DayScene {
     styleComponents();
   }
 
-  public void applyForecast() {
+  protected void applyForecast() {
     DayCollection collection = new DayCollection(3, currentForecast, DayViewType.ThreeDay);
     dayCollectionBox.getChildren().setAll(collection.component());
   }

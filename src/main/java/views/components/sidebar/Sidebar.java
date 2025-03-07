@@ -11,8 +11,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import views.DayScene;
+import views.components.events.LocationChangeEvent;
 
 public class Sidebar {
+  // tracks lat/lon validity
+  boolean latValid = true;
+  boolean lonValid = true;
 
   // header
   Header header;
@@ -54,67 +58,51 @@ public class Sidebar {
 
     private void setInputOnAction() {
       latInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
-        double val;
-        try {
-          val = Double.parseDouble(newvalue);
-        } catch (NumberFormatException numException) {
-          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
-          latInput.getStyleClass().add("invalid-input");
-          return;
-        }
-        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
-        latInput.getStyleClass().add("coord-input");
+        latValid = inputHighlighter(latInput, newvalue);
       });
 
       latInput.setOnAction(e -> {
-        String text = latInput.getText();
-        double val;
+        latValid = inputHighlighter(latInput, latInput.getText());
 
-        try {
-          System.err.println("parsing " + text);
-          val = Double.parseDouble(text);
-        } catch (NumberFormatException numException) {
-          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
-          latInput.getStyleClass().add("invalid-input");
-          System.err.println("parsing failed added style");
-          return;
+        if (latValid && lonValid) {
+          latInput.fireEvent(new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
         }
+      });
 
-        System.err.println("parsing success removing invalid-input style");
-        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
-        latInput.getStyleClass().add("coord-input");
+      latInput.focusedProperty().addListener((observable, oldState, newState) -> {
+        if (newState) return;
+
+        latValid = inputHighlighter(latInput, latInput.getText());
+
+        if (latValid && lonValid) {
+          latInput.fireEvent(new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
+        }
       });
 
       lonInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
-        double val;
-        try {
-          val = Double.parseDouble(newvalue);
-        } catch (NumberFormatException numException) {
-          lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
-          lonInput.getStyleClass().add("invalid-input");
-          return;
-        }
-        lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
-        lonInput.getStyleClass().add("coord-input");
+        lonValid = inputHighlighter(lonInput, newvalue);
       });
 
       lonInput.setOnAction(e -> {
-        String text = lonInput.getText();
-        double val;
+        lonValid = inputHighlighter(lonInput, lonInput.getText());
 
-        try {
-          System.err.println("parsing " + text);
-          val = Double.parseDouble(text);
-        } catch (NumberFormatException numException) {
-          lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
-          lonInput.getStyleClass().add("invalid-input");
-          System.err.println("parsing failed added style");
-          return;
+        if (latValid && lonValid) {
+          lonInput.fireEvent(new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
         }
-        lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
-        lonInput.getStyleClass().add("coord-input");
-        // TODO: Broadcast a ChangeLocation event
       });
+    }
+
+    private boolean inputHighlighter(TextField tf, String newVal) {
+      try {
+        Double.parseDouble(newVal);
+      } catch (NumberFormatException numException) {
+        tf.getStyleClass().removeIf(s -> s.equals("coord-input"));
+        tf.getStyleClass().add("invalid-input");
+        return false;
+      }
+      tf.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+      tf.getStyleClass().add("coord-input");
+      return true;
     }
 
     private void buildTextInput() {
@@ -191,6 +179,20 @@ public class Sidebar {
 
   public VBox component() {
     return this.container;
+  }
+
+  public void recievedInvalidLocation() {
+    header.lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+    header.lonInput.getStyleClass().add("invalid-input");
+    header.latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+    header.latInput.getStyleClass().add("invalid-input");
+  }
+
+  public void recievedValidLocation() {
+    header.lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+    header.lonInput.getStyleClass().add("coord-input");
+    header.latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+    header.latInput.getStyleClass().add("coord-input");
   }
 
 }

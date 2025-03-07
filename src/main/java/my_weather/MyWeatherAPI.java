@@ -44,6 +44,23 @@ public class MyWeatherAPI {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
+    while (response.statusCode() == 301) {
+      try {
+        String newLoc = response.headers().allValues("location").getFirst();
+        HttpRequest redirRequest = HttpRequest.newBuilder()
+          .uri(URI.create("https://api.weather.gov" + newLoc)).build();
+        response = HttpClient.newHttpClient().send(redirRequest, HttpResponse.BodyHandlers.ofString());
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (response.statusCode() == 404) {
+      System.err.println("404, invalid location");
+      return null;
+    }
+
     my_weather.gridPoint.Root r = getGridPointRoot(response.body());
     if (r == null) {
       System.err.println("Failed to parse JSon");

@@ -1,10 +1,12 @@
 package views;
 
+import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 
 public abstract class DayScene {
@@ -24,6 +26,11 @@ public abstract class DayScene {
     mainView = new VBox();
     sceneBox = new HBox(sidebarBox, mainView, focusVoid);
     scene = new Scene(sceneBox, 1440, 800);
+
+    // listen for events
+    scene.setOnMouseClicked(event -> {
+      voidFocus();
+    });
 
     // styling
     // - the sidebar
@@ -77,5 +84,5 @@ public abstract class DayScene {
    *
    * @param forecast the forecast to update from
    */
-  public abstract void applyForecast();
+  protected abstract void applyForecast();
 }

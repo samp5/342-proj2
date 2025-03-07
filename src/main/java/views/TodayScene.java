@@ -76,10 +76,14 @@ public class TodayScene extends DayScene {
     voidFocus();
   }
 
+  public void update(ArrayList<HourlyPeriod> forecast) {
+    currentForecast = forecast;
+    applyForecast();
+  }
   /**
    * update the scene with the {@code currentForecast}
    */
-  public void applyForecast() {
+  protected void applyForecast() {
     HourlyPeriod now = currentForecast.getFirst();
 
     setTemp(now.temperature);
@@ -90,7 +94,7 @@ public class TodayScene extends DayScene {
     } catch (FileNotFoundException e) {
       icon = new Image("icons/drizzle.png");
     }
-    weatherIcon.setImage(icon);
+    weatherIcon.setImage(icon); // TODO: need to replace stuff of further calls
 
     tempGraph = new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
     tempChart = tempGraph.component();
