@@ -93,38 +93,38 @@ public class Sidebar {
         try {
           val = Double.parseDouble(newvalue);
         } catch (NumberFormatException numException) {
-          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
-          latInput.getStyleClass().add("invalid-input");
+          lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+          lonInput.getStyleClass().add("invalid-input");
           return;
         }
-        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
-        latInput.getStyleClass().add("coord-input");
+        lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+        lonInput.getStyleClass().add("coord-input");
       });
 
       lonInput.setOnAction(e -> {
-        String text = latInput.getText();
+        String text = lonInput.getText();
         double val;
 
         try {
           System.err.println("parsing " + text);
           val = Double.parseDouble(text);
         } catch (NumberFormatException numException) {
-          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
-          latInput.getStyleClass().add("invalid-input");
+          lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+          lonInput.getStyleClass().add("invalid-input");
           System.err.println("parsing failed added style");
           return;
         }
-        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
-        latInput.getStyleClass().add("coord-input");
+        lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+        lonInput.getStyleClass().add("coord-input");
         // TODO: Broadcast a ChangeLocation event
       });
     }
 
     private void buildTextInput() {
-      setInputOnAction();
-
       latInput = new TextField("41.8781");
       lonInput = new TextField("-87.6298");
+
+      setInputOnAction();
 
       latLabel = new Text("lat:");
       lonLabel = new Text("lon:");
