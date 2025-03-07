@@ -65,7 +65,7 @@ public class TodayScene extends DayScene {
     mainView.getChildren().addAll(humidChart); // needs to be added here, as will otherwise be NULL
 
     // initialize buttons and text fields
-    //initialize_side_bar();
+    // initialize_side_bar();
     initialize_unit_buttons();
     initialize_text_fields();
 
@@ -80,6 +80,7 @@ public class TodayScene extends DayScene {
     currentForecast = forecast;
     applyForecast();
   }
+
   /**
    * update the scene with the {@code currentForecast}
    */
@@ -90,7 +91,7 @@ public class TodayScene extends DayScene {
     setShortForecast(now.shortForecast);
 
     try {
-      icon = new IconResolver().getIcon(now.shortForecast);
+      icon = new IconResolver().getIcon(now.shortForecast, now.isDaytime);
     } catch (FileNotFoundException e) {
       icon = new Image("icons/drizzle.png");
     }
@@ -143,7 +144,7 @@ public class TodayScene extends DayScene {
    */
   private void setTemp(int f) {
     fahrenheit = f;
-    celsius = (int)((f - 32.) * 5. / 9.);
+    celsius = (int) ((f - 32.) * 5. / 9.);
     temperatureTxt.setText(String.format("%d", f));
   }
 
@@ -181,8 +182,8 @@ public class TodayScene extends DayScene {
   private void updateTempGraph(TempUnit unit) {
     // find the location of the current chart
     int chartNdx = mainView.getChildren().indexOf(tempChart);
-    
-    // get the new graph 
+
+    // get the new graph
     tempGraph.update(currentForecast, new Date(), unit);
     tempChart = tempGraph.component();
 

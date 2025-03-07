@@ -22,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.util.Pair;
 import my_weather.HourlyPeriod;
 
 public class Day {
@@ -74,11 +75,11 @@ public class Day {
   }
 
   private Integer[] getMinMaxTemp(boolean celsius) {
-    Integer[] minMax = new Integer[] {null, null};
+    Integer[] minMax = new Integer[] { null, null };
     int temperature;
     for (HourlyPeriod p : currentForecast) {
       if (celsius) {
-        temperature = (int)((p.temperature - 32.) * 5. / 9.);
+        temperature = (int) ((p.temperature - 32.) * 5. / 9.);
       } else {
         temperature = p.temperature;
       }
@@ -145,15 +146,17 @@ public class Day {
 
       // wind speed
       Matcher m = Day.windPattern.matcher(p.windSpeed);
-      if (m.find()) totalWindspeed += Integer.parseInt(m.group(1));
-      else totalWindspeed += 0;
+      if (m.find())
+        totalWindspeed += Integer.parseInt(m.group(1));
+      else
+        totalWindspeed += 0;
     }
 
     // divide for averages
     int size = currentForecast.size();
-    return new int[] {maxPrep, totalRelHumid / size, totalWindspeed / size};
+    return new int[] { maxPrep, totalRelHumid / size, totalWindspeed / size };
   }
-  
+
   public TextField getTemperature() {
     String text = null;
     switch (this.unit) {
@@ -174,37 +177,39 @@ public class Day {
   public BorderPane getIcon() {
     Image icon;
     ImageView weatherIcon = new ImageView();
-    String commonForecast = getCommonForecast();
+    Pair<String, Boolean> commonForecast = getCommonForecast();
     try {
-      icon = new IconResolver().getIcon(commonForecast);
+      icon = new IconResolver().getIcon(commonForecast.getKey(), commonForecast.getValue());
     } catch (FileNotFoundException e) {
       icon = new Image("/icons/drizzle.png");
     }
     weatherIcon.setImage(icon);
 
     weatherIcon.setPreserveRatio(true);
-    
+
     BorderPane pane = new BorderPane();
     pane.setCenter(weatherIcon);
     return pane;
   }
 
-  private String getCommonForecast() {
-    Hashtable<String, Integer> table = new Hashtable<>();
+  // ok this is kind of cursed
+  private Pair<String, Boolean> getCommonForecast() {
+    Hashtable<String, Pair<Integer, Boolean>> table = new Hashtable<>();
     for (HourlyPeriod p : currentForecast) {
       if (table.keySet().contains(p.shortForecast)) {
-        table.put(p.shortForecast, table.get(p.shortForecast) + 1);
+        Pair<Integer, Boolean> pair = table.get(p.shortForecast);
+        table.put(p.shortForecast, new Pair<>(pair.getKey() + 1, p.isDaytime));
       } else {
-        table.put(p.shortForecast, 1);
+        table.put(p.shortForecast, new Pair<>(1, p.isDaytime));
       }
     }
 
-    String common = "Sunny";
+    Pair<String, Boolean> common = new Pair<>("Sunny", true);
     int commonCount = -1;
-    for (Entry<String, Integer> pair : table.entrySet()) {
-      if (pair.getValue() > commonCount) {
-        commonCount = pair.getValue();
-        common = pair.getKey();
+    for (Entry<String, Pair<Integer, Boolean>> pair : table.entrySet()) {
+      if (pair.getValue().getKey() > commonCount) {
+        commonCount = pair.getValue().getKey();
+        common = new Pair<>(pair.getKey(), pair.getValue().getValue());
       }
     }
 

@@ -6,30 +6,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javafx.scene.image.Image;
 
 /**
- * Get a {@code javafx.scene.image} based on the closest match to a {@code string}
+ * Get a {@code javafx.scene.image} based on the closest match to a
+ * {@code string}
  * and the resource {@code .png} in {@code /resouces/icons/}
  */
 public class IconResolver {
   private final static NormalizedLevenshtein stringComp = new NormalizedLevenshtein();
 
-  public IconResolver() {}
+  public IconResolver() {
+  }
 
   /**
    * @param short_forecast a string representing the forecast
-   * @return A {@code javafx.scene.image} from the closest matching file in {@code /resouces/icons/}
+   * @return A {@code javafx.scene.image} from the closest matching file in
+   *         {@code /resouces/icons/}
    */
-  public Image getIcon(String short_forecast) throws FileNotFoundException {
+  public Image getIcon(String short_forecast, Boolean isNight) throws FileNotFoundException {
 
-    Path path = getFilePath(short_forecast);
+    Path path = getFilePath(short_forecast, isNight);
 
     try {
-      Image image =
-          new Image(path.subpath(path.getNameCount() - 2, path.getNameCount()).toString());
+      Image image = new Image(path.subpath(path.getNameCount() - 2, path.getNameCount()).toString());
       return image;
     } catch (NullPointerException e) {
       e.printStackTrace();
@@ -42,31 +43,33 @@ public class IconResolver {
     return stringComp.distance(png, short_forecast);
   }
 
-
   /**
-   * @param short_forecast {@code String} representing the pattern to match against
+   * @param short_forecast {@code String} representing the pattern to match
+   *                       against
    */
-  private Path getFilePath(String short_forecast) throws FileNotFoundException {
+  private Path getFilePath(String short_forecast, Boolean isNight) throws FileNotFoundException {
 
     try {
 
       // get the path to icons
-      Path dirPath =
-          Paths.get(getClass().getResource("/icons").toURI());
+      Path dirPath = Paths.get(getClass().getResource("/icons").toURI());
 
       // walk the path and graph all *.pngs
-      List<Path> paths =
-          Files.walk(dirPath).filter(path -> path.getFileName().toString().endsWith(".png"))
-              .collect(Collectors.toList());
+      List<Path> paths = Files.walk(dirPath).filter(path -> path.getFileName().toString().endsWith(".png"))
+          .collect(Collectors.toList());
 
       Path bestMatch = null;
       double bestScore = 0;
 
       for (Path img_path : paths) {
         String name = img_path.getFileName().toString();
+        if (name.contains("day") && isNight) {
+          continue;
+        } else if (name.contains("night") && !isNight) {
+          continue;
+        }
         name.replace(".png", "");
-        double distance =
-            distance(name, short_forecast);
+        double distance = distance(name, short_forecast);
         if (1.0 - distance > bestScore) {
           bestMatch = img_path;
           bestScore = 1.0 - distance;
