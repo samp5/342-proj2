@@ -47,7 +47,7 @@ public abstract class DayScene {
     sidebarBox.getStyleClass().add("sidebar");
 
     // - main view
-    mainView.setMinWidth(1440 - 256);
+    mainView.setMinWidth(1440 - 256 - 28);
     mainView.setMinHeight(800);
     mainView.getStyleClass().add("main-view");
     mainView.setPadding(new Insets(20));

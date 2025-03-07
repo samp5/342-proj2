@@ -8,7 +8,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.chart.AreaChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -32,7 +31,7 @@ public class TodayScene extends DayScene {
   ImageView weatherIcon;
 
   // scene blocking
-  HBox headerContainer;
+  HBox headerContainer, graphContainer;
 
   // temperature unit buttons
   Button fahrenheitBtn, celsiusBtn;
@@ -44,6 +43,7 @@ public class TodayScene extends DayScene {
 
   // graph for today's temperature, data that made it
   TempGraph tempGraph;
+  HumidityGraph humidGraph;
   VBox tempChart;
   VBox humidChart;
   ArrayList<HourlyPeriod> currentForecast;
@@ -62,8 +62,6 @@ public class TodayScene extends DayScene {
     currentForecast = forecast;
 
     applyForecast();
-    mainView.getChildren().addAll(tempChart); // needs to be added here, as will otherwise be NULL
-    mainView.getChildren().addAll(humidChart); // needs to be added here, as will otherwise be NULL
 
     // initialize buttons and text fields
     // initialize_side_bar();
@@ -100,8 +98,10 @@ public class TodayScene extends DayScene {
 
     tempGraph = new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
     tempChart = tempGraph.component();
-    HumidityGraph hGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
-    humidChart = hGraph.component();
+    humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
+    humidChart = humidGraph.component();
+
+    graphContainer.getChildren().setAll(tempChart, humidChart);
   }
 
   /**
@@ -120,12 +120,13 @@ public class TodayScene extends DayScene {
 
     weatherIcon = new ImageView();
 
-    // containers for the unit buttons, temperature header
+    // containers for the unit buttons, temperature header, graphs
     unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn);
     headerContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
+    graphContainer = new HBox();
 
     // add components to the main view
-    mainView.getChildren().addAll(headerContainer, forecastTxt);
+    mainView.getChildren().addAll(headerContainer, forecastTxt, graphContainer);
   }
 
   /**
@@ -182,15 +183,15 @@ public class TodayScene extends DayScene {
    */
   private void updateTempGraph(TempUnit unit) {
     // find the location of the current chart
-    int chartNdx = mainView.getChildren().indexOf(tempChart);
+    int chartNdx = graphContainer.getChildren().indexOf(tempChart);
 
     // get the new graph
     tempGraph.update(currentForecast, new Date(), unit);
     tempChart = tempGraph.component();
 
     // replace the old graph with the new one
-    mainView.getChildren().remove(chartNdx);
-    mainView.getChildren().add(chartNdx, tempChart);
+    graphContainer.getChildren().remove(chartNdx);
+    graphContainer.getChildren().add(chartNdx, tempChart);
 
     // re-set the max width again
     tempChart.setMaxWidth(1000);
@@ -278,8 +279,8 @@ public class TodayScene extends DayScene {
 
     // GRAPHS
     // - temperature graph
-    tempChart.setMaxWidth(1000);
-    humidChart.setMaxWidth(1000);
+    tempChart.setMinWidth(554);
+    humidChart.setMinWidth(554);
 
     // CONTAINERS
     // - header box
@@ -290,5 +291,8 @@ public class TodayScene extends DayScene {
     unitContainer.setAlignment(Pos.CENTER_LEFT);
     unitContainer.setMaxHeight(40);
     unitContainer.setPadding(new Insets(0, 0, 20, 0));
+
+    // - graph container
+    graphContainer.setSpacing(20);
   }
 }

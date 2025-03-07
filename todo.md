@@ -2,9 +2,9 @@
 - [x] finish 3 day
 
 ## style
-- [  ] graphs:
-    - [  ] add backdrop (with slight grayish color)
-    - [  ] add title (left aligned)
+- [ ] graphs:
+    - [x] add backdrop (with slight grayish color)
+    - [x] add title (left aligned)
 
 ## features
 - [x] implement lat/lon

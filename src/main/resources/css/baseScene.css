@@ -48,4 +48,6 @@
   -fx-fill: green;
   -fx-opacity: 0.5;
   -fx-opacity: 0.5;
+  -fx-pref-width: 20;
+  -fx-padding: 4;
 }
