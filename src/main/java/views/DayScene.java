@@ -40,6 +40,7 @@ public abstract class DayScene {
     mainView.setMinWidth(1440 - 256);
     mainView.getStyleClass().add("main-view");
     mainView.setPadding(new Insets(20));
+    mainView.setSpacing(20);
 
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/sidebar.css");

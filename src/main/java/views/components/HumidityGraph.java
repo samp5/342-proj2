@@ -2,12 +2,18 @@ package views.components;
 
 import java.util.Date;
 import java.util.Vector;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import my_weather.HourlyPeriod;
 
@@ -199,7 +205,7 @@ public class HumidityGraph {
    *
    */
   @SuppressWarnings("unchecked")
-  public AreaChart<Number, Number> component() {
+  public VBox component() {
 
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
@@ -225,7 +231,17 @@ public class HumidityGraph {
 
     HumidityGraph.styleChart(areaChart);
 
-    return areaChart;
+    Text title = new Text("Relative Humidity");
+    title.getStyleClass().add("chart-title");
+
+    HBox titleBox = new HBox(title);
+    titleBox.setAlignment(Pos.TOP_LEFT);
+    titleBox.setPadding(new Insets(40, 0, 0, 40));
+
+    VBox box = new VBox(titleBox, areaChart);
+    box.getStyleClass().add("chart-backdrop");
+
+    return box;
   };
 
   /**
@@ -309,6 +325,5 @@ public class HumidityGraph {
     component.setBackground(Background.EMPTY);
     component.setBorder(Border.EMPTY);
     component.setCreateSymbols(false);
-    component.setTitle("Relative Humidity");
   }
 }

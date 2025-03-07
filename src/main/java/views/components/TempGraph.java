@@ -2,12 +2,18 @@ package views.components;
 
 import java.util.Date;
 import java.util.Vector;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import my_weather.HourlyPeriod;
 
@@ -20,6 +26,7 @@ public class TempGraph {
   TemperatureLimits temp_limits;
   Date min_time;
   static long MILLISECONDS_IN_THREE_HOURS = 60 * 60 * 3 * 1000;
+
   public enum TempUnit {
     Fahrenheit,
     Celsius,
@@ -64,7 +71,7 @@ public class TempGraph {
     public int pad() {
       return (int) Math.floor(PAD_PERCENT * min() + PAD_CONSTANT);
     }
-    
+
     /**
      * The vertical padding that should be included above and below
      * the minimum and maximum values to ensure "breathing room"
@@ -76,7 +83,6 @@ public class TempGraph {
     public int padDown() {
       return (int) Math.floor(PAD_PERCENT * min() - PAD_CONSTANT);
     }
-
 
     /**
      * The vertical padding that should be included above and below
@@ -224,7 +230,7 @@ public class TempGraph {
    *
    */
   @SuppressWarnings("unchecked")
-  public AreaChart<Number, Number> component() {
+  public VBox component() {
 
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
@@ -234,12 +240,12 @@ public class TempGraph {
     NumberAxis tempAxis;
     if (temp_limits.max() < 0) {
       tempAxis = new NumberAxis(temp_limits.min() + temp_limits.padDown(),
-                 temp_limits.max() - temp_limits.padDown(),
-                 10);
+          temp_limits.max() - temp_limits.padDown(),
+          10);
     } else {
       tempAxis = new NumberAxis(temp_limits.min() - temp_limits.pad(),
-                 temp_limits.max() + temp_limits.pad(),
-                 10);
+          temp_limits.max() + temp_limits.pad(),
+          10);
     }
 
     this.styleTimeAxis(hourAxis);
@@ -257,7 +263,17 @@ public class TempGraph {
 
     TempGraph.styleChart(areaChart);
 
-    return areaChart;
+    Text title = new Text("Temperature");
+    title.getStyleClass().add("chart-title");
+
+    HBox titleBox = new HBox(title);
+    titleBox.setAlignment(Pos.TOP_LEFT);
+    titleBox.setPadding(new Insets(40, 0, 0, 40));
+
+    VBox box = new VBox(titleBox, areaChart);
+    box.getStyleClass().add("chart-backdrop");
+
+    return box;
   };
 
   /**

@@ -12,8 +12,16 @@
     -fx-background-color: transparent;
     -fx-padding: 30px;
     -fx-border-color: transparent;
-    -fx-font-family: "Atkinson Hyperlegible Regular";
-    -fx-font-size: 16px;
+}
+.chart-title {
+    -fx-font-family: "Atkinson Hyperlegible Bold";
+    -fx-font-size: 20px;
+}
+
+.chart-backdrop {
+  -fx-background-color: #F8F9FA;
+  -fx-background-radius: 50px;
+  -fx-font-size: 18px;
 }
 
 

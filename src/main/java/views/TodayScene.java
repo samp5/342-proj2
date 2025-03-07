@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
@@ -43,8 +44,8 @@ public class TodayScene extends DayScene {
 
   // graph for today's temperature, data that made it
   TempGraph tempGraph;
-  AreaChart<Number, Number> tempChart;
-  AreaChart<Number, Number> humidChart;
+  VBox tempChart;
+  VBox humidChart;
   ArrayList<HourlyPeriod> currentForecast;
 
   /**
@@ -249,10 +250,12 @@ public class TodayScene extends DayScene {
     TextUtils.setFitWidth(temperatureTxt);
     temperatureTxt.setPadding(new Insets(0));
     temperatureTxt.setAlignment(Pos.CENTER);
+
     // - unit sep bar
     unitSeparatorBar.setPrefWidth(16);
     unitSeparatorBar.setPadding(new Insets(0));
     unitSeparatorBar.setAlignment(Pos.CENTER);
+
     // - short forecast
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
     forecastTxt.setPadding(new Insets(10, 0, 0, 0));
@@ -282,6 +285,7 @@ public class TodayScene extends DayScene {
     // - header box
     headerContainer.setAlignment(Pos.CENTER_LEFT);
     headerContainer.setPadding(new Insets(0));
+
     // - temp unit button box
     unitContainer.setAlignment(Pos.CENTER_LEFT);
     unitContainer.setMaxHeight(40);
