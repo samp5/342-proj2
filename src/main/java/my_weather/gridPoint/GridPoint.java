@@ -3,10 +3,12 @@ package my_weather.gridPoint;
 public class GridPoint {
   public int gridX, gridY;
   public String region;
+  public String location;
 
-  public GridPoint(int gridX, int gridY, String region) {
+  public GridPoint(int gridX, int gridY, String region, String location) {
     this.gridX = gridX;
     this.gridY = gridY;
     this.region = region;
+    this.location = location;
   }
 }

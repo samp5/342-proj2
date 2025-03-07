@@ -65,19 +65,24 @@ public class Sidebar {
         latValid = inputHighlighter(latInput, latInput.getText());
 
         if (latValid && lonValid) {
-          latInput.fireEvent(new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
+          latInput.fireEvent(
+              new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
         }
       });
 
-      latInput.focusedProperty().addListener((observable, oldState, newState) -> {
-        if (newState) return;
-
-        latValid = inputHighlighter(latInput, latInput.getText());
-
-        if (latValid && lonValid) {
-          latInput.fireEvent(new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
-        }
-      });
+      // latInput.focusedProperty().addListener((observable, oldState, newState) -> {
+      // if (newState)
+      // return;
+      //
+      // latValid = inputHighlighter(latInput, latInput.getText());
+      //
+      // System.err.println("lat input box event fired");
+      // if (latValid && lonValid) {
+      // latInput.fireEvent(
+      // new LocationChangeEvent(Double.parseDouble(latInput.getText()),
+      // Double.parseDouble(lonInput.getText())));
+      // }
+      // });
 
       lonInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
         lonValid = inputHighlighter(lonInput, newvalue);
@@ -87,7 +92,8 @@ public class Sidebar {
         lonValid = inputHighlighter(lonInput, lonInput.getText());
 
         if (latValid && lonValid) {
-          lonInput.fireEvent(new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
+          lonInput.fireEvent(
+              new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
         }
       });
     }
@@ -171,6 +177,7 @@ public class Sidebar {
 
   public void setTitle(String title) {
     this.title = title;
+    this.header.title.setText(this.title);
   }
 
   public String getTitle() {

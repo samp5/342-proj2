@@ -5,12 +5,21 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import my_weather.gridPoint.GridPoint;
 
 public class MyWeatherAPI {
+
+  public static CompletableFuture<ArrayList<HourlyPeriod>> getHourlyForecastAsync(String region, int gridx, int gridy) {
+    return CompletableFuture.supplyAsync(() -> MyWeatherAPI.getHourlyForecast(region, gridx, gridy));
+  }
+
+  public static CompletableFuture<GridPoint> getGridPointAsync(double lat, double lon) {
+    return CompletableFuture.supplyAsync(() -> MyWeatherAPI.getGridPoint(lat, lon));
+  }
 
   public static ArrayList<HourlyPeriod> getHourlyForecast(String region, int gridx, int gridy) {
     HttpRequest request = HttpRequest.newBuilder()
@@ -45,16 +54,17 @@ public class MyWeatherAPI {
       e.printStackTrace();
     }
 
-    while (response.statusCode() == 301) {
-      try {
-        String newLoc = response.headers().allValues("location").getFirst();
-        HttpRequest redirRequest = HttpRequest.newBuilder()
-          .uri(URI.create("https://api.weather.gov" + newLoc)).build();
-        response = HttpClient.newHttpClient().send(redirRequest, HttpResponse.BodyHandlers.ofString());
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+    // while (response.statusCode() == 301) {
+    // try {
+    // String newLoc = response.headers().allValues("location").getFirst();
+    // HttpRequest redirRequest = HttpRequest.newBuilder()
+    // .uri(URI.create("https://api.weather.gov" + newLoc)).build();
+    // response = HttpClient.newHttpClient().send(redirRequest,
+    // HttpResponse.BodyHandlers.ofString());
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // }
+    // }
 
     if (response.statusCode() == 404) {
       System.err.println("404, invalid location");
@@ -66,7 +76,8 @@ public class MyWeatherAPI {
       System.err.println("Failed to parse JSon");
       return null;
     }
-    return new GridPoint(r.properties.gridX, r.properties.gridY, r.properties.cwa);
+    return new GridPoint(r.properties.gridX, r.properties.gridY, r.properties.cwa,
+        r.properties.relativeLocation.properties.city + ", " + r.properties.relativeLocation.properties.state);
   }
 
   public static my_weather.gridPoint.Root getGridPointRoot(String json) {

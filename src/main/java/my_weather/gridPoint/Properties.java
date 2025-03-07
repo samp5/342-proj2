@@ -7,4 +7,5 @@ public class Properties {
   public String cwa;
   public int gridX;
   public int gridY;
+  public RelativeLocation relativeLocation;
 }
