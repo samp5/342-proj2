@@ -1,6 +1,5 @@
 import javafx.application.Application;
 
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 import my_weather.HourlyPeriod;
@@ -33,12 +32,10 @@ public class JavaFX extends Application {
     todayScene = new TodayScene(forecast);
     threeDayScene = new ThreeDayScene(forecast);
 
-    Sidebar globalSidebar = Sidebar.fromScenes(
+    Sidebar.fromScenes(
       new Pair<String, DayScene>("Daily Forecast", todayScene),
       new Pair<String, DayScene>("Three Day Forecast", threeDayScene)
     );
-    todayScene.setSidebar(globalSidebar);
-    threeDayScene.setSidebar(globalSidebar);
 
     todayScene.setActiveScene();
 

@@ -7,7 +7,9 @@ import views.components.TempGraph.TempUnit;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Hashtable;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +27,6 @@ import my_weather.HourlyPeriod;
 public class Day {
   static Pattern windPattern = Pattern.compile("(\\d+)");
   Integer[] fahrenheit, celsius;
-  String shortForecast;
   Date date;
   DayView viewType;
   List<HourlyPeriod> currentForecast;
@@ -70,7 +71,6 @@ public class Day {
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
     this.unit = TempUnit.Fahrenheit;
-    this.shortForecast = this.currentForecast.getFirst().shortForecast;
   }
 
   private Integer[] getMinMaxTemp(boolean celsius) {
@@ -107,7 +107,6 @@ public class Day {
   }
 
   public VBox getStatistics() {
-    HourlyPeriod forecast_now = this.currentForecast.getFirst();
     String precipitation_str = "Precipitation: " + avgPrecipitation() + "%";
     String humidity_str = "Humidity: " + avgRelHumidity() + "%";
     String wind_str = "Wind: " + avgWindSpeed() + " mph";
@@ -119,8 +118,6 @@ public class Day {
     precipitation.setAlignment(Pos.CENTER);
     humidity.setAlignment(Pos.CENTER);
     wind.setAlignment(Pos.CENTER);
-
-    precipitation.setEditable(false);
 
     precipitation.getStyleClass().add("day-statistics-" + this.viewType.toString());
     humidity.getStyleClass().add("day-statistics-" + this.viewType.toString());
@@ -173,8 +170,9 @@ public class Day {
   public BorderPane getIcon() {
     Image icon;
     ImageView weatherIcon = new ImageView();
+    String commonForecast = getCommonForecast();
     try {
-      icon = new IconResolver().getIcon(this.shortForecast);
+      icon = new IconResolver().getIcon(commonForecast);
     } catch (FileNotFoundException e) {
       icon = new Image("/icons/drizzle.png");
     }
@@ -185,6 +183,34 @@ public class Day {
     BorderPane pane = new BorderPane();
     pane.setCenter(weatherIcon);
     return pane;
+  }
+
+  private String getCommonForecast() {
+    Hashtable<String, Integer> table = new Hashtable<>();
+    for (HourlyPeriod p : currentForecast) {
+      System.out.println(p.shortForecast);
+      if (table.keySet().contains(p.shortForecast)) {
+        table.put(p.shortForecast, table.get(p.shortForecast) + 1);
+      } else {
+        table.put(p.shortForecast, 1);
+      }
+    }
+
+    String common = "Sunny";
+    int commonCount = -1;
+    for (Entry<String, Integer> pair : table.entrySet()) {
+      if (pair.getValue() > commonCount) {
+        System.out.println(common + " replaced with " + pair.getKey());
+        System.out.println(commonCount + " of prev, " + pair.getValue() + " of new");
+        commonCount = pair.getValue();
+        common = pair.getKey();
+      }
+    }
+    System.out.println(common);
+
+    System.out.println();
+
+    return common;
   }
 
   @SuppressWarnings("deprecation")

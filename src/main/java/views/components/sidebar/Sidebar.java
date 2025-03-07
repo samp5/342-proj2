@@ -5,12 +5,9 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import views.DayScene;
@@ -172,7 +169,12 @@ public class Sidebar {
     Section forecasts = new Section("Forecast", forecastNavTargets);
     sections.add(forecasts);
 
-    return new Sidebar(sections);
+    Sidebar sb = new Sidebar(sections);
+    for (Pair<String, DayScene> namedScene : namedScenes) {
+      namedScene.getValue().setSidebar(sb);
+    }
+
+    return sb;
   }
 
   public void addSection(Section section) {
