@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -54,7 +55,74 @@ public class Sidebar {
       title.getStyleClass().add("side-bar-header");
     }
 
-    public void buildTextInput() {
+    private void setInputOnAction() {
+      latInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
+        double val;
+        try {
+          val = Double.parseDouble(newvalue);
+        } catch (NumberFormatException numException) {
+          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+          latInput.getStyleClass().add("invalid-input");
+          return;
+        }
+        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+        latInput.getStyleClass().add("coord-input");
+      });
+
+      latInput.setOnAction(e -> {
+        String text = latInput.getText();
+        double val;
+
+        try {
+          System.err.println("parsing " + text);
+          val = Double.parseDouble(text);
+        } catch (NumberFormatException numException) {
+          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+          latInput.getStyleClass().add("invalid-input");
+          System.err.println("parsing failed added style");
+          return;
+        }
+
+        System.err.println("parsing success removing invalid-input style");
+        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+        latInput.getStyleClass().add("coord-input");
+      });
+
+      lonInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
+        double val;
+        try {
+          val = Double.parseDouble(newvalue);
+        } catch (NumberFormatException numException) {
+          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+          latInput.getStyleClass().add("invalid-input");
+          return;
+        }
+        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+        latInput.getStyleClass().add("coord-input");
+      });
+
+      lonInput.setOnAction(e -> {
+        String text = latInput.getText();
+        double val;
+
+        try {
+          System.err.println("parsing " + text);
+          val = Double.parseDouble(text);
+        } catch (NumberFormatException numException) {
+          latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+          latInput.getStyleClass().add("invalid-input");
+          System.err.println("parsing failed added style");
+          return;
+        }
+        latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+        latInput.getStyleClass().add("coord-input");
+        // TODO: Broadcast a ChangeLocation event
+      });
+    }
+
+    private void buildTextInput() {
+      setInputOnAction();
+
       latInput = new TextField("41.8781");
       lonInput = new TextField("-87.6298");
 
@@ -93,11 +161,11 @@ public class Sidebar {
   }
 
   @SafeVarargs
-  public static Sidebar fromScenes(Pair<String, DayScene> ...namedScenes) {
+  public static Sidebar fromScenes(Pair<String, DayScene>... namedScenes) {
     ArrayList<Section> sections = new ArrayList<>();
     ArrayList<NavigationTarget> forecastNavTargets = new ArrayList<>();
 
-    for (Pair<String, DayScene> namedScene: namedScenes) {
+    for (Pair<String, DayScene> namedScene : namedScenes) {
       forecastNavTargets.add(new NavigationTarget(namedScene.getValue(), namedScene.getKey()));
     }
 
