@@ -271,6 +271,7 @@ public class TempGraph {
     titleBox.setPadding(new Insets(40, 0, 0, 40));
 
     VBox box = new VBox(titleBox, areaChart);
+    box.setMaxHeight(300);
     box.getStyleClass().add("chart-backdrop");
 
     return box;

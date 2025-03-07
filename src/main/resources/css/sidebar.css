@@ -17,6 +17,6 @@
   -fx-padding: 0 0 0 10px;
 }
 .navigation-target {
-  -fx-font-family: "Atkinson Hyperlegible Regular";
-  -fx-font-size: 18px;
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 20px;
 }

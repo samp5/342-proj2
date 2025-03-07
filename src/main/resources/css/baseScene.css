@@ -43,3 +43,9 @@
 .text-field {
   -fx-border-width: 0;
 }
+
+.mainview-scroll-bar {
+  -fx-fill: green;
+  -fx-opacity: 0.5;
+  -fx-opacity: 0.5;
+}

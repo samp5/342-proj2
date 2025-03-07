@@ -4,6 +4,8 @@ import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import views.components.sidebar.NavigationEvent;
@@ -12,6 +14,7 @@ import views.components.sidebar.Sidebar;
 public abstract class DayScene {
   protected Sidebar sidebar;
   protected VBox sidebarBox;
+  protected ScrollPane mainScrollable;
   protected VBox mainView;
   protected HBox sceneBox;
   protected Scene scene;
@@ -24,7 +27,13 @@ public abstract class DayScene {
   protected void initComponents() {
     sidebarBox = new VBox();
     mainView = new VBox();
-    sceneBox = new HBox(sidebarBox, mainView, focusVoid);
+    mainScrollable = new ScrollPane(mainView);
+
+    mainScrollable.setHbarPolicy(ScrollBarPolicy.NEVER);
+    mainScrollable.setFitToWidth(true);
+    mainScrollable.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+
+    sceneBox = new HBox(sidebarBox, mainScrollable, focusVoid);
     scene = new Scene(sceneBox, 1440, 800);
 
     // listen for events
@@ -36,11 +45,16 @@ public abstract class DayScene {
     // - the sidebar
     sidebarBox.setMinWidth(256);
     sidebarBox.getStyleClass().add("sidebar");
+
     // - main view
     mainView.setMinWidth(1440 - 256);
+    mainView.setMinHeight(800);
     mainView.getStyleClass().add("main-view");
     mainView.setPadding(new Insets(20));
     mainView.setSpacing(20);
+
+    // - scrollable
+    mainScrollable.setMinWidth(1440 - 256);
 
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/sidebar.css");
@@ -70,10 +84,11 @@ public abstract class DayScene {
   public void setSidebar(Sidebar sidebar) {
     this.sidebar = sidebar;
   }
-  
+
   /**
-   * sets this {@code DayScene} to the active scene. 
-   * always call {@code super()}, as this is needed for the sidebar to function properly
+   * sets this {@code DayScene} to the active scene.
+   * always call {@code super()}, as this is needed for the sidebar to function
+   * properly
    */
   public void setActiveScene() {
     this.sidebarBox.getChildren().setAll(sidebar.component());

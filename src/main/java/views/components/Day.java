@@ -103,6 +103,10 @@ public class Day {
     VBox statistics = getStatistics();
     VBox vbox = new VBox(title, icon, temperature, statistics);
     vbox.getStyleClass().add("day-backdrop-" + this.viewType.toString());
+    vbox.setOnMouseClicked(e -> {
+      vbox.getStyleClass().remove("day-backdrop-" + this.viewType.toString());
+      vbox.getStyleClass().add("day-backdrop-" + this.viewType.toString() + "-clicked");
+    });
 
     return vbox;
   }
