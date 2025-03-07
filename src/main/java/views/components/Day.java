@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,13 +18,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextAlignment;
 import my_weather.HourlyPeriod;
 
 public class Day {
+  static Pattern windPattern = Pattern.compile("(\\d+)");
   Integer[] fahrenheit, celsius;
   String shortForecast;
   Date date;
@@ -107,9 +108,9 @@ public class Day {
 
   public VBox getStatistics() {
     HourlyPeriod forecast_now = this.currentForecast.getFirst();
-    String precipitation_str = "Precipitation: " + forecast_now.probabilityOfPrecipitation.value + "%";
-    String humidity_str = "Humidity: " + String.format("%d", forecast_now.relativeHumidity.value) + "%";
-    String wind_str = "Wind: " + forecast_now.windSpeed + " " + forecast_now.windDirection;
+    String precipitation_str = "Precipitation: " + avgPrecipitation() + "%";
+    String humidity_str = "Humidity: " + avgRelHumidity() + "%";
+    String wind_str = "Wind: " + avgWindSpeed() + " mph";
 
     TextField precipitation = TextUtils.staticTextField(precipitation_str);
     TextField humidity = TextUtils.staticTextField(humidity_str);
@@ -126,9 +127,32 @@ public class Day {
     wind.getStyleClass().add("day-statistics-" + this.viewType.toString());
 
     VBox statbox = new VBox(precipitation, humidity, wind);
+    statbox.setPadding(new Insets(0, 0, 5, 0));
     return statbox;
   }
 
+  private int avgPrecipitation() {
+    int total = 0;
+    for (HourlyPeriod p : currentForecast) total += p.probabilityOfPrecipitation.value;
+    return total / currentForecast.size();
+  }
+
+  private int avgRelHumidity() {
+    int total = 0;
+    for (HourlyPeriod p : currentForecast) total += p.relativeHumidity.value;
+    return total / currentForecast.size();
+  }
+
+  private int avgWindSpeed() {
+    int total = 0;
+    for (HourlyPeriod p : currentForecast) {
+      Matcher m = Day.windPattern.matcher(p.windSpeed);
+      if (m.find()) total += Integer.parseInt(m.group(1));
+      else total += 0;
+    }
+    return total / currentForecast.size();
+  }
+  
   public TextField getTemperature() {
     String text = null;
     switch (this.unit) {
