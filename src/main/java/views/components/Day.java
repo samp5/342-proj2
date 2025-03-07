@@ -188,7 +188,6 @@ public class Day {
   private String getCommonForecast() {
     Hashtable<String, Integer> table = new Hashtable<>();
     for (HourlyPeriod p : currentForecast) {
-      System.out.println(p.shortForecast);
       if (table.keySet().contains(p.shortForecast)) {
         table.put(p.shortForecast, table.get(p.shortForecast) + 1);
       } else {
@@ -200,15 +199,10 @@ public class Day {
     int commonCount = -1;
     for (Entry<String, Integer> pair : table.entrySet()) {
       if (pair.getValue() > commonCount) {
-        System.out.println(common + " replaced with " + pair.getKey());
-        System.out.println(commonCount + " of prev, " + pair.getValue() + " of new");
         commonCount = pair.getValue();
         common = pair.getKey();
       }
     }
-    System.out.println(common);
-
-    System.out.println();
 
     return common;
   }
