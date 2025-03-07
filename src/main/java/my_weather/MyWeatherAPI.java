@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import my_weather.gridPoint.GridPoint;
 
 public class MyWeatherAPI {
 
@@ -30,6 +31,36 @@ public class MyWeatherAPI {
     ArrayList<HourlyPeriod> periods = new ArrayList<>();
     r.properties.periods.iterator().forEachRemaining(period -> periods.add((HourlyPeriod) period));
     return periods;
+  }
+
+  public static GridPoint getGridPoint(double lat, double lon) {
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://api.weather.gov/points/" + String.valueOf(lat)
+            + "," + String.valueOf(lon)))
+        .build();
+    HttpResponse<String> response = null;
+    try {
+      response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    my_weather.gridPoint.Root r = getGridPointRoot(response.body());
+    if (r == null) {
+      System.err.println("Failed to parse JSon");
+      return null;
+    }
+    return new GridPoint(r.properties.gridX, r.properties.gridY, r.properties.cwa);
+  }
+
+  public static my_weather.gridPoint.Root getGridPointRoot(String json) {
+    ObjectMapper om = new ObjectMapper();
+    my_weather.gridPoint.Root toRet = null;
+    try {
+      toRet = om.readValue(json, my_weather.gridPoint.Root.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return toRet;
   }
 
   public static Root getObject(String json) {
