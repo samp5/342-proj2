@@ -42,7 +42,7 @@
 }
 
 .compass-marks {
-  -fx-background-color: white;
+  -fx-background-color: #FFFFFF;
   -fx-border-width: 3px;
   -fx-border-color: #8A8A8A;
 }
@@ -54,4 +54,18 @@
 
 .compass-needle {
   -fx-background-color: #545454;
+}
+
+.dewpoint-body {
+  -fx-background-color: #828282;
+  -fx-border-width: 5px;
+  -fx-border-color: #000000;
+}
+
+.dewpoint-progress {
+  -fx-background-color: #2681ff;
+}
+
+.dewpoint-needle {
+  -fx-background-color: #c72a16;
 }

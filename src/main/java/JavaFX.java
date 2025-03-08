@@ -12,9 +12,10 @@ import views.TodayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
+import weather_observations.Properties;
+import weather_observations.WeatherObservations;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -32,12 +33,15 @@ public class JavaFX extends Application {
   public void start(Stage primaryStage) throws Exception {
     primaryStage.setTitle("I'm a professional Weather App!");
 
-    GridPoint gridPoint = my_weather.MyWeatherAPI.getGridPoint(41.8781, -87.6298);
+    double lat = 41.8781;
+    double lon = -87.6298;
+    GridPoint gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
     ArrayList<HourlyPeriod> forecast = my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
         gridPoint.gridY);
     if (forecast == null) {
       throw new RuntimeException("Forecast did not load");
     }
+    Properties weatherObservations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat, lon);
 
     todayScene = new TodayScene(forecast);
     threeDayScene = new ThreeDayScene(forecast);
