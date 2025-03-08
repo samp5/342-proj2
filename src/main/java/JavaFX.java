@@ -114,8 +114,8 @@ public class JavaFX extends Application {
     Popup p = new Popup();
 
     p.getContent().add(inner_element);
-    inner_element.setMaxWidth(200);
-    p.setAnchorX(s.getX() + 1200);
+    inner_element.setMaxWidth(300);
+    p.setAnchorX(s.getX() + 1100);
     p.setAnchorY(s.getY() + 40);
     p.setAnchorLocation(AnchorLocation.WINDOW_TOP_RIGHT);
 
