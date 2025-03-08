@@ -55,8 +55,10 @@ public class JavaFX extends Application {
 
     loadingScene = new LoadingScene();
 
+    double lat = 41.8781;
+    double lon = -87.6298;
     try {
-      gridPoint = my_weather.MyWeatherAPI.getGridPoint(41.8781, -87.6298);
+      gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
       forecast =
           my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
               gridPoint.gridY);
@@ -77,14 +79,12 @@ public class JavaFX extends Application {
       delay.play();
 
       return;
-    double lat = 41.8781;
-    double lon = -87.6298;
-    GridPoint gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
-    ArrayList<HourlyPeriod> forecast = my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
-        gridPoint.gridY);
+    }
+
     if (forecast == null) {
       throw new RuntimeException("Forecast did not load");
     }
+
     Properties weatherObservations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat, lon);
 
     todayScene = new TodayScene(forecast);
