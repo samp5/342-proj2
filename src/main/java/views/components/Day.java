@@ -2,6 +2,7 @@ package views.components;
 
 import views.util.IconResolver;
 import views.util.TextUtils;
+import views.util.UnitHandler;
 import views.components.events.DaySelectionEvent;
 import views.util.UnitHandler.TemperatureUnit;
 
@@ -82,7 +83,7 @@ public class Day {
         data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
-    this.unit = TemperatureUnit.Fahrenheit;
+    this.unit = UnitHandler.getUnit();
   }
 
   private Integer[] getMinMaxTemp(boolean celsius) {

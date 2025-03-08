@@ -2,6 +2,7 @@ package views;
 
 import java.util.ArrayList;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import my_weather.HourlyPeriod;
@@ -12,6 +13,7 @@ import views.components.Day;
 import views.components.TempGraph;
 import views.components.events.DaySelectionEvent;
 import views.components.events.TempUnitEvent;
+import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
 import views.components.HumidityGraph;
 
@@ -47,6 +49,16 @@ public class ThreeDayScene extends DayScene {
     mainView.getChildren().addAll(dayCollectionBox, graphContainer);
   }
 
+  @Override
+  public Scene getScene() {
+    if (UnitHandler.hasChanged()) {
+      applyForecast();
+      UnitHandler.recognizeChange();
+    }
+
+    return scene;
+  }
+
   private void styleComponents() {
     graphContainer.setSpacing(40);
     graphContainer.setAlignment(Pos.CENTER);
@@ -57,15 +69,15 @@ public class ThreeDayScene extends DayScene {
   public void update(ArrayList<HourlyPeriod> forecast) {
     currentForecast = forecast;
     applyForecast();
-    // updateTempGraph(TempUnit.Fahrenheit); // TODO:
+    updateTempGraph();
   }
 
-  private void updateTempGraph(TemperatureUnit unit) {
+  private void updateTempGraph() {
     // find the location of the current chart
     int chartNdx = graphContainer.getChildren().indexOf(tempChart);
 
     // get the new graph
-    tempGraph.update(currentForecast, unit);
+    tempGraph.update(currentForecast, UnitHandler.getUnit());
     tempChart = tempGraph.component();
 
     // replace the old graph with the new one
@@ -78,7 +90,7 @@ public class ThreeDayScene extends DayScene {
 
   public void showGraphs(Day d) {
     tempGraph =
-        new TempGraph(d.getForecast(), TemperatureUnit.Fahrenheit);
+        new TempGraph(d.getForecast(), UnitHandler.getUnit());
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(d.getForecast(), d.getDate());
     humidChart = humidGraph.component();
@@ -89,6 +101,9 @@ public class ThreeDayScene extends DayScene {
   private void addEventHandlers() {
     this.scene.addEventHandler(DaySelectionEvent.DAY_SELECTION, day -> {
       showGraphs(day.selection());
+    });
+    scene.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
+      System.out.println("3 rec");
     });
   }
 }
