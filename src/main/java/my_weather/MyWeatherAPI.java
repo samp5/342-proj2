@@ -13,8 +13,10 @@ import my_weather.gridPoint.GridPoint;
 
 public class MyWeatherAPI {
 
-  public static CompletableFuture<ArrayList<HourlyPeriod>> getHourlyForecastAsync(String region, int gridx, int gridy) {
-    return CompletableFuture.supplyAsync(() -> MyWeatherAPI.getHourlyForecast(region, gridx, gridy));
+  public static CompletableFuture<ArrayList<HourlyPeriod>> getHourlyForecastAsync(String region,
+      int gridx, int gridy) {
+    return CompletableFuture
+        .supplyAsync(() -> MyWeatherAPI.getHourlyForecast(region, gridx, gridy));
   }
 
   public static CompletableFuture<GridPoint> getGridPointAsync(double lat, double lon) {
@@ -32,11 +34,19 @@ public class MyWeatherAPI {
     } catch (Exception e) {
       e.printStackTrace();
     }
+
+    if (response.statusCode() < 200 || response.statusCode() > 299) {
+      System.err.println("Response was: " + response.toString() + "\n"
+          + "Request was: " + request.toString());
+      return null;
+    }
+
     Root r = getObject(response.body());
     if (r == null) {
       System.err.println("Failed to parse JSon");
       return null;
     }
+
     ArrayList<HourlyPeriod> periods = new ArrayList<>();
     r.properties.periods.iterator().forEachRemaining(period -> periods.add((HourlyPeriod) period));
     return periods;
@@ -67,7 +77,8 @@ public class MyWeatherAPI {
     }
 
     return new GridPoint(r.properties.gridX, r.properties.gridY, r.properties.cwa,
-        r.properties.relativeLocation.properties.city + ", " + r.properties.relativeLocation.properties.state);
+        r.properties.relativeLocation.properties.city + ", "
+            + r.properties.relativeLocation.properties.state);
   }
 
   public static my_weather.gridPoint.Root getGridPointRoot(String json) {
