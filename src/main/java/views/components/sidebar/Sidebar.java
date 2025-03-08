@@ -7,6 +7,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -14,6 +16,8 @@ import javafx.util.Pair;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.events.NotificationEvent;
+import views.util.NotificationBuilder;
+import views.util.NotificationType;
 
 public class Sidebar {
   // tracks lat/lon validity
@@ -192,12 +196,8 @@ public class Sidebar {
 
   public void recievedInvalidLocation() {
 
-    Text message_label = new Text("NWS cannot find that location");
-    message_label.getStyleClass().add("error-notification-text");
-    VBox message = new VBox(message_label);
-    message.getStyleClass().add("error-notification");
-
-    this.container.fireEvent(new NotificationEvent(message));
+    new NotificationBuilder("National Weather Service does not have data for this location")
+        .ofType(NotificationType.Error).fire(this.container);
 
     header.lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
     header.lonInput.getStyleClass().add("invalid-input");
@@ -207,12 +207,7 @@ public class Sidebar {
 
   public void recievedValidLocation() {
 
-    Text message_label = new Text("Changing location to: " + this.title);
-    message_label.getStyleClass().add("error-notification-text");
-    VBox message = new VBox(message_label);
-    message.getStyleClass().add("error-notification");
-
-    this.container.fireEvent(new NotificationEvent(message));
+    new NotificationBuilder("Changing location to " + this.title).ofType(NotificationType.Info).fire(this.container);
 
     header.lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
     header.lonInput.getStyleClass().add("coord-input");
