@@ -35,4 +35,9 @@ public class ThreeDayScene extends DayScene {
   private void styleComponents() {
     scene.getStylesheets().add("css/day.css");
   }
+
+  public void update(ArrayList<HourlyPeriod> forecast) {
+    currentForecast = forecast;
+    applyForecast();
+  }
 }

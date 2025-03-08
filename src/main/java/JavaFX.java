@@ -167,6 +167,7 @@ public class JavaFX extends Application {
         return;
       }
       todayScene.update(periods);
+      threeDayScene.update(periods);
 
     } catch (TimeoutException timeout) {
 
