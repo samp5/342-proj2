@@ -20,6 +20,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -116,7 +117,7 @@ public class Day {
     this.component = new VBox(title, icon, temperature, statistics);
     component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
 
-    component.setOnMouseClicked(e -> {
+    component.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
       if (selected) return;
       
       select();
