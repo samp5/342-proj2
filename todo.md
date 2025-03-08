@@ -2,7 +2,7 @@
 - [x] finish 3 day
 
 ## style
-- [ ] graphs:
+- [x] graphs:
     - [x] add backdrop (with slight grayish color)
     - [x] add title (left aligned)
 

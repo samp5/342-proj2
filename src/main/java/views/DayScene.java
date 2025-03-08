@@ -59,6 +59,7 @@ public abstract class DayScene {
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/sidebar.css");
     scene.getStylesheets().add("css/sidebarHeader.css");
+    scene.getStylesheets().add("css/notifications.css");
   }
 
   /**

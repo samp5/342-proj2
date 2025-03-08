@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -12,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.util.Pair;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
+import views.components.events.NotificationEvent;
 
 public class Sidebar {
   // tracks lat/lon validity
@@ -189,6 +191,14 @@ public class Sidebar {
   }
 
   public void recievedInvalidLocation() {
+
+    Text message_label = new Text("NWS cannot find that location");
+    message_label.getStyleClass().add("error-notification-text");
+    VBox message = new VBox(message_label);
+    message.getStyleClass().add("error-notification");
+
+    this.container.fireEvent(new NotificationEvent(message));
+
     header.lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
     header.lonInput.getStyleClass().add("invalid-input");
     header.latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
@@ -196,6 +206,14 @@ public class Sidebar {
   }
 
   public void recievedValidLocation() {
+
+    Text message_label = new Text("Changing location to: " + this.title);
+    message_label.getStyleClass().add("error-notification-text");
+    VBox message = new VBox(message_label);
+    message.getStyleClass().add("error-notification");
+
+    this.container.fireEvent(new NotificationEvent(message));
+
     header.lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
     header.lonInput.getStyleClass().add("coord-input");
     header.latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));

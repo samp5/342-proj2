@@ -1,0 +1,19 @@
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
+}
+
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.error-notification {
+  -fx-background-color: #F8F9FA;
+  -fx-background-radius: 20px;
+  -fx-padding: 20px;
+}
+.error-notification-text {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 24px;
+}
