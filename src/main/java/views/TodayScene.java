@@ -13,11 +13,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
 import views.components.TempGraph.TempUnit;
+import views.components.CompassBox;
 import views.components.HumidityGraph;
 import views.util.IconResolver;
 import views.util.TextUtils;
@@ -32,6 +34,7 @@ public class TodayScene extends DayScene {
 
   // scene blocking
   HBox headerContainer, graphContainer;
+  Pane forecastBox;
 
   // temperature unit buttons
   Button fahrenheitBtn, celsiusBtn;
@@ -44,9 +47,20 @@ public class TodayScene extends DayScene {
   // graph for today's temperature, data that made it
   TempGraph tempGraph;
   HumidityGraph humidGraph;
-  VBox tempChart;
-  VBox humidChart;
+  VBox tempChart, humidChart;
   ArrayList<HourlyPeriod> currentForecast;
+
+  // small charts blocking
+  HBox smallCharts;
+
+  // wind direction compass
+  VBox compassBox;
+
+  // temperature trend
+  VBox tempTrendBox;
+
+  // dewpoint
+  VBox dewpointBox;
 
   /**
    * initialize a TodayScene
@@ -64,7 +78,6 @@ public class TodayScene extends DayScene {
     applyForecast();
 
     // initialize buttons and text fields
-    // initialize_side_bar();
     initialize_unit_buttons();
     initialize_text_fields();
 
@@ -94,7 +107,7 @@ public class TodayScene extends DayScene {
     } catch (FileNotFoundException e) {
       icon = new Image("icons/drizzle.png");
     }
-    weatherIcon.setImage(icon); // TODO: need to replace stuff of further calls
+    weatherIcon.setImage(icon);
 
     tempGraph = new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
     tempChart = tempGraph.component();
@@ -102,6 +115,8 @@ public class TodayScene extends DayScene {
     humidChart = humidGraph.component();
 
     graphContainer.getChildren().setAll(tempChart, humidChart);
+
+    createSmallGraphs();
   }
 
   /**
@@ -113,6 +128,7 @@ public class TodayScene extends DayScene {
 
     temperatureTxt = new TextField(); // populated later
     forecastTxt = new TextField(); // populated later
+    forecastBox = new Pane(forecastTxt);
 
     fahrenheitBtn = new Button("°F"); // functionality added later
     celsiusBtn = new Button("°C"); // functionality added later
@@ -125,8 +141,14 @@ public class TodayScene extends DayScene {
     headerContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
     graphContainer = new HBox();
 
+    // small charts & their container
+    compassBox = new VBox();
+    tempTrendBox = new VBox();
+    dewpointBox = new VBox();
+    smallCharts = new HBox();
+
     // add components to the main view
-    mainView.getChildren().addAll(headerContainer, forecastTxt, graphContainer);
+    mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallCharts);
   }
 
   /**
@@ -234,11 +256,30 @@ public class TodayScene extends DayScene {
   }
 
   /**
+   * creates small graphs from current forecast
+   */
+  private void createSmallGraphs() {
+    HourlyPeriod now = currentForecast.getFirst();
+
+    tempTrendBox.getChildren().setAll(TextUtils.staticTextField(now.temperatureTrend));
+    dewpointBox.getChildren().setAll(TextUtils.staticTextField("" + now.dewpoint.value + " " + now.dewpoint.unitCode));
+
+    tempTrendBox.getStyleClass().addAll("temp-trend-box", "small-graph");
+    dewpointBox.getStyleClass().addAll("dewpoint-box", "small-graph");
+
+    CompassBox compass = new CompassBox(now.windSpeed, now.windDirection);
+    compassBox = compass.component();
+
+    smallCharts.getChildren().setAll(compassBox/*, tempTrendBox, dewpointBox*/);
+  }
+
+  /**
    * styles all components, sorted in groups
    */
   private void styleComponents() {
     scene.getStylesheets().add("css/tempHeader.css");
     scene.getStylesheets().add("css/tempGraph.css");
+    scene.getStylesheets().add("css/smallChart.css");
 
     // TEXT FIELDS
     // - temp
@@ -261,7 +302,6 @@ public class TodayScene extends DayScene {
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
     forecastTxt.setPadding(new Insets(10, 0, 0, 0));
     forecastTxt.setAlignment(Pos.CENTER);
-    TextUtils.setFitWidth(forecastTxt, 26);
 
     // BUTTONS
     // - unit buttons
@@ -291,6 +331,12 @@ public class TodayScene extends DayScene {
     unitContainer.setAlignment(Pos.CENTER_LEFT);
     unitContainer.setMaxHeight(40);
     unitContainer.setPadding(new Insets(0, 0, 20, 0));
+
+    // - forecast box
+    forecastBox.getStyleClass().add("forecast-box");
+
+    // - small charts container
+    smallCharts.setSpacing(20);
 
     // - graph container
     graphContainer.setSpacing(20);

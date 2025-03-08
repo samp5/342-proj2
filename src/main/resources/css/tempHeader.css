@@ -12,7 +12,10 @@
 }
 
 .short-forecast {
+  -fx-border-insets: 16px 0 0 16px;
+}
+
+.forecast-box {
   -fx-border-width: 2px 0px 0px 0px;
   -fx-border-color: #9AA0A6;
-  -fx-border-insets: 16px 0 0 16px;
 }

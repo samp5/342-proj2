@@ -213,7 +213,7 @@ public class HumidityGraph {
     NumberAxis hourAxis = new NumberAxis(data.firstElement().time(), data.lastElement().time(),
         MILLISECONDS_IN_THREE_HOURS);
     NumberAxis humidAxis = new NumberAxis(humid_limits.min() - humid_limits.pad(),
-        humid_limits.max() + humid_limits.pad(),
+        Math.min(humid_limits.max() + humid_limits.pad(), 100),
         10);
 
     this.styleTimeAxis(hourAxis);

@@ -1,0 +1,57 @@
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  src: url("/fonts/AtkinsonHyperlegible-Regular.ttf");
+}
+
+@font-face {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
+}
+
+.font-bold {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18;
+}
+
+.font-reg {
+  -fx-font-family: "Atkinson Hyperlegible Regular";
+  -fx-font-size: 18;
+}
+
+.temp-trend-box {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18;
+}
+
+.dewpoint-box {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18;
+}
+
+.small-graph {
+  -fx-background-color: #F8F9FA;
+  -fx-background-radius: 24px;
+  -fx-pref-width: 267px;
+  -fx-pref-height: 267px;
+}
+
+.compass-body {
+  -fx-border-width: 10px;
+  -fx-border-insets: -7px;
+  -fx-border-color: black;
+}
+
+.compass-marks {
+  -fx-background-color: white;
+  -fx-border-width: 3px;
+  -fx-border-color: #8A8A8A;
+}
+
+.compass-north {
+  -fx-border-width: 3px;
+  -fx-border-color: #750A02;
+}
+
+.compass-needle {
+  -fx-background-color: #545454;
+}
