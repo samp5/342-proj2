@@ -29,6 +29,7 @@ import my_weather.HourlyPeriod;
 public class Day {
   static Pattern windPattern = Pattern.compile("(\\d+)");
   Integer[] fahrenheit, celsius;
+  boolean selected = false;
   Date date;
   DayView viewType;
   List<HourlyPeriod> currentForecast;
@@ -115,6 +116,8 @@ public class Day {
     component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
 
     component.setOnMouseClicked(e -> {
+      if (selected) return;
+      
       select();
       component.fireEvent(new DaySelectionEvent(this));
     });
@@ -123,11 +126,13 @@ public class Day {
   }
 
   public void select() {
+    selected = true;
     component.getStyleClass().remove("day-backdrop-" + this.viewType.toString());
     component.getStyleClass().add("day-backdrop-" + this.viewType.toString() + "-clicked");
   }
 
   public void deselect() {
+    selected = false;
     component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
     component.getStyleClass().remove("day-backdrop-" + this.viewType.toString() + "-clicked");
   }
