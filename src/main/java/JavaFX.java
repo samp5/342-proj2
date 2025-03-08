@@ -122,8 +122,8 @@ public class JavaFX extends Application {
     try {
       point = pointFuture.get();
       if (point == null) {
-        sidebar.recievedInvalidLocation();
         primaryStage.setScene(lastScene);
+        sidebar.recievedInvalidLocation();
         return;
       }
     } catch (ExecutionException e) {
@@ -134,11 +134,14 @@ public class JavaFX extends Application {
       return;
     } catch (Exception e) {
       primaryStage.setScene(lastScene);
+
+      sidebar.recievedInvalidLocation();
       return;
     }
 
 
 
+    // get forecast
     CompletableFuture<ArrayList<HourlyPeriod>> future_period =
         MyWeatherAPI.getHourlyForecastAsync(point.region,
             point.gridX, point.gridY);
@@ -164,6 +167,7 @@ public class JavaFX extends Application {
 
     } catch (Exception e) {
 
+      primaryStage.setScene(lastScene);
       new NotificationBuilder().withMessage("Error retrieving forecast data")
           .ofType(NotificationType.ConnectionError).fire(lastScene.getRoot());
 

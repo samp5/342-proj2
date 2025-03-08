@@ -34,7 +34,7 @@ public abstract class DayScene {
     mainScrollable.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
 
     sceneBox = new HBox(sidebarBox, mainScrollable, focusVoid);
-    scene = new Scene(sceneBox, 1440, 800);
+    scene = new Scene(sceneBox, 1440, 900);
 
     // listen for events
     scene.setOnMouseClicked(event -> {
@@ -48,7 +48,7 @@ public abstract class DayScene {
 
     // - main view
     mainView.setMinWidth(1440 - 256 - 28);
-    mainView.setMinHeight(800);
+    mainView.setMinHeight(900);
     mainView.getStyleClass().add("main-view");
     mainView.setPadding(new Insets(20));
     mainView.setSpacing(20);

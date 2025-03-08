@@ -42,8 +42,7 @@ public class Day {
     public DayViewType type = DayViewType.OneDay;
 
     public enum DayViewType {
-      OneDay,
-      ThreeDay,
+      OneDay, ThreeDay,
     }
 
     public DayView(DayViewType type) {
@@ -68,14 +67,15 @@ public class Day {
   @SuppressWarnings("deprecation")
   public Day(ArrayList<HourlyPeriod> data, Date day) {
     this.date = day;
-    this.currentForecast = data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
+    this.currentForecast =
+        data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
     this.unit = TempUnit.Fahrenheit;
   }
 
   private Integer[] getMinMaxTemp(boolean celsius) {
-    Integer[] minMax = new Integer[] { null, null };
+    Integer[] minMax = new Integer[] {null, null};
     int temperature;
     for (HourlyPeriod p : currentForecast) {
       if (celsius) {
@@ -158,7 +158,7 @@ public class Day {
 
     // divide for averages
     int size = currentForecast.size();
-    return new int[] { maxPrep, totalRelHumid / size, totalWindspeed / size };
+    return new int[] {maxPrep, totalRelHumid / size, totalWindspeed / size};
   }
 
   public TextField getTemperature() {
