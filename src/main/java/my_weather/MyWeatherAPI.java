@@ -1,5 +1,6 @@
 package my_weather;
 
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -16,14 +17,27 @@ public class MyWeatherAPI {
   public static CompletableFuture<ArrayList<HourlyPeriod>> getHourlyForecastAsync(String region,
       int gridx, int gridy) {
     return CompletableFuture
-        .supplyAsync(() -> MyWeatherAPI.getHourlyForecast(region, gridx, gridy));
+        .supplyAsync(() -> {
+          try {
+            return MyWeatherAPI.getHourlyForecast(region, gridx, gridy);
+          } catch (ConnectException ce) {
+            throw new RuntimeException("Failed to connect");
+          }
+        });
   }
 
   public static CompletableFuture<GridPoint> getGridPointAsync(double lat, double lon) {
-    return CompletableFuture.supplyAsync(() -> MyWeatherAPI.getGridPoint(lat, lon));
+    return CompletableFuture.supplyAsync(() -> {
+      try {
+        return MyWeatherAPI.getGridPoint(lat, lon);
+      } catch (ConnectException ce) {
+        throw new RuntimeException("Failed to connect");
+      }
+    });
   }
 
-  public static ArrayList<HourlyPeriod> getHourlyForecast(String region, int gridx, int gridy) {
+  public static ArrayList<HourlyPeriod> getHourlyForecast(String region, int gridx, int gridy)
+      throws ConnectException {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://api.weather.gov/gridpoints/" + region + "/" + String.valueOf(gridx)
             + "," + String.valueOf(gridy) + "/forecast/hourly"))
@@ -31,8 +45,12 @@ public class MyWeatherAPI {
     HttpResponse<String> response = null;
     try {
       response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+
+    } catch (ConnectException ce) {
+      throw new ConnectException("Failed to connect to the internet");
     } catch (Exception e) {
       e.printStackTrace();
+      return null;
     }
 
     if (response.statusCode() < 200 || response.statusCode() > 299) {
@@ -52,7 +70,7 @@ public class MyWeatherAPI {
     return periods;
   }
 
-  public static GridPoint getGridPoint(double lat, double lon) {
+  public static GridPoint getGridPoint(double lat, double lon) throws ConnectException {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://api.weather.gov/points/" + String.valueOf(lat)
             + "," + String.valueOf(lon)))
@@ -60,6 +78,8 @@ public class MyWeatherAPI {
     HttpResponse<String> response = null;
     try {
       response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (ConnectException e) {
+      throw new ConnectException("Failed to connect to the internet");
     } catch (Exception e) {
       e.printStackTrace();
     }

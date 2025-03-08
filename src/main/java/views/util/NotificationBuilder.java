@@ -16,15 +16,23 @@ public class NotificationBuilder {
   Optional<String> imagePath = Optional.empty();
   NotificationType type = NotificationType.Info;
   String message = "";
+  Integer showDuration = 2;
 
-  public NotificationBuilder() {
-  }
+  public NotificationBuilder() {}
 
   /**
    * Build a notification with {@code message}
    */
   public NotificationBuilder(String message) {
     this.message = message;
+  }
+
+  /**
+   * Build a notification that shows for {@code seconds}
+   */
+  public NotificationBuilder showFor(int seconds) {
+    this.showDuration = seconds;
+    return this;
   }
 
   /**
@@ -57,7 +65,7 @@ public class NotificationBuilder {
    */
   public void fire(Node origin) {
     VBox component = component();
-    origin.fireEvent(new NotificationEvent(component));
+    origin.fireEvent(new NotificationEvent(component, this.showDuration));
   }
 
   private VBox component() {
@@ -101,6 +109,8 @@ public class NotificationBuilder {
         return "error-notification-text";
       case Info:
         return "info-notification-text";
+      case ConnectionError:
+        return "error-notification-text";
       default:
         throw new MatchException("Unimplemented notification type", null);
     }
@@ -112,6 +122,8 @@ public class NotificationBuilder {
         return "error-notification";
       case Info:
         return "info-notification";
+      case ConnectionError:
+        return "error-notification";
       default:
         throw new MatchException("Unimplemented notification type", null);
     }
@@ -128,6 +140,9 @@ public class NotificationBuilder {
         break;
       case Info:
         this.imagePath = Optional.of("/notification_icons/info.png");
+        break;
+      case ConnectionError:
+        this.imagePath = Optional.of("/notification_icons/wifi.png");
         break;
       default:
         this.imagePath = Optional.empty();

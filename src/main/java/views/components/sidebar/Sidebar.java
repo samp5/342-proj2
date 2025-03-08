@@ -72,7 +72,8 @@ public class Sidebar {
 
         if (latValid && lonValid) {
           latInput.fireEvent(
-              new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
+              new LocationChangeEvent(Double.parseDouble(latInput.getText()),
+                  Double.parseDouble(lonInput.getText())));
         }
       });
 
@@ -99,7 +100,8 @@ public class Sidebar {
 
         if (latValid && lonValid) {
           lonInput.fireEvent(
-              new LocationChangeEvent(Double.parseDouble(latInput.getText()), Double.parseDouble(lonInput.getText())));
+              new LocationChangeEvent(Double.parseDouble(latInput.getText()),
+                  Double.parseDouble(lonInput.getText())));
         }
       });
     }
@@ -207,7 +209,8 @@ public class Sidebar {
 
   public void recievedValidLocation() {
 
-    new NotificationBuilder("Changing location to " + this.title).ofType(NotificationType.Info).fire(this.container);
+    new NotificationBuilder("Changing location to " + this.title).ofType(NotificationType.Info)
+        .fire(this.container);
 
     header.lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
     header.lonInput.getStyleClass().add("coord-input");

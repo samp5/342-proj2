@@ -67,7 +67,7 @@ public class TodayScene extends DayScene {
    * to get the {@code Scene}, use {@code getScene()}
    *
    * @param forecast an {@code ArrayList} of {@code HourlyPeriod}, gathered from
-   *                 {@code MyWeatherAPI}
+   *        {@code MyWeatherAPI}
    */
   public TodayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
@@ -109,7 +109,8 @@ public class TodayScene extends DayScene {
     }
     weatherIcon.setImage(icon);
 
-    tempGraph = new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
+    tempGraph =
+        new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
@@ -262,7 +263,8 @@ public class TodayScene extends DayScene {
     HourlyPeriod now = currentForecast.getFirst();
 
     tempTrendBox.getChildren().setAll(TextUtils.staticTextField(now.temperatureTrend));
-    dewpointBox.getChildren().setAll(TextUtils.staticTextField("" + now.dewpoint.value + " " + now.dewpoint.unitCode));
+    dewpointBox.getChildren()
+        .setAll(TextUtils.staticTextField("" + now.dewpoint.value + " " + now.dewpoint.unitCode));
 
     tempTrendBox.getStyleClass().addAll("temp-trend-box", "small-graph");
     dewpointBox.getStyleClass().addAll("dewpoint-box", "small-graph");
@@ -270,7 +272,7 @@ public class TodayScene extends DayScene {
     CompassBox compass = new CompassBox(now.windSpeed, now.windDirection);
     compassBox = compass.component();
 
-    smallCharts.getChildren().setAll(compassBox/*, tempTrendBox, dewpointBox*/);
+    smallCharts.getChildren().setAll(compassBox/* , tempTrendBox, dewpointBox */);
   }
 
   /**
