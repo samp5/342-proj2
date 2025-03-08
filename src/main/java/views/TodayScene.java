@@ -110,7 +110,7 @@ public class TodayScene extends DayScene {
     weatherIcon.setImage(icon);
 
     tempGraph =
-        new TempGraph(currentForecast, currentForecast.getFirst().startTime, TempUnit.Fahrenheit);
+        new TempGraph(currentForecast, TempUnit.Fahrenheit);
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
@@ -209,7 +209,7 @@ public class TodayScene extends DayScene {
     int chartNdx = graphContainer.getChildren().indexOf(tempChart);
 
     // get the new graph
-    tempGraph.update(currentForecast, new Date(), unit);
+    tempGraph.update(currentForecast, unit);
     tempChart = tempGraph.component();
 
     // replace the old graph with the new one

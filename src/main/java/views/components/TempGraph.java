@@ -28,8 +28,7 @@ public class TempGraph {
   static long MILLISECONDS_IN_THREE_HOURS = 60 * 60 * 3 * 1000;
 
   public enum TempUnit {
-    Fahrenheit,
-    Celsius,
+    Fahrenheit, Celsius,
   }
 
   /**
@@ -150,7 +149,7 @@ public class TempGraph {
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
-    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public XYChart.Data asPoint() {
       XYChart.Data data = new XYChart.Data(this.time(), this.temperature());
       return data;
@@ -170,23 +169,23 @@ public class TempGraph {
 
   /**
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day  {@code Date} object representing the target day to generate the
-   *             graph
+   * @param day {@code Date} object representing the target day to generate the
+   *        graph
    * @param unit {@code TempUnit} which unit to use for the axis
    */
-  public <T extends Iterable<HourlyPeriod>> TempGraph(T data, Date day, TempUnit unit) {
-    initializeFromData(data, day, unit);
+  public <T extends Iterable<HourlyPeriod>> TempGraph(T data, TempUnit unit) {
+    initializeFromData(data, unit);
   };
 
   /**
    * Build container around {@code HourlyPeriod} extracting {@code DataPoint}s
    *
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day  {@code Date} object representing the target day to generate the
-   *             graph
+   * @param day {@code Date} object representing the target day to generate the
+   *        graph
    * @param unit {@code TempUnit} which unit to use for the axis
    */
-  private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, Date day, TempUnit unit) {
+  private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, TempUnit unit) {
     if (this.data != null) {
       this.data.clear();
     } else {
@@ -277,17 +276,16 @@ public class TempGraph {
     return box;
   };
 
+
   /**
    * Update the contained data. Subsequent calls to {@code TempGraph.component()}
    * will represent this state.
    *
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day  {@code Date} object representing the target day to generate the
-   *             graph
    *
    */
-  public <T extends Iterable<HourlyPeriod>> void update(T data, Date day, TempUnit unit) {
-    initializeFromData(data, day, unit);
+  public <T extends Iterable<HourlyPeriod>> void update(T data, TempUnit unit) {
+    initializeFromData(data, unit);
   };
 
   /**

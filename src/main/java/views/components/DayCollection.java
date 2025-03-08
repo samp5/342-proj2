@@ -7,10 +7,12 @@ import javafx.geometry.Insets;
 import javafx.scene.layout.HBox;
 import my_weather.HourlyPeriod;
 import views.components.Day.DayView.DayViewType;
+import views.components.events.DaySelectionEvent;
 
 public class DayCollection {
   ArrayList<Day> days;
   DayViewType viewType;
+  HBox component = null;
 
   @SuppressWarnings("deprecation")
   public DayCollection(int number_days, ArrayList<HourlyPeriod> data, DayViewType viewType) {
@@ -40,10 +42,16 @@ public class DayCollection {
   }
 
   public HBox component() {
-    HBox box = new HBox();
-    box.getChildren().addAll(days.stream().map(d -> d.component(this.viewType)).toList());
-    box.setPadding(new Insets(50));
-    box.setSpacing(60);
-    return box;
+    component = new HBox();
+    component.getChildren().addAll(days.stream().map(d -> d.component(this.viewType)).toList());
+    component.setPadding(new Insets(50));
+    component.setSpacing(60);
+    this.component.addEventHandler(DaySelectionEvent.DAY_SELECTION, selection -> {
+      days.forEach(d -> {
+        d.deselect();
+      });
+      selection.selection().select();
+    });
+    return component;
   }
 }

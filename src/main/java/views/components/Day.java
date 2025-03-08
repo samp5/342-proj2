@@ -3,7 +3,7 @@ package views.components;
 import views.util.IconResolver;
 import views.util.TextUtils;
 import views.components.TempGraph.TempUnit;
-
+import views.components.events.DaySelectionEvent;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,6 +31,15 @@ public class Day {
   Date date;
   DayView viewType;
   List<HourlyPeriod> currentForecast;
+  VBox component;
+
+  public List<HourlyPeriod> getForecast() {
+    return this.currentForecast;
+  }
+
+  public Date getDate() {
+    return this.date;
+  }
 
   TempUnit unit;
 
@@ -101,14 +110,25 @@ public class Day {
     BorderPane icon = getIcon();
     TextField temperature = getTemperature();
     VBox statistics = getStatistics();
-    VBox vbox = new VBox(title, icon, temperature, statistics);
-    vbox.getStyleClass().add("day-backdrop-" + this.viewType.toString());
-    vbox.setOnMouseClicked(e -> {
-      vbox.getStyleClass().remove("day-backdrop-" + this.viewType.toString());
-      vbox.getStyleClass().add("day-backdrop-" + this.viewType.toString() + "-clicked");
+    this.component = new VBox(title, icon, temperature, statistics);
+    component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
+
+    component.setOnMouseClicked(e -> {
+      select();
+      component.fireEvent(new DaySelectionEvent(this));
     });
 
-    return vbox;
+    return component;
+  }
+
+  public void select() {
+    component.getStyleClass().remove("day-backdrop-" + this.viewType.toString());
+    component.getStyleClass().add("day-backdrop-" + this.viewType.toString() + "-clicked");
+  }
+
+  public void deselect() {
+    component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
+    component.getStyleClass().remove("day-backdrop-" + this.viewType.toString() + "-clicked");
   }
 
   public VBox getStatistics() {
