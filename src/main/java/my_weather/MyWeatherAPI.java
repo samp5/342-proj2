@@ -54,20 +54,9 @@ public class MyWeatherAPI {
       e.printStackTrace();
     }
 
-    // while (response.statusCode() == 301) {
-    // try {
-    // String newLoc = response.headers().allValues("location").getFirst();
-    // HttpRequest redirRequest = HttpRequest.newBuilder()
-    // .uri(URI.create("https://api.weather.gov" + newLoc)).build();
-    // response = HttpClient.newHttpClient().send(redirRequest,
-    // HttpResponse.BodyHandlers.ofString());
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // }
-    // }
-
-    if (response.statusCode() == 404) {
-      System.err.println("404, invalid location");
+    if (response.statusCode() < 200 || response.statusCode() > 299) {
+      System.err.println("Response was: " + response.toString() + "\n"
+          + "Request was: " + request.toString());
       return null;
     }
 
@@ -76,6 +65,7 @@ public class MyWeatherAPI {
       System.err.println("Failed to parse JSon");
       return null;
     }
+
     return new GridPoint(r.properties.gridX, r.properties.gridY, r.properties.cwa,
         r.properties.relativeLocation.properties.city + ", " + r.properties.relativeLocation.properties.state);
   }
