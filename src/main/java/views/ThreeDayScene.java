@@ -69,7 +69,7 @@ public class ThreeDayScene extends DayScene {
   public void update(ArrayList<HourlyPeriod> forecast) {
     currentForecast = forecast;
     applyForecast();
-    updateTempGraph();
+    //updateTempGraph();
   }
 
   private void updateTempGraph() {

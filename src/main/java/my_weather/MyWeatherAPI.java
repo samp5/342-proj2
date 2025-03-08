@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import my_weather.gridPoint.GridPoint;
 
 public class MyWeatherAPI {
+  private static int MAX_RETRIES = 5;
 
   public static CompletableFuture<ArrayList<HourlyPeriod>> getHourlyForecastAsync(String region,
       int gridx, int gridy) {
@@ -82,6 +83,24 @@ public class MyWeatherAPI {
       throw new ConnectException("Failed to connect to the internet");
     } catch (Exception e) {
       e.printStackTrace();
+    }
+
+    int retries = 0;
+    while (response.statusCode() == 301) {
+      if (retries >= MAX_RETRIES) break;
+      retries++;
+
+      request = HttpRequest.newBuilder()
+        .uri(URI.create("https://api.weather.gov" + response.headers().firstValue("location").get()))
+        .build();
+
+      try {
+        response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+      } catch (ConnectException e) {
+        throw new ConnectException("Failed to connect to the internet");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
     if (response.statusCode() < 200 || response.statusCode() > 299) {
