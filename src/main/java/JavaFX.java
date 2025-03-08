@@ -15,10 +15,12 @@ import views.ThreeDayScene;
 import views.TodayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.events.NotificationEvent;
+import views.components.events.TempUnitEvent;
 import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
+import views.util.UnitHandler;
 import weather_observations.Properties;
 import weather_observations.WeatherObservations;
 

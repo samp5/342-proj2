@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
 import my_weather.HourlyPeriod;
+import views.util.UnitHandler.TemperatureUnit;
 
 /**
  * TempGraph holds state for a temperature
@@ -26,10 +27,6 @@ public class TempGraph {
   TemperatureLimits temp_limits;
   Date min_time;
   static long MILLISECONDS_IN_THREE_HOURS = 60 * 60 * 3 * 1000;
-
-  public enum TempUnit {
-    Fahrenheit, Celsius,
-  }
 
   /**
    * Minimum and maximum {@code Temperature}s
@@ -173,7 +170,7 @@ public class TempGraph {
    *        graph
    * @param unit {@code TempUnit} which unit to use for the axis
    */
-  public <T extends Iterable<HourlyPeriod>> TempGraph(T data, TempUnit unit) {
+  public <T extends Iterable<HourlyPeriod>> TempGraph(T data, TemperatureUnit unit) {
     initializeFromData(data, unit);
   };
 
@@ -185,7 +182,7 @@ public class TempGraph {
    *        graph
    * @param unit {@code TempUnit} which unit to use for the axis
    */
-  private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, TempUnit unit) {
+  private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, TemperatureUnit unit) {
     if (this.data != null) {
       this.data.clear();
     } else {
@@ -199,7 +196,7 @@ public class TempGraph {
     int point_to_collect = 18;
     int temperature;
     for (HourlyPeriod h : data) {
-      if (unit == TempUnit.Celsius) {
+      if (unit == TemperatureUnit.Celsius) {
         temperature = (h.temperature - 32) * 5 / 9;
       } else {
         temperature = h.temperature;
@@ -284,7 +281,7 @@ public class TempGraph {
    * @param data {@code Iterable} container for {@code HourlyPeriod}
    *
    */
-  public <T extends Iterable<HourlyPeriod>> void update(T data, TempUnit unit) {
+  public <T extends Iterable<HourlyPeriod>> void update(T data, TemperatureUnit unit) {
     initializeFromData(data, unit);
   };
 

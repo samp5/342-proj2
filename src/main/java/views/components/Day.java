@@ -2,8 +2,9 @@ package views.components;
 
 import views.util.IconResolver;
 import views.util.TextUtils;
-import views.components.TempGraph.TempUnit;
 import views.components.events.DaySelectionEvent;
+import views.util.UnitHandler.TemperatureUnit;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -41,7 +42,7 @@ public class Day {
     return this.date;
   }
 
-  TempUnit unit;
+  TemperatureUnit unit;
 
   public void setViewType(DayView.DayViewType view) {
     this.viewType.type = view;
@@ -80,7 +81,7 @@ public class Day {
         data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
-    this.unit = TempUnit.Fahrenheit;
+    this.unit = TemperatureUnit.Fahrenheit;
   }
 
   private Integer[] getMinMaxTemp(boolean celsius) {

@@ -10,8 +10,9 @@ import views.components.Day.DayView.DayViewType;
 import views.components.Day;
 
 import views.components.TempGraph;
-import views.components.TempGraph.TempUnit;
 import views.components.events.DaySelectionEvent;
+import views.components.events.TempUnitEvent;
+import views.util.UnitHandler.TemperatureUnit;
 import views.components.HumidityGraph;
 
 public class ThreeDayScene extends DayScene {
@@ -59,7 +60,7 @@ public class ThreeDayScene extends DayScene {
     // updateTempGraph(TempUnit.Fahrenheit); // TODO:
   }
 
-  private void updateTempGraph(TempUnit unit) {
+  private void updateTempGraph(TemperatureUnit unit) {
     // find the location of the current chart
     int chartNdx = graphContainer.getChildren().indexOf(tempChart);
 
@@ -77,7 +78,7 @@ public class ThreeDayScene extends DayScene {
 
   public void showGraphs(Day d) {
     tempGraph =
-        new TempGraph(d.getForecast(), TempUnit.Fahrenheit);
+        new TempGraph(d.getForecast(), TemperatureUnit.Fahrenheit);
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(d.getForecast(), d.getDate());
     humidChart = humidGraph.component();

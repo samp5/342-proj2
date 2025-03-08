@@ -1,6 +1,5 @@
 package views;
 
-import javafx.event.EventType;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -8,7 +7,6 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 
 public abstract class DayScene {

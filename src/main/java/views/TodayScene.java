@@ -18,11 +18,13 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
-import views.components.TempGraph.TempUnit;
+import views.components.events.TempUnitEvent;
 import views.components.CompassBox;
 import views.components.HumidityGraph;
 import views.util.IconResolver;
 import views.util.TextUtils;
+import views.util.UnitHandler;
+import views.util.UnitHandler.TemperatureUnit;
 
 public class TodayScene extends DayScene {
   // display text
@@ -110,7 +112,7 @@ public class TodayScene extends DayScene {
     weatherIcon.setImage(icon);
 
     tempGraph =
-        new TempGraph(currentForecast, TempUnit.Fahrenheit);
+        new TempGraph(currentForecast, TemperatureUnit.Fahrenheit);
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
@@ -150,6 +152,12 @@ public class TodayScene extends DayScene {
 
     // add components to the main view
     mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallCharts);
+
+    // set this view as the emitter for unit changes
+    UnitHandler.setEmitter(scene);
+    scene.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
+      updateTempGraph(event.getUnit());
+    });
   }
 
   /**
@@ -181,7 +189,7 @@ public class TodayScene extends DayScene {
     fahrenheitBtn.setDisable(true);
     celsiusBtn.setDisable(false);
 
-    updateTempGraph(TempUnit.Fahrenheit);
+    UnitHandler.setUnit(TemperatureUnit.Fahrenheit);
 
     voidFocus();
   }
@@ -194,7 +202,7 @@ public class TodayScene extends DayScene {
     fahrenheitBtn.setDisable(false);
     celsiusBtn.setDisable(true);
 
-    updateTempGraph(TempUnit.Celsius);
+    UnitHandler.setUnit(TemperatureUnit.Celsius);
 
     voidFocus();
   }
@@ -204,7 +212,7 @@ public class TodayScene extends DayScene {
    *
    * @param unit unit to fill the graph with
    */
-  private void updateTempGraph(TempUnit unit) {
+  private void updateTempGraph(TemperatureUnit unit) {
     // find the location of the current chart
     int chartNdx = graphContainer.getChildren().indexOf(tempChart);
 
@@ -216,8 +224,8 @@ public class TodayScene extends DayScene {
     graphContainer.getChildren().remove(chartNdx);
     graphContainer.getChildren().add(chartNdx, tempChart);
 
-    // re-set the max width again
-    tempChart.setMaxWidth(1000);
+    // re-set the min width again
+    tempChart.setMinWidth(554);
   }
 
   /**
