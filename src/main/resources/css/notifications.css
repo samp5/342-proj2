@@ -12,8 +12,24 @@
   -fx-background-color: #F8F9FA;
   -fx-background-radius: 20px;
   -fx-padding: 20px;
+  /*                      type      color         radius  spread offsets */
+ -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
 }
+
 .error-notification-text {
   -fx-font-family: "Atkinson Hyperlegible Bold";
-  -fx-font-size: 24px;
+  -fx-font-size: 20px;
+}
+
+.info-notification-text {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 20px;
+}
+
+.info-notification {
+  -fx-background-color: #F8F9FA;
+  -fx-background-radius: 20px;
+  -fx-padding: 20px;
+  /*                      type      color         radius  spread offsets */
+ -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
 }
