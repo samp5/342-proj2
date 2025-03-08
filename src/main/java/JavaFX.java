@@ -19,6 +19,9 @@ import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
+import weather_observations.Properties;
+import weather_observations.WeatherObservations;
+
 import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -74,7 +77,15 @@ public class JavaFX extends Application {
       delay.play();
 
       return;
+    double lat = 41.8781;
+    double lon = -87.6298;
+    GridPoint gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
+    ArrayList<HourlyPeriod> forecast = my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
+        gridPoint.gridY);
+    if (forecast == null) {
+      throw new RuntimeException("Forecast did not load");
     }
+    Properties weatherObservations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat, lon);
 
     todayScene = new TodayScene(forecast);
     threeDayScene = new ThreeDayScene(forecast);
