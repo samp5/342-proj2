@@ -21,7 +21,7 @@ import views.components.sidebar.Sidebar;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 import views.util.UnitHandler;
-import weather_observations.Properties;
+import weather_observations.Observations;
 import weather_observations.WeatherObservations;
 
 import java.util.ArrayList;
@@ -54,6 +54,7 @@ public class JavaFX extends Application {
 
     GridPoint gridPoint = null;
     ArrayList<HourlyPeriod> forecast = null;
+    Observations observations = null;
 
     loadingScene = new LoadingScene();
 
@@ -64,6 +65,7 @@ public class JavaFX extends Application {
       forecast =
           my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
               gridPoint.gridY);
+      observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat, lon);
     } catch (Exception e) {
       primaryStage.setScene(loadingScene.getScene());
       primaryStage.show();
@@ -87,9 +89,7 @@ public class JavaFX extends Application {
       throw new RuntimeException("Forecast did not load");
     }
 
-    Properties weatherObservations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat, lon);
-
-    todayScene = new TodayScene(forecast);
+    todayScene = new TodayScene(forecast, observations);
     threeDayScene = new ThreeDayScene(forecast);
 
     sidebar = Sidebar.fromScenes(
@@ -117,6 +117,10 @@ public class JavaFX extends Application {
 
     primaryStage.addEventHandler(NotificationEvent.NOTIFCATION, event -> {
       showPopup(primaryStage, event.component(), event.duration());
+    });
+
+    primaryStage.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
+      System.out.println(event.getUnit().toString());
     });
   }
 

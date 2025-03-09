@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import weather_observations.stations.Stations;
 
 public class WeatherObservations {
-  public static Properties getWeatherObservations(String region, int gridX, int gridY, double lat, double lon) {
+  public static Observations getWeatherObservations(String region, int gridX, int gridY, double lat, double lon) {
     String station = Stations.getNearestStation(region, gridX, gridY, lat, lon);
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://api.weather.gov/stations/" + station + "/observations/latest"))
@@ -35,7 +35,7 @@ public class WeatherObservations {
     Root toRet = null;
     try {
       toRet = om.readValue(json, Root.class);
-      Properties p = toRet.properties;
+      Observations p = toRet.properties;
 
     } catch (JsonProcessingException e) {
       e.printStackTrace();

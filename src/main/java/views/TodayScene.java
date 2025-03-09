@@ -21,10 +21,12 @@ import views.components.TempGraph;
 import views.components.events.TempUnitEvent;
 import views.components.CompassBox;
 import views.components.HumidityGraph;
+import views.components.PressureBox;
 import views.util.IconResolver;
 import views.util.TextUtils;
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
+import weather_observations.Observations;
 
 public class TodayScene extends DayScene {
   // display text
@@ -50,19 +52,15 @@ public class TodayScene extends DayScene {
   TempGraph tempGraph;
   HumidityGraph humidGraph;
   VBox tempChart, humidChart;
+
   ArrayList<HourlyPeriod> currentForecast;
+  Observations currentObservations;
 
   // small charts blocking
-  HBox smallCharts;
-
-  // wind direction compass
+  HBox smallBoxes;
   VBox compassBox;
-
-  // temperature trend
-  VBox tempTrendBox;
-
-  // dewpoint
-  VBox dewpointBox;
+  VBox pressureBox;
+;
 
   /**
    * initialize a TodayScene
@@ -71,11 +69,12 @@ public class TodayScene extends DayScene {
    * @param forecast an {@code ArrayList} of {@code HourlyPeriod}, gathered from
    *        {@code MyWeatherAPI}
    */
-  public TodayScene(ArrayList<HourlyPeriod> forecast) {
+  public TodayScene(ArrayList<HourlyPeriod> forecast, Observations observations) {
     initComponents();
 
     // populate fields with forecast
     currentForecast = forecast;
+    currentObservations = observations;
 
     applyForecast();
 
@@ -144,14 +143,11 @@ public class TodayScene extends DayScene {
     headerContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
     graphContainer = new HBox();
 
-    // small charts & their container
-    compassBox = new VBox();
-    tempTrendBox = new VBox();
-    dewpointBox = new VBox();
-    smallCharts = new HBox();
+    // small box container
+    smallBoxes = new HBox();
 
     // add components to the main view
-    mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallCharts);
+    mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallBoxes);
 
     // set this view as the emitter for unit changes
     UnitHandler.setEmitter(scene);
@@ -270,17 +266,13 @@ public class TodayScene extends DayScene {
   private void createSmallGraphs() {
     HourlyPeriod now = currentForecast.getFirst();
 
-    tempTrendBox.getChildren().setAll(TextUtils.staticTextField(now.temperatureTrend));
-    dewpointBox.getChildren()
-        .setAll(TextUtils.staticTextField("" + now.dewpoint.value + " " + now.dewpoint.unitCode));
-
-    tempTrendBox.getStyleClass().addAll("temp-trend-box", "small-graph");
-    dewpointBox.getStyleClass().addAll("dewpoint-box", "small-graph");
-
     CompassBox compass = new CompassBox(now.windSpeed, now.windDirection);
     compassBox = compass.component();
 
-    smallCharts.getChildren().setAll(compassBox/* , tempTrendBox, dewpointBox */);
+    PressureBox pressure = new PressureBox(currentObservations.barometricPressure.value);
+    pressureBox = pressure.component();
+
+    smallBoxes.getChildren().setAll(compassBox, pressureBox);
   }
 
   /**
@@ -289,7 +281,7 @@ public class TodayScene extends DayScene {
   private void styleComponents() {
     scene.getStylesheets().add("css/tempHeader.css");
     scene.getStylesheets().add("css/tempGraph.css");
-    scene.getStylesheets().add("css/smallChart.css");
+    scene.getStylesheets().add("css/smallBox.css");
 
     // TEXT FIELDS
     // - temp
@@ -346,7 +338,7 @@ public class TodayScene extends DayScene {
     forecastBox.getStyleClass().add("forecast-box");
 
     // - small charts container
-    smallCharts.setSpacing(20);
+    smallBoxes.setSpacing(20);
 
     // - graph container
     graphContainer.setSpacing(20);

@@ -3,7 +3,7 @@ package weather_observations;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Properties {
+public class Observations {
   public WindGust windGust;
   public BarometricPressure barometricPressure;
   public SeaLevelPressure seaLevelPressure;
