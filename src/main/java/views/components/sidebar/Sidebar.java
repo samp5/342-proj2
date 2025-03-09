@@ -5,17 +5,13 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
-import views.components.events.NotificationEvent;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 
@@ -27,8 +23,13 @@ public class Sidebar {
   // header
   Header header;
 
+  // City searcher
+  //
+  CitySearch search;
+
   // sections
   ArrayList<Section> sections;
+
 
   public class Header {
     static final int titleFontSize = 40;
@@ -157,6 +158,7 @@ public class Sidebar {
     container = new VBox(header.component());
     container.getChildren()
         .addAll(sections.stream().map(section -> section.component()).collect(Collectors.toList()));
+    container.getChildren().add(new CitySearch().component());
   }
 
   @SafeVarargs
