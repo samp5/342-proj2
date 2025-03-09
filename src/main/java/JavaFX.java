@@ -129,8 +129,11 @@ public class JavaFX extends Application {
    * {@code LocationChangeEvent}
    */
   private void changeLocation(LocationChangeEvent event) {
+    double lat = event.getLat();
+    double lon = event.getLon();
+
     CompletableFuture<GridPoint> pointFuture =
-        MyWeatherAPI.getGridPointAsync(event.getLat(), event.getLon());
+        MyWeatherAPI.getGridPointAsync(lat, lon);
 
     GridPoint point = null;
     Scene lastScene = primaryStage.getScene();
@@ -164,15 +167,17 @@ public class JavaFX extends Application {
             point.gridX, point.gridY);
 
     ArrayList<HourlyPeriod> periods = null;
+    Observations observations;
 
     try {
       periods = future_period.get(3, TimeUnit.SECONDS);
+      observations = WeatherObservations.getWeatherObservations(point.region, point.gridX, point.gridY, lat, lon);
       if (periods == null) {
         primaryStage.setScene(lastScene);
         sidebar.recievedInvalidLocation();
         return;
       }
-      todayScene.update(periods);
+      todayScene.update(periods, observations);
       threeDayScene.update(periods);
 
     } catch (TimeoutException timeout) {

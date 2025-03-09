@@ -1,10 +1,9 @@
 package views.components;
 
+import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import views.util.TextUtils;
 
 public class PressureBox extends SmallBox {
   double pressure;
@@ -21,6 +20,7 @@ public class PressureBox extends SmallBox {
     titleText.setText("Air Pressure");
 
     assembleSVG();
+    svgStack.setPadding(new Insets(15, 0, 0, 0));
     comp.getChildren().setAll(titleText, svgStack);
 
     return comp;
@@ -34,11 +34,9 @@ public class PressureBox extends SmallBox {
     pressureReading = new Label(String.format("%.2f", pressure));
     pressureUnit = new Label("mmHg");
 
-    double needleW = CompassBox.SIZE / 3.;
+    double needleW = CompassBox.SIZE / 5.;
     double needleH = CompassBox.SIZE;
-    needleRegion.setMinSize(needleW, needleH);
-    needleRegion.setPrefSize(needleW, needleH);
-    needleRegion.setMaxSize(needleW, needleH);
+    setSize(needleRegion, needleW, needleH);
     needleRegion.setRotate(getRotation());
     setSize(labelRegion, 70, 50);
     labelRegion.setTranslateY(10);
@@ -62,11 +60,11 @@ public class PressureBox extends SmallBox {
   private static final double MIN_MMHG = 620;
   private double getRotation() {
     if (pressure > MAX_MMHG) {
-      return 90;
+      return 85;
     } else if (pressure < MIN_MMHG) {
-      return -90;
+      return -85;
     }
 
-    return ((pressure - MIN_MMHG) / (MAX_MMHG - MIN_MMHG)) * 180 - 90;
+    return ((pressure - MIN_MMHG) / (MAX_MMHG - MIN_MMHG)) * 170 - 85;
   }
 }

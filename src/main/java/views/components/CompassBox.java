@@ -47,9 +47,7 @@ public class CompassBox extends SmallBox {
 
     double needleW = CompassBox.SIZE / 8.;
     double needleH = CompassBox.SIZE / 1.9;
-    needleRegion.setMinSize(needleW, needleH);
-    needleRegion.setPrefSize(needleW, needleH);
-    needleRegion.setMaxSize(needleW, needleH);
+    setSize(needleRegion, needleW, needleH);
     needleRegion.setRotate(getRotation());
 
     bodyRegion.getStyleClass().add("compass-body");

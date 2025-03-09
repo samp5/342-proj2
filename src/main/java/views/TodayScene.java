@@ -89,8 +89,9 @@ public class TodayScene extends DayScene {
     voidFocus();
   }
 
-  public void update(ArrayList<HourlyPeriod> forecast) {
+  public void update(ArrayList<HourlyPeriod> forecast, Observations observations) {
     currentForecast = forecast;
+    currentObservations = observations;
     applyForecast();
   }
 
