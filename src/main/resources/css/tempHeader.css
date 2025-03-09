@@ -11,11 +11,13 @@
   -fx-width: 10px;
 }
 
-.short-forecast {
-  -fx-border-insets: 16px 0 0 16px;
-}
-
-.forecast-box {
+.h-bar {
   -fx-border-width: 2px 0px 0px 0px;
   -fx-border-color: #9AA0A6;
+}
+
+.left-border {
+  -fx-border-width: 0px 0px 0px 2px;
+  -fx-border-color: #9AA0A6;
+  -fx-border-insets: 0px 0px 0px 48px;
 }

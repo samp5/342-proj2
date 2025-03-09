@@ -118,10 +118,6 @@ public class JavaFX extends Application {
     primaryStage.addEventHandler(NotificationEvent.NOTIFCATION, event -> {
       showPopup(primaryStage, event.component(), event.duration());
     });
-
-    primaryStage.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
-      System.out.println(event.getUnit().toString());
-    });
   }
 
   /**

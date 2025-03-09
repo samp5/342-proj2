@@ -1,7 +1,7 @@
 package views.util;
 
 import javafx.event.Event;
-import javafx.event.EventTarget;
+import javafx.scene.Node;
 import views.components.events.TempUnitEvent;
 
 public class UnitHandler {
@@ -11,10 +11,10 @@ public class UnitHandler {
   }
 
   private static TemperatureUnit currentUnit;
-  private static EventTarget emitter;
+  private static Node emitter;
   private static boolean changed = false;
 
-  public static void setEmitter(EventTarget emitter) {
+  public static void setEmitter(Node emitter) {
     UnitHandler.emitter = emitter;
   }
 

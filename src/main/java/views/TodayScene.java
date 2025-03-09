@@ -30,15 +30,15 @@ import weather_observations.Observations;
 
 public class TodayScene extends DayScene {
   // display text
-  TextField temperatureTxt, forecastTxt, unitSeparatorBar;
+  TextField temperatureTxt, forecastTxt, unitSeparatorBar, feelsLikeTxt;
 
   // images
   Image icon;
   ImageView weatherIcon;
 
   // scene blocking
-  HBox headerContainer, graphContainer;
-  Pane forecastBox;
+  HBox headerContainer, temperatureContainer, detailContainer, graphContainer;
+  HBox hBar;
 
   // temperature unit buttons
   Button fahrenheitBtn, celsiusBtn;
@@ -60,7 +60,7 @@ public class TodayScene extends DayScene {
   HBox smallBoxes;
   VBox compassBox;
   VBox pressureBox;
-;
+
 
   /**
    * initialize a TodayScene
@@ -104,6 +104,8 @@ public class TodayScene extends DayScene {
     setTemp(now.temperature);
     setShortForecast(now.shortForecast);
 
+    feelsLikeTxt.setText(String.format("Feels like %d°F", currentObservations.windChill.getTemperature()));
+
     try {
       icon = new IconResolver().getIcon(now.shortForecast, now.isDaytime);
     } catch (FileNotFoundException e) {
@@ -131,8 +133,8 @@ public class TodayScene extends DayScene {
 
     temperatureTxt = new TextField(); // populated later
     forecastTxt = new TextField(); // populated later
-    forecastBox = new Pane(forecastTxt);
-
+    feelsLikeTxt = TextUtils.staticTextField(""); // populated later
+    hBar = new HBox();
     fahrenheitBtn = new Button("°F"); // functionality added later
     celsiusBtn = new Button("°C"); // functionality added later
     unitSeparatorBar = new TextField("|"); // bar between the two buttons
@@ -141,19 +143,23 @@ public class TodayScene extends DayScene {
 
     // containers for the unit buttons, temperature header, graphs
     unitContainer = new HBox(fahrenheitBtn, unitSeparatorBar, celsiusBtn);
-    headerContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
+    temperatureContainer = new HBox(weatherIcon, temperatureTxt, unitContainer);
+    detailContainer = new HBox(new VBox(forecastTxt, feelsLikeTxt));
+    headerContainer = new HBox(temperatureContainer, detailContainer);
     graphContainer = new HBox();
 
     // small box container
     smallBoxes = new HBox();
 
     // add components to the main view
-    mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallBoxes);
+    mainView.getChildren().addAll(headerContainer, hBar, graphContainer, smallBoxes);
 
     // set this view as the emitter for unit changes
-    UnitHandler.setEmitter(scene);
+    UnitHandler.setEmitter(mainView);
     scene.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
-      updateTempGraph(event.getUnit());
+      TemperatureUnit unit = event.getUnit();
+      updateTempGraph(unit);
+      updateTextFields(unit);
     });
   }
 
@@ -225,6 +231,17 @@ public class TodayScene extends DayScene {
     tempChart.setMinWidth(554);
   }
 
+  private void updateTextFields(TemperatureUnit unit) {
+    String fmt;
+    if (unit == TemperatureUnit.Celsius) {
+      fmt = "%d°C";
+    } else {
+      fmt = "%d°F";
+    }
+
+    feelsLikeTxt.setText("Feels like " + String.format(fmt, currentObservations.windChill.getTemperature()));
+  }
+
   /**
    * adds functionality and css to the unit switching buttons
    */
@@ -235,6 +252,10 @@ public class TodayScene extends DayScene {
     });
     celsiusBtn.setOnAction(e -> {
       setUnitCelcius();
+    });
+
+    fahrenheitBtn.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
+      System.out.println("recieved.");
     });
 
     // initialize default to fahrenheit
@@ -257,7 +278,6 @@ public class TodayScene extends DayScene {
     // add specific style classes and required style
     temperatureTxt.setFont(new Font("Atkinson Hyperlegible Bold", 75));
     temperatureTxt.getStyleClass().add("temperature-field");
-    forecastTxt.getStyleClass().add("short-forecast");
     unitSeparatorBar.getStyleClass().add("unit-separator");
   }
 
@@ -301,10 +321,13 @@ public class TodayScene extends DayScene {
     unitSeparatorBar.setPadding(new Insets(0));
     unitSeparatorBar.setAlignment(Pos.CENTER);
 
-    // - short forecast
+    // - short forecast and feels like
     forecastTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
-    forecastTxt.setPadding(new Insets(10, 0, 0, 0));
-    forecastTxt.setAlignment(Pos.CENTER);
+    forecastTxt.setPadding(new Insets(45, 0, 0, 20));
+    forecastTxt.setAlignment(Pos.CENTER_LEFT);
+    feelsLikeTxt.setFont(new Font("Atkinson Hyperlegible Normal", 20));
+    feelsLikeTxt.setPadding(new Insets(5, 0, 0, 20));
+    feelsLikeTxt.setAlignment(Pos.CENTER_LEFT);
 
     // BUTTONS
     // - unit buttons
@@ -326,9 +349,12 @@ public class TodayScene extends DayScene {
     humidChart.setMinWidth(554);
 
     // CONTAINERS
-    // - header box
-    headerContainer.setAlignment(Pos.CENTER_LEFT);
-    headerContainer.setPadding(new Insets(0));
+    // - temperature box
+    temperatureContainer.setAlignment(Pos.CENTER_LEFT);
+    temperatureContainer.setPadding(new Insets(0));
+
+    // - detail box
+    detailContainer.getStyleClass().add("left-border");
 
     // - temp unit button box
     unitContainer.setAlignment(Pos.CENTER_LEFT);
@@ -336,7 +362,7 @@ public class TodayScene extends DayScene {
     unitContainer.setPadding(new Insets(0, 0, 20, 0));
 
     // - forecast box
-    forecastBox.getStyleClass().add("forecast-box");
+    hBar.getStyleClass().add("h-bar");
 
     // - small charts container
     smallBoxes.setSpacing(20);
