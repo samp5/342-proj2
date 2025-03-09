@@ -54,7 +54,7 @@ public class JavaFX extends Application {
 
     GridPoint gridPoint = null;
     ArrayList<HourlyPeriod> forecast = null;
-    Observations observations = null;
+    Observations observations;
 
     loadingScene = new LoadingScene();
 
@@ -162,16 +162,17 @@ public class JavaFX extends Application {
 
 
     // get forecast
-    CompletableFuture<ArrayList<HourlyPeriod>> future_period =
+    CompletableFuture<ArrayList<HourlyPeriod>> periodFuture =
         MyWeatherAPI.getHourlyForecastAsync(point.region,
             point.gridX, point.gridY);
+    CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region, point.gridX, point.gridY, lat, lon);
 
     ArrayList<HourlyPeriod> periods = null;
     Observations observations;
 
     try {
-      periods = future_period.get(3, TimeUnit.SECONDS);
-      observations = WeatherObservations.getWeatherObservations(point.region, point.gridX, point.gridY, lat, lon);
+      periods = periodFuture.get(3, TimeUnit.SECONDS);
+      observations = observationFuture.get();
       if (periods == null) {
         primaryStage.setScene(lastScene);
         sidebar.recievedInvalidLocation();

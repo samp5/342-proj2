@@ -1,5 +1,6 @@
 package weather_observations.stations;
 
+import java.net.ConnectException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -10,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Stations {
-  public static String getNearestStation(String region, int gridX, int gridY, double lat, double lon) {
+  public static String getNearestStation(String region, int gridX, int gridY, double lat, double lon) throws ConnectException {
     ArrayList<Features> features = getStations(region, gridX, gridY);
 
     double minDist = Double.MAX_VALUE;
@@ -31,7 +32,7 @@ public class Stations {
     return id;
   }
 
-  public static ArrayList<Features> getStations(String region, int gridX, int gridY) {
+  public static ArrayList<Features> getStations(String region, int gridX, int gridY) throws ConnectException {
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://api.weather.gov/gridpoints/" + region + "/" + String.valueOf(gridX)
             + "," + String.valueOf(gridY) + "/stations"))
@@ -39,6 +40,8 @@ public class Stations {
     HttpResponse<String> response = null;
     try {
       response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (ConnectException ce) {
+      throw new ConnectException("Failed to connect to the internet");
     } catch (Exception e) {
       e.printStackTrace();
     }
