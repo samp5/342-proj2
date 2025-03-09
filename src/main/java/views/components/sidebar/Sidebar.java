@@ -61,6 +61,7 @@ public class Sidebar {
 
     public void styleTitle() {
       title.getStyleClass().add("side-bar-header");
+      title.setWrappingWidth(256);
     }
 
     private void setInputOnAction() {
