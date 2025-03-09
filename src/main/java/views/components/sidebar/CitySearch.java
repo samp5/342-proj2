@@ -1,6 +1,5 @@
 package views.components.sidebar;
 
-
 import java.util.stream.IntStream;
 
 import javafx.collections.FXCollections;
@@ -18,6 +17,7 @@ import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import views.components.events.LocationChangeEvent;
 import views.util.CityData;
 import views.util.CityData.City;
 import javafx.scene.control.ListCell;
@@ -36,9 +36,20 @@ public class CitySearch {
           if (empty) {
             setText(null);
           } else if (city != null) {
-            HBox item = new HBox(new Text(city.display));
-            item.getStyleClass().add("search-result");
-            setGraphic(item);
+            boolean isSelected = getListView().getSelectionModel().getSelectedItem() == city;
+            if (isSelected) {
+              Text cityLabel = new Text(city.display);
+              HBox item = new HBox(cityLabel);
+              cityLabel.getStyleClass().add("search-result-text-selected");
+              item.getStyleClass().add("search-result-box-selected");
+              setGraphic(item);
+            } else {
+              Text cityLabel = new Text(city.display);
+              HBox item = new HBox(cityLabel);
+              cityLabel.getStyleClass().add("search-result-text");
+              item.getStyleClass().add("search-result-box");
+              setGraphic(item);
+            }
           } else {
             setText("null");
           }
@@ -117,7 +128,11 @@ public class CitySearch {
 
     content.setOnKeyPressed(key -> {
       if (key.getCode() == KeyCode.ENTER) {
-        System.out.println(items.getSelectionModel().getSelectedItem());
+        City c = items.getSelectionModel().getSelectedItem();
+        System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName, c.lat,
+            c.lon);
+        content.fireEvent(new LocationChangeEvent(c.lat, c.lon));
+        inputField.clear();
       }
     });
     return content;

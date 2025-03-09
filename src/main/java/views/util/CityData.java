@@ -23,8 +23,8 @@ public class CityData {
         double lon,
         double lat) {
       this.state = state;
-      this.shortState = state;
-      this.cityName = state;
+      this.shortState = shortState;
+      this.cityName = cityName;
       this.county = county;
       this.lon = lon;
       this.lat = lat;
@@ -54,8 +54,8 @@ public class CityData {
             rs.getString("STATE_CODE"),
             rs.getString("CITY"),
             rs.getString("COUNTY"),
-            rs.getDouble("LATITUDE"),
-            rs.getDouble("LONGITUDE")));
+            rs.getDouble("LONGITUDE"),
+            rs.getDouble("LATITUDE")));
       }
 
     } catch (SQLException e) {
