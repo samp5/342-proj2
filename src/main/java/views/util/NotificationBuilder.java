@@ -2,6 +2,7 @@ package views.util;
 
 import java.util.Optional;
 
+import javafx.animation.PauseTransition;
 import javafx.css.StyleClass;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -10,11 +11,14 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.util.Duration;
 import views.components.events.NotificationEvent;
 
 /**
  * Allows for simple building and sending of notifications to the current view.
- * Typically used for sending quick messages to the user for an error or an update on their actions.
+ * Typically used for sending quick messages to the user for an error or an
+ * update on their actions.
  */
 public class NotificationBuilder {
 
@@ -23,7 +27,8 @@ public class NotificationBuilder {
   String message = "";
   Integer showDuration = 2;
 
-  public NotificationBuilder() {}
+  public NotificationBuilder() {
+  }
 
   /**
    * Build a notification with {@code message}
@@ -74,6 +79,66 @@ public class NotificationBuilder {
   }
 
   /**
+   * Send the notification as an event
+   *
+   * @apiNote This method should only be called if it is not
+   *          possible to get a reference to a currently attached
+   *          {@code Node}
+   */
+  public void fire() {
+    VBox component = component();
+    Stage.getWindows().getFirst().sceneProperty().getValue().getRoot()
+        .fireEvent(new NotificationEvent(component, this.showDuration));
+  }
+
+  /**
+   * Send the notification as an event after some amount of delay
+   *
+   * This is used when an error is caused at a point in time where
+   * a {@code Scene} may not be loaded, or more control around
+   * notification timing is desired
+   *
+   * @apiNote This method should only be called if it is not
+   *          possible to get a reference to a {@code Node}
+   *          attached to the scene graph
+   *          see {@code fireAfter(Duration, Node)}
+   *
+   * @apiNote This is a non blocking call
+   * 
+   * 
+   */
+  public void fireAfter(Duration d) {
+    PauseTransition delay = new PauseTransition(d);
+    delay.setOnFinished(event -> {
+      this.fire();
+    });
+
+    delay.play();
+  }
+
+  /**
+   * Send the notification as an event after some amount of delay
+   *
+   * This is used when an error is caused at a point in time where
+   * a {@code Scene} may not be loaded, or more control around
+   * notification timing is desired
+   *
+   * @apiNote This method should only be called if it is not
+   *          possible to get a reference to a currently attached
+   *          {@code Node}
+   */
+  public void fireAfter(Duration d, Node origin) {
+    // We have to delay here because otherwise the scene will not be loaded, there
+    // will be no windows
+    PauseTransition delay = new PauseTransition(d);
+    delay.setOnFinished(event -> {
+      this.fire(origin);
+    });
+
+    delay.play();
+  }
+
+  /**
    * Get the component for the notification
    */
   private VBox component() {
@@ -114,7 +179,8 @@ public class NotificationBuilder {
   /**
    * Get the {@code StyleClass} string name for this type of notification's text
    *
-   * @return styleClass ths {@code String} that contains the style for this notification's text
+   * @return styleClass ths {@code String} that contains the style for this
+   *         notification's text
    */
   private String textStyleClass() {
     switch (this.type) {
@@ -132,7 +198,8 @@ public class NotificationBuilder {
   /**
    * Get the {@code StyleClass} string name for this type of notification
    *
-   * @return styleClass ths {@code String} that contains the style for this notification
+   * @return styleClass ths {@code String} that contains the style for this
+   *         notification
    */
   private String styleClass() {
     switch (this.type) {
