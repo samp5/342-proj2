@@ -1,7 +1,5 @@
 package views.components.sidebar;
 
-import java.util.stream.IntStream;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -12,20 +10,23 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import views.components.events.LocationChangeEvent;
 import views.util.CityData;
 import views.util.CityData.City;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.util.Callback;
 
+/**
+ * A component for allowing a user to search for cities.
+ * Get the component via the {@code CitySearch.component()} method.
+ */
 public class CitySearch {
 
+  /**
+   * A construction factory for making a {@code CitySearch} object.
+   */
   public class CityCellFactory implements Callback<ListView<City>, ListCell<City>> {
 
     @Override

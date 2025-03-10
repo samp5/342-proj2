@@ -95,20 +95,6 @@ public class Sidebar {
         }
       });
 
-      // latInput.focusedProperty().addListener((observable, oldState, newState) -> {
-      // if (newState)
-      // return;
-      //
-      // latValid = inputHighlighter(latInput, latInput.getText());
-      //
-      // System.err.println("lat input box event fired");
-      // if (latValid && lonValid) {
-      // latInput.fireEvent(
-      // new LocationChangeEvent(Double.parseDouble(latInput.getText()),
-      // Double.parseDouble(lonInput.getText())));
-      // }
-      // });
-
       lonInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
         lonValid = inputHighlighter(lonInput, newvalue);
       });
