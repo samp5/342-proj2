@@ -16,6 +16,11 @@ import views.components.events.TempUnitEvent;
 import views.util.UnitHandler;
 import views.components.HumidityGraph;
 
+/**
+ * A three day scene for more days of information.
+ * This is the secondary view of the app.
+ * Allows for seeing of multiple days data, and selecting of days to show temperature and humidity graphs.
+ */
 public class ThreeDayScene extends DayScene {
   // scene blocking
   HBox dayCollectionBox, graphContainer;

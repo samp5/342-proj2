@@ -12,6 +12,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import my_weather.gridPoint.GridPoint;
 
+/** 
+ * used for getting weather forecasts statically.
+ * likely should not be instantiated.
+ *
+ * most useful methods:
+ *  - {@code getHourlyForecastAsync}
+ *  - {@code getHourlyForecast}
+ */
 public class MyWeatherAPI {
   // amount of retries to attempt if status code 301 is read
   private static int MAX_RETRIES = 5;

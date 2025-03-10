@@ -72,7 +72,7 @@ public class WeatherObservations {
     }
 
     // parse the response body into an object
-    Root r = getObject(response.body());
+    ObservationJson r = getObject(response.body());
     if (r == null) {
       System.err.println("Failed to parse JSon");
       return null;
@@ -87,11 +87,11 @@ public class WeatherObservations {
    * @param json the json to parse in string form
    * @return the {@code Root} object parsed
    */
-  public static Root getObject(String json) {
+  public static ObservationJson getObject(String json) {
     ObjectMapper om = new ObjectMapper();
-    Root toRet = null;
+    ObservationJson toRet = null;
     try {
-      toRet = om.readValue(json, Root.class);
+      toRet = om.readValue(json, ObservationJson.class);
       Observations p = toRet.properties;
 
     } catch (JsonProcessingException e) {

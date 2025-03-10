@@ -29,6 +29,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import javafx.stage.Popup;
 
+/**
+ * Main Application Class.
+ * likely should not be referenced.
+ */
 public class JavaFX extends Application {
   // scenes to store
   TodayScene todayScene;

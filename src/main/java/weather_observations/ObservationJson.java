@@ -3,11 +3,12 @@ package weather_observations;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Barometric pressure weather observation.
+ * Root of data for a weather observation.
  * For use with {@code Observations}
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class BarometricPressure {
-  public double value;
-  public String unitCode;
+public class ObservationJson {
+  public String type;
+  public Observations properties;
+  
 }

@@ -12,6 +12,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import views.components.events.NotificationEvent;
 
+/**
+ * Allows for simple building and sending of notifications to the current view.
+ * Typically used for sending quick messages to the user for an error or an update on their actions.
+ */
 public class NotificationBuilder {
 
   Optional<String> imagePath = Optional.empty();
