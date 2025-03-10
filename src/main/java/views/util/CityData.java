@@ -14,8 +14,6 @@ import java.sql.ResultSet;
  * Reads a local SQL database to create the data.
  */
 public class CityData {
-  // list of cities
-  CompletableFuture<ObservableList<String>> cityList;
 
   /**
    * Contains data related to cities, such as location and name
@@ -28,12 +26,12 @@ public class CityData {
     /**
      * Create a new {@code City} with each of its stored data points.
      *
-     * @param state the state the city is in
+     * @param state      the state the city is in
      * @param shortState the state abbreviation for {@code state}
-     * @param cityName the name of the city
-     * @param county the county of this city instance
-     * @param lat the latitude of the city
-     * @param lon the longitude of the city
+     * @param cityName   the name of the city
+     * @param county     the county of this city instance
+     * @param lat        the latitude of the city
+     * @param lon        the longitude of the city
      */
     public City(
         String state, String shortState,
@@ -49,16 +47,16 @@ public class CityData {
     }
   }
 
-  public CityData() {}
+  public CityData() {
+  }
 
   public ObservableList<City> getCityList() {
 
-    ObservableList<City> l = FXCollections.observableArrayList();
+    ObservableList<City> cityList = FXCollections.observableArrayList();
 
     // get path to our db
     String url = getClass().getResource("/db/us_cities.db").toExternalForm();
-    String sql =
-        "select CITY, STATE_NAME, STATE_CODE, COUNTY, LATITUDE, LONGITUDE from US_CITIES inner join US_STATES on US_CITIES.ID_STATE = US_STATES.ID";
+    String sql = "select CITY, STATE_NAME, STATE_CODE, COUNTY, LATITUDE, LONGITUDE from US_CITIES inner join US_STATES on US_CITIES.ID_STATE = US_STATES.ID";
 
     // parse the data from the db
     try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + url)) {
@@ -67,20 +65,19 @@ public class CityData {
       ResultSet rs = stmt.executeQuery(sql);
 
       while (rs.next()) {
-        l.add(
-          new City(
-            rs.getString("STATE_NAME"),
-            rs.getString("STATE_CODE"),
-            rs.getString("CITY"),
-            rs.getString("COUNTY"),
-            rs.getDouble("LATITUDE"),
-            rs.getDouble("LONGITUDE")
-          )
-        );
+        cityList.add(
+            new City(
+                rs.getString("STATE_NAME"),
+                rs.getString("STATE_CODE"),
+                rs.getString("CITY"),
+                rs.getString("COUNTY"),
+                rs.getDouble("LATITUDE"),
+                rs.getDouble("LONGITUDE")));
       }
     } catch (SQLException e) {
       System.err.println(e.getMessage());
+      throw new RuntimeException("Exception occurred while reading database", e);
     }
-    return l;
+    return cityList;
   }
 }
