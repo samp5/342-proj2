@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 
+import views.util.UnitHandler.TemperatureUnit;
+
 /**
  * Settings handler and manager for the program.
  * Likely should not be instantiated.
@@ -27,15 +29,34 @@ public class Settings {
      */
     private static SettingsLoader fromSettings() {
       SettingsLoader sl = new SettingsLoader();
-      sl.tempUnit = Settings.tempUnit;
+      if (Settings.tempUnit == TemperatureUnit.Celsius) {
+        sl.tempUnit = 'C';
+      } else {
+        sl.tempUnit = 'F';
+      }
+
       sl.lastLoc = Settings.lastLoc;
       sl.lastPage = Settings.lastPage;
       
       return sl;
     }
+
+    /**
+     * write this object's values into static {@code Settings}
+     */
+    private void toSettings() {
+      if (this.tempUnit == 'C') {
+        Settings.tempUnit = TemperatureUnit.Celsius;
+      } else {
+        Settings.tempUnit = TemperatureUnit.Fahrenheit;
+      }
+
+      Settings.lastPage = this.lastPage;
+      Settings.lastLoc = this.lastLoc;
+    }
   }
 
-  private static char tempUnit;
+  private static TemperatureUnit tempUnit;
   private static double[] lastLoc;
   private static int lastPage;
 
@@ -44,7 +65,7 @@ public class Settings {
    *
    * @return the current temp unit saved in settings
    */
-  public static char getTempUnit() {
+  public static TemperatureUnit getTempUnit() {
     return tempUnit;
   }
 
@@ -53,7 +74,7 @@ public class Settings {
    * 
    * @param tempUnit the new unit
    */
-  public static void setTempUnit(char tempUnit) {
+  public static void setTempUnit(TemperatureUnit tempUnit) {
     Settings.tempUnit = tempUnit;
   }
 
@@ -123,9 +144,7 @@ public class Settings {
     SettingsLoader s = getObject(settingsStr);
 
     // load the settings
-    Settings.tempUnit = s.tempUnit;
-    Settings.lastLoc = s.lastLoc;
-    Settings.lastPage = s.lastPage;
+    s.toSettings();
   }
 
   /**

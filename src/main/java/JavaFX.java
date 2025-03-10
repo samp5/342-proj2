@@ -54,6 +54,9 @@ public class JavaFX extends Application {
       return;
     }
 
+    // set the temperature unit from settings
+    UnitHandler.setUnit(Settings.getTempUnit());
+
     launch(args);
   }
 

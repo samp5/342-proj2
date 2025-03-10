@@ -113,8 +113,7 @@ public class TodayScene extends DayScene {
 
     setTemp(now.temperature);
     setShortForecast(now.shortForecast);
-
-    feelsLikeTxt.setText(String.format("Feels like %d°F", currentObservations.windChill.getTemperature()));
+    updateTextFields();
 
     try {
       icon = new IconResolver().getIcon(now.shortForecast, now.isDaytime);
@@ -124,7 +123,7 @@ public class TodayScene extends DayScene {
     weatherIcon.setImage(icon);
 
     tempGraph =
-        new TempGraph(currentForecast, TemperatureUnit.Fahrenheit);
+        new TempGraph(currentForecast, UnitHandler.getUnit());
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
@@ -169,7 +168,7 @@ public class TodayScene extends DayScene {
     scene.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
       TemperatureUnit unit = event.getUnit();
       updateTempGraph(unit);
-      updateTextFields(unit);
+      updateTextFields();
     });
   }
 
@@ -191,7 +190,12 @@ public class TodayScene extends DayScene {
   private void setTemp(int f) {
     fahrenheit = f;
     celsius = (int) ((f - 32.) * 5. / 9.);
-    temperatureTxt.setText(String.format("%d", f));
+
+    if (UnitHandler.getUnit() == TemperatureUnit.Celsius) {
+      setUnitCelcius();
+    } else {
+      setUnitFahrenheit();
+    }
   }
 
   /**
@@ -244,9 +248,9 @@ public class TodayScene extends DayScene {
   /**
    * changes text fields when the temperature unit is changed
    */
-  private void updateTextFields(TemperatureUnit unit) {
+  private void updateTextFields() {
     String fmt;
-    if (unit == TemperatureUnit.Celsius) {
+    if (UnitHandler.getUnit() == TemperatureUnit.Celsius) {
       fmt = "%d°C";
     } else {
       fmt = "%d°F";
@@ -266,9 +270,6 @@ public class TodayScene extends DayScene {
     celsiusBtn.setOnAction(e -> {
       setUnitCelcius();
     });
-
-    // initialize default to fahrenheit
-    setUnitFahrenheit();
 
     // add specific style classes
     fahrenheitBtn.getStyleClass().add("temperature-button");

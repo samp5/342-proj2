@@ -2,6 +2,7 @@ package views.util;
 
 import javafx.event.Event;
 import javafx.scene.Node;
+import settings.Settings;
 import views.components.events.TempUnitEvent;
 
 /**
@@ -46,8 +47,10 @@ public class UnitHandler {
    */
   public static void setUnit(TemperatureUnit unit) {
     currentUnit = unit;
+    Settings.setTempUnit(unit);
     changed = true;
-    Event.fireEvent(emitter, new TempUnitEvent(unit));
+
+    if (emitter != null) Event.fireEvent(emitter, new TempUnitEvent(unit));
   }
 
   /**
