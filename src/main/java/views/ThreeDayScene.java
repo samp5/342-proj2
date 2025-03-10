@@ -14,17 +14,25 @@ import views.components.TempGraph;
 import views.components.events.DaySelectionEvent;
 import views.components.events.TempUnitEvent;
 import views.util.UnitHandler;
-import views.util.UnitHandler.TemperatureUnit;
 import views.components.HumidityGraph;
 
 public class ThreeDayScene extends DayScene {
+  // scene blocking
   HBox dayCollectionBox, graphContainer;
+
+  // currently stored forecast
   ArrayList<HourlyPeriod> currentForecast;
 
+  // visual elements
   TempGraph tempGraph;
   HumidityGraph humidGraph;
   VBox tempChart, humidChart;
 
+  /**
+   * create a new {@code ThreeDayScene} to show the forecast for the next 3 days
+   *
+   * @param forecast the forecast to use to make the view. must contain at least 3 days worth of data
+   */
   public ThreeDayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
 
@@ -35,12 +43,18 @@ public class ThreeDayScene extends DayScene {
     styleComponents();
   }
 
+  /**
+   * apply the {@code currentForecast} to the view, updating elements
+   */
   protected void applyForecast() {
     DayCollection collection = new DayCollection(3, currentForecast, DayViewType.ThreeDay);
     dayCollectionBox.getChildren().setAll(collection.component());
     graphContainer.getChildren().setAll();
   }
 
+  /**
+   * initialize all components
+   */
   protected void initComponents() {
     super.initComponents();
 
@@ -49,6 +63,10 @@ public class ThreeDayScene extends DayScene {
     mainView.getChildren().addAll(dayCollectionBox, graphContainer);
   }
 
+  /**
+   * returns the scene.
+   * also updates the view if the temperature has changed.
+   */
   @Override
   public Scene getScene() {
     if (UnitHandler.hasChanged()) {
@@ -59,6 +77,9 @@ public class ThreeDayScene extends DayScene {
     return scene;
   }
 
+  /**
+   * style all view components
+   */
   private void styleComponents() {
     graphContainer.setSpacing(40);
     graphContainer.setAlignment(Pos.CENTER);
@@ -66,12 +87,19 @@ public class ThreeDayScene extends DayScene {
     scene.getStylesheets().add("css/tempGraph.css");
   }
 
+  /**
+   * update the view to use a new forecast
+   */
   public void update(ArrayList<HourlyPeriod> forecast) {
     currentForecast = forecast;
     applyForecast();
     //updateTempGraph();
   }
 
+  /**
+   * updates the temperature graph with a new one from the stored forecast.
+   * used for changing units while in this view
+   */
   private void updateTempGraph() {
     // find the location of the current chart
     int chartNdx = graphContainer.getChildren().indexOf(tempChart);
@@ -88,6 +116,11 @@ public class ThreeDayScene extends DayScene {
     tempChart.setMaxWidth(1000);
   }
 
+  /**
+   * create and display graphs related to a certain {@code Day}
+   *
+   * @param d the day to show graphs for
+   */
   public void showGraphs(Day d) {
     tempGraph =
         new TempGraph(d.getForecast(), UnitHandler.getUnit());
@@ -98,6 +131,9 @@ public class ThreeDayScene extends DayScene {
     graphContainer.getChildren().setAll(tempChart, humidChart);
   }
 
+  /**
+   * add all event handlers in this view
+   */
   private void addEventHandlers() {
     this.scene.addEventHandler(DaySelectionEvent.DAY_SELECTION, day -> {
       showGraphs(day.selection());

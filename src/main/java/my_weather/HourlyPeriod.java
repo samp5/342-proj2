@@ -2,6 +2,11 @@ package my_weather;
 
 import java.util.Date;
 
+/**
+ * An hourly period of data. 
+ * Contains most forecast information needed for app functionality.
+ * Typically created by use of {@code MyWeatherAPI}
+ */
 public class HourlyPeriod {
   public int number;
   public String name;

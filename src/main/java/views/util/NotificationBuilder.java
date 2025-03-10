@@ -2,6 +2,7 @@ package views.util;
 
 import java.util.Optional;
 
+import javafx.css.StyleClass;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -68,6 +69,9 @@ public class NotificationBuilder {
     origin.fireEvent(new NotificationEvent(component, this.showDuration));
   }
 
+  /**
+   * Get the component for the notification
+   */
   private VBox component() {
     HBox innerBox = this.imagePath.map(path -> {
       Image img;
@@ -103,6 +107,11 @@ public class NotificationBuilder {
     return component;
   }
 
+  /**
+   * Get the {@code StyleClass} string name for this type of notification's text
+   *
+   * @return styleClass ths {@code String} that contains the style for this notification's text
+   */
   private String textStyleClass() {
     switch (this.type) {
       case Error:
@@ -116,6 +125,11 @@ public class NotificationBuilder {
     }
   }
 
+  /**
+   * Get the {@code StyleClass} string name for this type of notification
+   *
+   * @return styleClass ths {@code String} that contains the style for this notification
+   */
   private String styleClass() {
     switch (this.type) {
       case Error:
@@ -129,6 +143,9 @@ public class NotificationBuilder {
     }
   }
 
+  /**
+   * Set this notification's icon based on its type
+   */
   private void setIconByType() {
     if (this.imagePath.isPresent()) {
       return;

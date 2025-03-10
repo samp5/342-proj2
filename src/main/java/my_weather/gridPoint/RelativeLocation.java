@@ -2,6 +2,9 @@ package my_weather.gridPoint;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * Relative location of a GridPoint, contains location data.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RelativeLocation {
   @JsonIgnoreProperties(ignoreUnknown = true)

@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
 
+/**
+ * Wind chill weather observation.
+ * For use with {@code Observations}
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WindChill {
   public double value;

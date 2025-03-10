@@ -2,7 +2,6 @@ package views;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Date;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -13,7 +12,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
@@ -28,6 +26,11 @@ import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
 import weather_observations.Observations;
 
+/**
+ * A single day view of the weather, extending {@code DayScene}.
+ * This is the primary view of the app.
+ * Allows for changing of units globally, and displays more detailed and useful information than other views.
+ */
 public class TodayScene extends DayScene {
   // display text
   TextField temperatureTxt, forecastTxt, unitSeparatorBar, feelsLikeTxt;
@@ -53,6 +56,7 @@ public class TodayScene extends DayScene {
   HumidityGraph humidGraph;
   VBox tempChart, humidChart;
 
+  // currently stored forecast and observations
   ArrayList<HourlyPeriod> currentForecast;
   Observations currentObservations;
 
@@ -89,6 +93,12 @@ public class TodayScene extends DayScene {
     voidFocus();
   }
 
+  /**
+   * update the view to use a new forecast and observations
+   *
+   * @param forecast the new forecast to use
+   * @param observations the new observations to use
+   */
   public void update(ArrayList<HourlyPeriod> forecast, Observations observations) {
     currentForecast = forecast;
     currentObservations = observations;
@@ -231,6 +241,9 @@ public class TodayScene extends DayScene {
     tempChart.setMinWidth(554);
   }
 
+  /**
+   * changes text fields when the temperature unit is changed
+   */
   private void updateTextFields(TemperatureUnit unit) {
     String fmt;
     if (unit == TemperatureUnit.Celsius) {
@@ -252,10 +265,6 @@ public class TodayScene extends DayScene {
     });
     celsiusBtn.setOnAction(e -> {
       setUnitCelcius();
-    });
-
-    fahrenheitBtn.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
-      System.out.println("recieved.");
     });
 
     // initialize default to fahrenheit
