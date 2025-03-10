@@ -6,6 +6,11 @@ import my_weather.HourlyPeriod;
 import my_weather.gridPoint.GridPoint;
 import weather_observations.Observations;
 
+/**
+ * Hold all the relevant collections for a change of location.
+ *
+ * This really should only be constructed via {@code JavaFX.changeLocation}
+ */
 public class LocationChangeData {
   public ArrayList<HourlyPeriod> periods;
   public Observations observations;
