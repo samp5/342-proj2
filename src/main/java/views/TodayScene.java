@@ -297,7 +297,7 @@ public class TodayScene extends DayScene {
   private void createSmallGraphs() {
     HourlyPeriod now = currentForecast.getFirst();
 
-    CompassBox compass = new CompassBox(now.windSpeed, now.windDirection);
+    CompassBox compass = new CompassBox(currentObservations.windSpeed.mph(), currentObservations.windDirection.value);
     compassBox = compass.component();
 
     PressureBox pressure = new PressureBox(currentObservations.barometricPressure.value);
