@@ -15,26 +15,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * Likely should not be instantiated.
  *
  * most useful methods:
- *  - {@code getNearestStation}
- *  - {@code getStations}
+ * - {@code getNearestStation}
+ * - {@code getStations}
  */
 public class Stations {
   /**
    * Find the nearest weather station in a grid to latitude and longitude points
    *
-   * @param region the weather region. typically found from a {@code my_weather.gridPoint} object
-   * @param gridX the x value for the grid point found similarly to above.
-   * @param gridY the y value for the grid point found similarly to above.
-   * @param lat the latitude value to compare with
-   * @param lon the longitude value to compare with
+   * @param region the weather region. typically found from a
+   *               {@code my_weather.gridPoint} object
+   * @param gridX  the x value for the grid point found similarly to above.
+   * @param gridY  the y value for the grid point found similarly to above.
+   * @param lat    the latitude value to compare with
+   * @param lon    the longitude value to compare with
    * @return the {@code String} code for the weather station
    */
-  public static String getNearestStation(String region, int gridX, int gridY, double lat, double lon) throws ConnectException {
+  public static String getNearestStation(String region, int gridX, int gridY, double lat, double lon)
+      throws ConnectException {
     // get all stations for the grid point
     ArrayList<Features> features = getStations(region, gridX, gridY);
 
     double minDist = Double.MAX_VALUE;
-    String id = "NO STATIONS";
+    String id = "NO_STATIONS";
+
+    if (features == null) {
+      return id;
+    }
 
     // calculate the closest station to lat and lon
     double dist, distLat, distLon;
@@ -55,9 +61,10 @@ public class Stations {
   /**
    * get all stations for a given region and grid point
    *
-   * @param region the weather region. typically found from a {@code my_weather.gridPoint} object
-   * @param gridX the x value for the grid point found similarly to above.
-   * @param gridY the y value for the grid point found similarly to above.
+   * @param region the weather region. typically found from a
+   *               {@code my_weather.gridPoint} object
+   * @param gridX  the x value for the grid point found similarly to above.
+   * @param gridY  the y value for the grid point found similarly to above.
    * @return a list of stations stored by their {@code Features}
    */
   public static ArrayList<Features> getStations(String region, int gridX, int gridY) throws ConnectException {
@@ -86,6 +93,10 @@ public class Stations {
 
     // turn the response into an arraylist to return
     ArrayList<Features> stations = new ArrayList<>();
+    if (r.features == null) {
+      return null;
+    }
+
     r.features.iterator().forEachRemaining(station -> stations.add((Features) station));
     return stations;
   }
@@ -107,6 +118,5 @@ public class Stations {
       e.printStackTrace();
     }
     return toRet;
-
   }
 }
