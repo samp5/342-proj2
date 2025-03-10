@@ -75,7 +75,7 @@ public class JavaFX extends Application {
 
     loadingScene = new LoadingScene();
 
-    // default lat and longitude
+    // load lat and longitude from settings
     double[] location = Settings.getLastLoc();
     double lat = location[0];
     double lon = location[1];
