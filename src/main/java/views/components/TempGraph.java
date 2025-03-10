@@ -90,9 +90,17 @@ public class TempGraph {
     }
   }
 
+  /**
+   * a class to store an hour
+   */
   public class Hour {
     private int hour;
 
+    /**
+     * make a new hour
+     *
+     * @param h the hour
+     */
     public Hour(int h) {
       this.hour = h;
     }
@@ -105,9 +113,17 @@ public class TempGraph {
     }
   }
 
+  /**
+   * a class to store a Temperature
+   */
   private class Temperature {
     private int temp;
 
+    /**
+     * make a new Temperature
+     *
+     * @param t the temperature
+     */
     public Temperature(int t) {
       this.temp = t;
     }
@@ -120,10 +136,19 @@ public class TempGraph {
     }
   }
 
+  /**
+   * a single {@code DataPoint} to be graphed. implements {@code Comparable} to allow for propper plotting
+   */
   private class DataPoint implements Comparable<DataPoint> {
     private Temperature temp;
     private Date date;
 
+    /**
+     * create a new {@code datapoint} given a day and temperature value
+     *
+     * @param day the {@code date} for the point
+     * @param t the temperature for the point
+     */
     public DataPoint(Date day, int t) {
       this.date = day;
       this.temp = new Temperature(t);
@@ -146,12 +171,21 @@ public class TempGraph {
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
+    /**
+     * get a datapoint for the {@code LineChart}
+     */
     @SuppressWarnings({"rawtypes", "unchecked"})
     public XYChart.Data asPoint() {
       XYChart.Data data = new XYChart.Data(this.time(), this.temperature());
       return data;
     }
 
+    /**
+     * part of {@code Comparable} implementation
+     * compares another {@code DataPoint} to this one
+     *
+     * @return {@code 1} if {@code this > other}; {@code -1} if {@code this < other}; {@code 0} if {@code this == other} 
+     */
     @Override
     public int compareTo(TempGraph.DataPoint arg0) {
       if (this.time() < arg0.time()) {
@@ -228,12 +262,15 @@ public class TempGraph {
   @SuppressWarnings("unchecked")
   public VBox component() {
 
+    // initialize the axes
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
     NumberAxis hourAxis = new NumberAxis(data.firstElement().time(), data.lastElement().time(),
         MILLISECONDS_IN_THREE_HOURS);
     NumberAxis tempAxis;
+
+    // add padding to the limits
     if (temp_limits.max() < 0) {
       tempAxis = new NumberAxis(temp_limits.min() + temp_limits.padDown(),
           temp_limits.max() - temp_limits.padDown(),
@@ -244,28 +281,32 @@ public class TempGraph {
           10);
     }
 
+    // style the axes
     this.styleTimeAxis(hourAxis);
     this.styleTempAxis(tempAxis);
 
+    // create the chart and series
     AreaChart<Number, Number> areaChart = new AreaChart<>(hourAxis, tempAxis);
-
     XYChart.Series<Number, Number> series = new XYChart.Series<>();
 
     for (DataPoint d : this.data) {
       series.getData().add(d.asPoint());
     }
-
     areaChart.getData().addAll(series);
 
+    // styling
     TempGraph.styleChart(areaChart);
 
+    // add and style the title
     Text title = new Text("Temperature");
     title.getStyleClass().add("chart-title");
 
+    // add and style the title box
     HBox titleBox = new HBox(title);
     titleBox.setAlignment(Pos.TOP_LEFT);
     titleBox.setPadding(new Insets(40, 0, 0, 40));
 
+    // place the title above the box
     VBox box = new VBox(titleBox, areaChart);
     box.setMaxHeight(300);
     box.getStyleClass().add("chart-backdrop");
@@ -289,13 +330,17 @@ public class TempGraph {
    * Style the given {@code NumberAxis}
    */
   public void styleTimeAxis(NumberAxis hours) {
-
     hours.setMinorTickVisible(false);
     hours.setLabel("");
     hours.setBorder(Border.EMPTY);
     hours.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 20));
     hours.setTickLabelFormatter(new StringConverter<Number>() {
 
+      /**
+       * convert the tick label to proper AM/PM labels
+       *
+       * @return a {@code String} of the data label
+       */
       @SuppressWarnings("deprecation")
       @Override
       public String toString(Number object) {
@@ -313,6 +358,9 @@ public class TempGraph {
         }
       }
 
+      /**
+       * [IGNORE]
+       */
       @Override
       public Number fromString(String string) {
         throw new UnsupportedOperationException("Unimplemented method 'fromString'");
@@ -324,21 +372,30 @@ public class TempGraph {
    * Style the given {@code NumberAxis}
    */
   public void styleTempAxis(NumberAxis temp) {
-
     temp.setMinorTickVisible(false);
     temp.setLabel("");
     temp.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 18));
     temp.setBorder(Border.EMPTY);
     temp.setTickLabelFormatter(new StringConverter<Number>() {
+
+      /**
+       * convert the datapoint to proper percentage label
+       *
+       * @return a {@code String} of the percentage label
+       */
       @Override
       public String toString(Number object) {
         return String.format("%d °", object.intValue());
       }
 
+      /**
+       * [IGNORE]
+       */
       @Override
       public Number fromString(String string) {
         throw new UnsupportedOperationException("Unimplemented method 'fromString'");
       }
+
     });
   }
 

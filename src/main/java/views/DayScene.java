@@ -9,11 +9,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import views.components.sidebar.Sidebar;
 
+/**
+ * A generic and abstract class for all scenes to extend.
+ * Shares a sidebar will all other scenes, transfered automatically if given during sidebar initialization.
+ * Has functionality to void focus and is otherwise a base scene.
+ */
 public abstract class DayScene {
   protected Sidebar sidebar;
-  protected VBox sidebarBox;
   protected ScrollPane mainScrollable;
-  protected VBox mainView;
+  protected VBox mainView, sidebarBox;
   protected HBox sceneBox;
   protected Scene scene;
   private Canvas focusVoid = new Canvas();
@@ -34,7 +38,7 @@ public abstract class DayScene {
     sceneBox = new HBox(sidebarBox, mainScrollable, focusVoid);
     scene = new Scene(sceneBox, 1440, 900);
 
-    // listen for events
+    // listen for click events
     scene.setOnMouseClicked(event -> {
       voidFocus();
     });
@@ -54,6 +58,7 @@ public abstract class DayScene {
     // - scrollable
     mainScrollable.setMinWidth(1440 - 256);
 
+    // add always used stylesheets
     scene.getStylesheets().add("css/baseScene.css");
     scene.getStylesheets().add("css/sidebar.css");
     scene.getStylesheets().add("css/sidebarHeader.css");

@@ -1,5 +1,9 @@
 package my_weather.gridPoint;
 
+/**
+ * A gridpoint containing a region, location, and grid coordinates.
+ * Typically for use with {@code MyWeatherAPI}
+ */
 public class GridPoint {
   public int gridX, gridY;
   public String region;

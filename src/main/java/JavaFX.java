@@ -15,12 +15,10 @@ import views.ThreeDayScene;
 import views.TodayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.events.NotificationEvent;
-import views.components.events.TempUnitEvent;
 import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
-import views.util.UnitHandler;
 import weather_observations.Observations;
 import weather_observations.WeatherObservations;
 
@@ -32,18 +30,23 @@ import java.util.concurrent.TimeoutException;
 import javafx.stage.Popup;
 
 public class JavaFX extends Application {
+  // scenes to store
   TodayScene todayScene;
   ThreeDayScene threeDayScene;
   LoadingScene loadingScene;
 
+  // global sidebar and the stage
   Sidebar sidebar;
   Stage primaryStage;
 
+  // @MAIN
   public static void main(String[] args) {
     launch(args);
   }
 
-  // feel free to remove the starter code from this method
+  /**
+   * runs on app startup
+   */
   @Override
   public void start(Stage primaryStage) throws Exception {
     this.primaryStage = primaryStage;
@@ -52,14 +55,19 @@ public class JavaFX extends Application {
 
     addEventHandlers();
 
-    GridPoint gridPoint = null;
-    ArrayList<HourlyPeriod> forecast = null;
+    // data to load
+    GridPoint gridPoint;
+    ArrayList<HourlyPeriod> forecast;
     Observations observations;
 
     loadingScene = new LoadingScene();
 
+    // default lat and longitude
     double lat = 41.8781;
     double lon = -87.6298;
+
+    // try to load the forecast and weather observations.
+    // fails gracefully. by setting loading scene and sending notification
     try {
       gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
       forecast =
@@ -85,13 +93,16 @@ public class JavaFX extends Application {
       return;
     }
 
+    // if for some reason the forecast is still null, exit hard.
     if (forecast == null) {
       throw new RuntimeException("Forecast did not load");
     }
 
+    // create weather scenes
     todayScene = new TodayScene(forecast, observations);
     threeDayScene = new ThreeDayScene(forecast);
 
+    // create new sidebar based on scenes
     sidebar = Sidebar.fromScenes(
         new Pair<String, DayScene>("Daily Forecast", todayScene),
         new Pair<String, DayScene>("Three Day Forecast", threeDayScene));
@@ -128,14 +139,17 @@ public class JavaFX extends Application {
     double lat = event.getLat();
     double lon = event.getLon();
 
+    // start async call to get grid points
     CompletableFuture<GridPoint> pointFuture =
         MyWeatherAPI.getGridPointAsync(lat, lon);
 
-    GridPoint point = null;
+    // store current scene then change to loading scene
+    GridPoint point;
     Scene lastScene = primaryStage.getScene();
     primaryStage.setScene(loadingScene.getScene());
 
     try {
+      // get the points. if something goes wrong, restore previous scene
       point = pointFuture.get();
       if (point == null) {
         primaryStage.setScene(lastScene);
@@ -146,30 +160,30 @@ public class JavaFX extends Application {
       new NotificationBuilder()
           .withMessage("No Connection: Check your internet connection and try again")
           .ofType(NotificationType.ConnectionError).showFor(5).fire(lastScene.getRoot());
+
       primaryStage.setScene(lastScene);
       return;
     } catch (Exception e) {
       primaryStage.setScene(lastScene);
-
       sidebar.recievedInvalidLocation();
+
       return;
     }
 
-
-
-    // get forecast
+    // start async calls for the forecast and weather observations
     CompletableFuture<ArrayList<HourlyPeriod>> periodFuture =
         MyWeatherAPI.getHourlyForecastAsync(point.region,
             point.gridX, point.gridY);
     CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region, point.gridX, point.gridY, lat, lon);
 
-    ArrayList<HourlyPeriod> periods = null;
+    ArrayList<HourlyPeriod> periods;
     Observations observations;
 
+    // load the forecast and observations. if either is null or error occurs, load last scene
     try {
       periods = periodFuture.get(3, TimeUnit.SECONDS);
       observations = observationFuture.get();
-      if (periods == null) {
+      if (periods == null || observations == null) {
         primaryStage.setScene(lastScene);
         sidebar.recievedInvalidLocation();
         return;
@@ -194,12 +208,15 @@ public class JavaFX extends Application {
       return;
     }
 
+    // successful data load, set new location and scene
     sidebar.setTitle(point.location);
-
     primaryStage.setScene(lastScene);
     sidebar.recievedValidLocation();
   }
 
+  /**
+   * show a popup to the current scene
+   */
   private void showPopup(Stage s, VBox inner_element, int duration) {
     Popup p = new Popup();
 

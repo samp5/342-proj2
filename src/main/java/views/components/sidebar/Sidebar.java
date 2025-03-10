@@ -15,6 +15,12 @@ import views.components.events.LocationChangeEvent;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 
+/**
+ * A sidebar meant for navigation between {@code Scene}s.
+ * When calling the {@code Sidebar.fromScenes()} method, creates a sidebar which navigates
+ * between any of the given scenes.
+ * Also allows for input and changing of the app's current location for weather readings.
+ */
 public class Sidebar {
   // tracks lat/lon validity
   boolean latValid = true;
@@ -30,7 +36,9 @@ public class Sidebar {
   // sections
   ArrayList<Section> sections;
 
-
+  /**
+   * a {@code Header} for the {@code Sidebar}
+   */
   public class Header {
     static final int titleFontSize = 40;
     VBox container;
@@ -45,7 +53,6 @@ public class Sidebar {
     TextField latInput, lonInput;
 
     public Header() {
-
       buildTextInput();
 
       title = new Text(getTitle());
@@ -55,15 +62,24 @@ public class Sidebar {
       container.setPadding(new Insets(10, 0, 10, 10));
     }
 
+    /**
+     * get the {@code VBox} component for the {@code Header}
+     */
     public VBox component() {
       return this.container;
     }
 
+    /**
+     * style the title for the {@code Header}
+     */
     public void styleTitle() {
       title.getStyleClass().add("side-bar-header");
       title.setWrappingWidth(256);
     }
 
+    /**
+     * add listeners for typing in input boxes to style invalid inputs or send location changes
+     */
     private void setInputOnAction() {
       latInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
         latValid = inputHighlighter(latInput, newvalue);
@@ -108,6 +124,13 @@ public class Sidebar {
       });
     }
 
+    /**
+     * highlight a {@code TextField} based on its input. invalid input is highlighted red
+     *
+     * @param tf the {@code TextField} to check
+     * @param newVal the new string value
+     * @return {@code true} if input is valid, {@code false} otherwise
+     */
     private boolean inputHighlighter(TextField tf, String newVal) {
       try {
         Double.parseDouble(newVal);
@@ -121,6 +144,9 @@ public class Sidebar {
       return true;
     }
 
+    /**
+     * create text inputs to input latitude and longitude
+     */
     private void buildTextInput() {
       latInput = new TextField("41.8781");
       lonInput = new TextField("-87.6298");
@@ -153,6 +179,11 @@ public class Sidebar {
   VBox container;
   String title = "Chicago, IL";
 
+  /**
+   * create a new {@code Sidebar} with given {@code Section}s
+   *
+   * @param sections the sections to add to the {@code Sidebar}
+   */
   public <T extends Collection<Section>> Sidebar(T sections) {
     this.sections = new ArrayList<>(sections);
     this.header = new Header();
@@ -162,6 +193,11 @@ public class Sidebar {
     container.getChildren().add(new CitySearch().component());
   }
 
+  /**
+   * create a new {@code Sidebar} with navigation targets pre-made for the given {@code DayScene}s
+   *
+   * @param namedScenes an amount of {@code Pair} scenes. given in the format of {{@code String} display name, {@code DayScene} scene}
+   */
   @SafeVarargs
   public static Sidebar fromScenes(Pair<String, DayScene>... namedScenes) {
     ArrayList<Section> sections = new ArrayList<>();
@@ -182,23 +218,47 @@ public class Sidebar {
     return sb;
   }
 
+  /**
+   * add a new {@code Section} to the {@code Sidebar}
+   *
+   * @param section the new {@code Section} to add
+   */
   public void addSection(Section section) {
     this.sections.add(section);
   }
 
+  /**
+   * set the title of the sidebar
+   *
+   * @param title the {@code String} title to set
+   */
   public void setTitle(String title) {
     this.title = title;
     this.header.title.setText(this.title);
   }
 
+  /**
+   * get the title of the {@code Sidebar}
+   *
+   * @return the title of the {@code Sidebar}
+   */
   public String getTitle() {
     return this.title;
   }
 
+  /**
+   * get the component for the {@code Sidebar}
+   *
+   * @return the component for the {@code Sidebar}
+   */
   public VBox component() {
     return this.container;
   }
 
+  /**
+   * create and fire a notification for recieving an invalid location on the latitude, longitude inputs.
+   * set the style of the inputs to invalid
+   */
   public void recievedInvalidLocation() {
 
     new NotificationBuilder("National Weather Service does not have data for this location")
@@ -210,6 +270,10 @@ public class Sidebar {
     header.latInput.getStyleClass().add("invalid-input");
   }
 
+  /**
+   * create and fire a notification for recieving a valid location on the latitude, longitude inputs.
+   * set the style of the inputs to valid
+   */
   public void recievedValidLocation() {
 
     new NotificationBuilder("Changing location to " + this.title).ofType(NotificationType.Info)

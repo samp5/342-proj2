@@ -18,8 +18,8 @@ import javafx.util.StringConverter;
 import my_weather.HourlyPeriod;
 
 /**
- * TempGraph holds state for a temperature
- * line graph. The component can be obtained via {@code TempGraph.component()}
+ * {@code HumidityGraph} holds state for a humidity
+ * line graph. The component can be obtained via {@code HumidityGraph.component()}
  */
 public class HumidityGraph {
   Vector<DataPoint> data;
@@ -76,9 +76,17 @@ public class HumidityGraph {
     }
   }
 
+  /**
+   * a class to store an hour
+   */
   public class Hour {
     private int hour;
 
+    /**
+     * make a new hour
+     *
+     * @param h the hour
+     */
     public Hour(int h) {
       this.hour = h;
     }
@@ -91,9 +99,17 @@ public class HumidityGraph {
     }
   }
 
+  /**
+   * a class to store a Humidity value
+   */
   private class Humidity {
     private int temp;
 
+    /**
+     * make a new Humidity
+     *
+     * @param t the humidity
+     */
     public Humidity(int t) {
       this.temp = t;
     }
@@ -106,10 +122,19 @@ public class HumidityGraph {
     }
   }
 
+  /**
+   * a single {@code DataPoint} to be graphed. implements {@code Comparable} to allow for propper plotting
+   */
   private class DataPoint implements Comparable<DataPoint> {
     private Humidity temp;
     private Date date;
 
+    /**
+     * create a new {@code datapoint} given a day and humidity value
+     *
+     * @param day the {@code date} for the point
+     * @param t the humidity for the point
+     */
     public DataPoint(Date day, int t) {
       this.date = day;
       this.temp = new Humidity(t);
@@ -132,12 +157,21 @@ public class HumidityGraph {
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
+    /**
+     * get a datapoint for the {@code LineChart}
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public XYChart.Data asPoint() {
       XYChart.Data data = new XYChart.Data(this.time(), this.temperature());
       return data;
     }
 
+    /**
+     * part of {@code Comparable} implementation
+     * compares another {@code DataPoint} to this one
+     *
+     * @return {@code 1} if {@code this > other}; {@code -1} if {@code this < other}; {@code 0} if {@code this == other} 
+     */
     @Override
     public int compareTo(HumidityGraph.DataPoint arg0) {
       if (this.time() < arg0.time()) {
@@ -207,6 +241,7 @@ public class HumidityGraph {
   @SuppressWarnings("unchecked")
   public VBox component() {
 
+    // initialize the axes
     // NOTE: This is the recommended way to do this,
     // see the tutorial for LineCharts here:
     // https://docs.oracle.com/javafx/2/charts/line-chart.htm
@@ -216,28 +251,32 @@ public class HumidityGraph {
         Math.min(humid_limits.max() + humid_limits.pad(), 100),
         10);
 
+    // style the axes
     this.styleTimeAxis(hourAxis);
     this.styleHumidAxis(humidAxis);
 
+    // create the chart and series
     AreaChart<Number, Number> areaChart = new AreaChart<>(hourAxis, humidAxis);
-
     XYChart.Series<Number, Number> series = new XYChart.Series<>();
 
     for (DataPoint d : this.data) {
       series.getData().add(d.asPoint());
     }
-
     areaChart.getData().addAll(series);
 
+    // styling
     HumidityGraph.styleChart(areaChart);
 
+    // add and style the title
     Text title = new Text("Relative Humidity");
     title.getStyleClass().add("chart-title");
 
+    // add and style the title box
     HBox titleBox = new HBox(title);
     titleBox.setAlignment(Pos.TOP_LEFT);
     titleBox.setPadding(new Insets(40, 0, 0, 40));
 
+    // place the title above the chart
     VBox box = new VBox(titleBox, areaChart);
     box.setMaxHeight(300);
     box.getStyleClass().add("chart-backdrop");
@@ -262,13 +301,17 @@ public class HumidityGraph {
    * Style the given {@code NumberAxis}
    */
   public void styleTimeAxis(NumberAxis hours) {
-
     hours.setMinorTickVisible(false);
     hours.setLabel("");
     hours.setBorder(Border.EMPTY);
     hours.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 20));
     hours.setTickLabelFormatter(new StringConverter<Number>() {
 
+      /**
+       * convert the tick label to proper AM/PM labels
+       *
+       * @return a {@code String} of the data label
+       */
       @SuppressWarnings("deprecation")
       @Override
       public String toString(Number object) {
@@ -286,10 +329,14 @@ public class HumidityGraph {
         }
       }
 
+      /**
+       * [IGNORE]
+       */
       @Override
       public Number fromString(String string) {
         throw new UnsupportedOperationException("Unimplemented method 'fromString'");
       }
+
     });
   }
 
@@ -297,21 +344,30 @@ public class HumidityGraph {
    * Style the given {@code NumberAxis}
    */
   public void styleHumidAxis(NumberAxis temp) {
-
     temp.setMinorTickVisible(false);
     temp.setLabel("");
     temp.setTickLabelFont(new Font("Atkinson Hyperlegible Bold", 18));
     temp.setBorder(Border.EMPTY);
     temp.setTickLabelFormatter(new StringConverter<Number>() {
+
+      /**
+       * convert the datapoint to proper percentage label
+       *
+       * @return a {@code String} of the percentage label
+       */
       @Override
       public String toString(Number object) {
         return String.format("%d", object.intValue()) + "% ";
       }
 
+      /**
+       * [IGNORE]
+       */
       @Override
       public Number fromString(String string) {
         throw new UnsupportedOperationException("Unimplemented method 'fromString'");
       }
+
     });
   }
 

@@ -1,16 +1,21 @@
 package views;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 
+/**
+ * A loading scene which should not be seen for particularly long.
+ * This is used as an in between during certain periods of loading.
+ */
 public class LoadingScene extends DayScene {
   // scene blocking
   HBox headerContainer, graphContainer;
   Pane forecastBox;
   HBox smallCharts;
 
+  /**
+   * create a new loading scene
+   */
   public LoadingScene() {
     initComponents();
 
