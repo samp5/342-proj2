@@ -10,6 +10,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
+import settings.Settings;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
 import views.util.NotificationBuilder;
@@ -134,8 +135,9 @@ public class Sidebar {
      * create text inputs to input latitude and longitude
      */
     private void buildTextInput() {
-      latInput = new TextField("41.8781");
-      lonInput = new TextField("-87.6298");
+      double[] location = Settings.getLastLoc();
+      latInput = new TextField(Double.toString(location[0]));
+      lonInput = new TextField(Double.toString(location[1]));
 
       setInputOnAction();
 
@@ -163,7 +165,7 @@ public class Sidebar {
 
   // main vbox
   VBox container;
-  String title = "Chicago, IL";
+  String title;
 
   /**
    * create a new {@code Sidebar} with given {@code Section}s

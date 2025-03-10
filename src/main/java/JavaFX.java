@@ -8,6 +8,8 @@ import javafx.util.Duration;
 import javafx.util.Pair;
 import my_weather.HourlyPeriod;
 import my_weather.gridPoint.GridPoint;
+import settings.Settings;
+import settings.Settings.SettingsLoadException;
 import my_weather.MyWeatherAPI;
 import views.DayScene;
 import views.LoadingScene;
@@ -45,6 +47,12 @@ public class JavaFX extends Application {
 
   // @MAIN
   public static void main(String[] args) {
+    try {
+      Settings.loadSettings();
+    } catch (SettingsLoadException e) {
+      return;
+    }
+
     launch(args);
   }
 
@@ -67,8 +75,9 @@ public class JavaFX extends Application {
     loadingScene = new LoadingScene();
 
     // default lat and longitude
-    double lat = 41.8781;
-    double lon = -87.6298;
+    double[] location = Settings.getLastLoc();
+    double lat = location[0];
+    double lon = location[1];
 
     // try to load the forecast and weather observations.
     // fails gracefully. by setting loading scene and sending notification
@@ -111,6 +120,7 @@ public class JavaFX extends Application {
         new Pair<String, DayScene>("Daily Forecast", todayScene),
         new Pair<String, DayScene>("Three Day Forecast", threeDayScene));
 
+    sidebar.setTitle(gridPoint.location);
     todayScene.setActiveScene();
 
     primaryStage.setScene(todayScene.getScene());
