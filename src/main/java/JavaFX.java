@@ -26,6 +26,7 @@ import weather_observations.Observations;
 import weather_observations.WeatherObservations;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,10 @@ public class JavaFX extends Application {
   TodayScene todayScene;
   ThreeDayScene threeDayScene;
   LoadingScene loadingScene;
+
+  // enumerated scenes
+  ArrayList<DayScene> scenes = new ArrayList<>();
+  int sceneNdx;
 
   // global sidebar and the stage
   Sidebar sidebar;
@@ -119,16 +124,21 @@ public class JavaFX extends Application {
     todayScene = new TodayScene(forecast, observations);
     threeDayScene = new ThreeDayScene(forecast);
 
+    // enumerate scenes
+    sceneNdx = Settings.getLastScene();
+    Collections.addAll(scenes, todayScene, threeDayScene);
+
     // create new sidebar based on scenes
     sidebar = Sidebar.fromScenes(
       new Pair<String, DayScene>("Daily Forecast", todayScene),
       new Pair<String, DayScene>("Three Day Forecast", threeDayScene)
     );
-
     sidebar.setTitle(gridPoint.location);
-    todayScene.setActiveScene();
 
-    primaryStage.setScene(todayScene.getScene());
+    // set current scene
+    DayScene curScene = scenes.get(sceneNdx);
+    curScene.setActiveScene();
+    primaryStage.setScene(curScene.getScene());
     primaryStage.show();
   }
 
@@ -137,8 +147,12 @@ public class JavaFX extends Application {
    */
   private void addEventHandlers() {
     primaryStage.addEventHandler(NavigationEvent.NAVIGATE, event -> {
-      event.getTargetScene().setActiveScene();
-      primaryStage.setScene(event.getTargetScene().getScene());
+      DayScene newScene = event.getTargetScene();
+      sceneNdx = scenes.indexOf(newScene);
+      Settings.setLastScene(sceneNdx);
+
+      newScene.setActiveScene();
+      primaryStage.setScene(newScene.getScene());
     });
 
     primaryStage.addEventHandler(LocationChangeEvent.LOCATIONCHANGE, event -> {

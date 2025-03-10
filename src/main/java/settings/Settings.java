@@ -22,7 +22,7 @@ public class Settings {
   private static class SettingsLoader {
     public char tempUnit;
     public double[] lastLoc;
-    public int lastPage;
+    public int lastScene;
 
     /**
      * create a new {@code SettingsLoader} from current global {@code Settings}
@@ -36,7 +36,7 @@ public class Settings {
       }
 
       sl.lastLoc = Settings.lastLoc;
-      sl.lastPage = Settings.lastPage;
+      sl.lastScene = Settings.lastScene;
       
       return sl;
     }
@@ -51,14 +51,14 @@ public class Settings {
         Settings.tempUnit = TemperatureUnit.Fahrenheit;
       }
 
-      Settings.lastPage = this.lastPage;
+      Settings.lastScene = this.lastScene;
       Settings.lastLoc = this.lastLoc;
     }
   }
 
   private static TemperatureUnit tempUnit;
   private static double[] lastLoc;
-  private static int lastPage;
+  private static int lastScene;
 
   /**
    * get the current temp unit saved in settings
@@ -98,21 +98,21 @@ public class Settings {
   }
 
   /**
-   * get the last page saved in settings
+   * get the last scene saved in settings
    *
-   * @return the last page saved in settings
+   * @return the last scene saved in settings
    */
-  public static int getLastPage() {
-	  return lastPage;
+  public static int getLastScene() {
+	  return lastScene;
   }
 
   /**
-   * set the last page in settings
+   * set the last scene in settings
    * 
-   * @param lastPage the page index as seen in the sidebar
+   * @param lastScene the scene index as seen in the sidebar
    */
-  public static void setLastPage(int lastPage) {
-    Settings.lastPage = lastPage;
+  public static void setLastScene(int lastScene) {
+    Settings.lastScene = lastScene;
   }
 
   /**
