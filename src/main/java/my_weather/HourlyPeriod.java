@@ -3,8 +3,7 @@ package my_weather;
 import java.util.Date;
 
 /**
- * An hourly period of data. 
- * Contains most forecast information needed for app functionality.
+ * A one hour period of weather forecast data.
  * Typically created by use of {@code MyWeatherAPI}
  */
 public class HourlyPeriod {
@@ -24,4 +23,19 @@ public class HourlyPeriod {
   public String detailedForecast;
   public DewPoint dewpoint;
   public RelativeHumidity relativeHumidity;
+    
+  public class ProbabilityOfPrecipitation {
+    public String unitCode;
+    public int value;
+  }
+  
+  public class DewPoint {
+    public String unitCode;
+    public double value;
+  }
+  
+  public class RelativeHumidity {
+    public String unitCode;
+    public int value;
+  }
 }
