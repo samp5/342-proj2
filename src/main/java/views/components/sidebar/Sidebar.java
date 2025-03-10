@@ -18,9 +18,11 @@ import views.util.NotificationType;
 
 /**
  * A sidebar meant for navigation between {@code Scene}s.
- * When calling the {@code Sidebar.fromScenes()} method, creates a sidebar which navigates
+ * When calling the {@code Sidebar.fromScenes()} method, creates a sidebar which
+ * navigates
  * between any of the given scenes.
- * Also allows for input and changing of the app's current location for weather readings.
+ * Also allows for input and changing of the app's current location for weather
+ * readings.
  */
 public class Sidebar {
   // tracks lat/lon validity
@@ -79,7 +81,8 @@ public class Sidebar {
     }
 
     /**
-     * add listeners for typing in input boxes to style invalid inputs or send location changes
+     * add listeners for typing in input boxes to style invalid inputs or send
+     * location changes
      */
     private void setInputOnAction() {
       latInput.textProperty().addListener((observable, oldvalue, newvalue) -> {
@@ -112,9 +115,10 @@ public class Sidebar {
     }
 
     /**
-     * highlight a {@code TextField} based on its input. invalid input is highlighted red
+     * highlight a {@code TextField} based on its input. invalid input is
+     * highlighted red
      *
-     * @param tf the {@code TextField} to check
+     * @param tf     the {@code TextField} to check
      * @param newVal the new string value
      * @return {@code true} if input is valid, {@code false} otherwise
      */
@@ -182,9 +186,11 @@ public class Sidebar {
   }
 
   /**
-   * create a new {@code Sidebar} with navigation targets pre-made for the given {@code DayScene}s
+   * create a new {@code Sidebar} with navigation targets pre-made for the given
+   * {@code DayScene}s
    *
-   * @param namedScenes an amount of {@code Pair} scenes. given in the format of {{@code String} display name, {@code DayScene} scene}
+   * @param namedScenes an amount of {@code Pair} scenes. given in the format of
+   *                    {{@code String} display name, {@code DayScene} scene}
    */
   @SafeVarargs
   public static Sidebar fromScenes(Pair<String, DayScene>... namedScenes) {
@@ -244,13 +250,11 @@ public class Sidebar {
   }
 
   /**
-   * create and fire a notification for recieving an invalid location on the latitude, longitude inputs.
+   * create and fire a notification for recieving an invalid location on the
+   * latitude, longitude inputs.
    * set the style of the inputs to invalid
    */
   public void recievedInvalidLocation() {
-
-    new NotificationBuilder("National Weather Service does not have data for this location")
-        .ofType(NotificationType.Error).fire(this.container);
 
     header.lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
     header.lonInput.getStyleClass().add("invalid-input");
@@ -259,12 +263,13 @@ public class Sidebar {
   }
 
   /**
-   * create and fire a notification for recieving a valid location on the latitude, longitude inputs.
+   * create and fire a notification for recieving a valid location on the
+   * latitude, longitude inputs.
    * set the style of the inputs to valid
    */
   public void recievedValidLocation() {
 
-    new NotificationBuilder("Changing location to " + this.title).ofType(NotificationType.Info)
+    new NotificationBuilder("Changed location to " + this.title).ofType(NotificationType.Info)
         .fire(this.container);
 
     header.lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));

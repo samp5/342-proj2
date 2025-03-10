@@ -1,5 +1,6 @@
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -19,6 +20,7 @@ import views.components.events.LocationChangeEvent;
 import views.components.events.NotificationEvent;
 import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
+import views.util.LocationChangeData;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 import views.util.UnitHandler;
@@ -29,7 +31,6 @@ import java.util.ArrayList;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import javafx.stage.Popup;
 
 /**
@@ -84,10 +85,10 @@ public class JavaFX extends Application {
     // fails gracefully. by setting loading scene and sending notification
     try {
       gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
-      forecast =
-          my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
-              gridPoint.gridY);
-      observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat, lon);
+      forecast = my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
+          gridPoint.gridY);
+      observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat,
+          lon);
     } catch (Exception e) {
       primaryStage.setScene(loadingScene.getScene());
       primaryStage.show();
@@ -99,7 +100,8 @@ public class JavaFX extends Application {
             .withMessage(
                 "Failed to connect to the internet, Connect to the internet and restart the application")
             .ofType(NotificationType.ConnectionError).showFor(25)
-            .fire(loadingScene.getScene().getRoot());;
+            .fire(loadingScene.getScene().getRoot());
+        ;
       });
 
       delay.play();
@@ -118,9 +120,8 @@ public class JavaFX extends Application {
 
     // create new sidebar based on scenes
     sidebar = Sidebar.fromScenes(
-      new Pair<String, DayScene>("Daily Forecast", todayScene),
-      new Pair<String, DayScene>("Three Day Forecast", threeDayScene)
-    );
+        new Pair<String, DayScene>("Daily Forecast", todayScene),
+        new Pair<String, DayScene>("Three Day Forecast", threeDayScene));
 
     sidebar.setTitle(gridPoint.location);
     todayScene.setActiveScene();
@@ -155,80 +156,79 @@ public class JavaFX extends Application {
     double lat = event.getLat();
     double lon = event.getLon();
 
-    // start async call to get grid points
-    CompletableFuture<GridPoint> pointFuture =
-        MyWeatherAPI.getGridPointAsync(lat, lon);
-
-    // store current scene then change to loading scene
-    GridPoint point;
+    // Store the current scene
     Scene lastScene = primaryStage.getScene();
+
+    // Show loading scene first
     primaryStage.setScene(loadingScene.getScene());
 
-    try {
-      // get the points. if something goes wrong, restore previous scene
-      point = pointFuture.get();
+    // thenCompose is like flatMap but for CompletableFutures
+    // i.e. takes a CF<T> and a function which maps T to another CF<U> and returns
+    // CF<U> (as opposed to CF<CF<U>>)
+    MyWeatherAPI.getGridPointAsync(lat, lon).orTimeout(5, TimeUnit.SECONDS).thenCompose(point -> {
       if (point == null) {
+        throw new RuntimeException("National Weather Service does not have data for this location");
+      }
+
+      // Start async calls for forecast and weather observations
+      CompletableFuture<ArrayList<HourlyPeriod>> periodFuture = MyWeatherAPI.getHourlyForecastAsync(point.region,
+          point.gridX, point.gridY);
+      CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region,
+          point.gridX, point.gridY, lat, lon);
+
+      // return a combination of both the period future and observation future
+      return periodFuture.thenCombine(observationFuture, (periods, observations) -> {
+        if (periods == null || observations == null) {
+          throw new RuntimeException("Sorry, the National Weather Service does not provide data for " + point.location);
+        }
+        return new LocationChangeData(periods, observations, point);
+      }).orTimeout(3, TimeUnit.SECONDS);
+    }).thenAccept(result -> { // `thenAccept conditionally runs a consumer function on the previous Future's
+                              // sucessful completion
+
+      // NOTE:
+      // these Platform.runLater calls are needed because JavaFX UI updates
+      // run on a single thread.
+      //
+      // CompletableFuture methods like `thenAccept` run on **different thread**.
+      // JavaFX will ignore any updates to UI made from anywhere but their
+      // ❤ special❤ thread.
+      //
+      // So, we just need to schedule the update on the main thread. (which we can do
+      // with `Platform.runLater()`)
+
+      Platform.runLater(() -> {
+        // Update scenes
+        todayScene.update(result.periods, result.observations);
+        threeDayScene.update(result.periods);
+
+        // set new location and scene
+        sidebar.setTitle(result.point.location);
+        primaryStage.setScene(lastScene);
+        sidebar.recievedValidLocation();
+        Settings.setLastLoc(lat, lon);
+      });
+    }).exceptionally(ex -> { // This is the error case and only runs the enclosed func with an exceptional
+                             // completion from the calling future (where ex is the exception thrown)
+
+      // Again, see note above for necesscity of this `runLater` call
+      Platform.runLater(() -> {
+        String msg = ex.getMessage().substring(ex.getMessage().indexOf(":") + 2);
+        NotificationType type = NotificationType.Error;
+        if (msg.toLowerCase().contains("timeout")) {
+          msg = "Request timed out, check your internet connection";
+          type = NotificationType.ConnectionError;
+        }
         primaryStage.setScene(lastScene);
         sidebar.recievedInvalidLocation();
-        return;
-      }
-    } catch (ExecutionException e) {
-      new NotificationBuilder()
-          .withMessage("No Connection: Check your internet connection and try again")
-          .ofType(NotificationType.ConnectionError).showFor(5).fire(lastScene.getRoot());
-
-      primaryStage.setScene(lastScene);
-      return;
-    } catch (Exception e) {
-      primaryStage.setScene(lastScene);
-      sidebar.recievedInvalidLocation();
-
-      return;
-    }
-
-    // start async calls for the forecast and weather observations
-    CompletableFuture<ArrayList<HourlyPeriod>> periodFuture =
-        MyWeatherAPI.getHourlyForecastAsync(point.region,
-            point.gridX, point.gridY);
-    CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region, point.gridX, point.gridY, lat, lon);
-
-    ArrayList<HourlyPeriod> periods;
-    Observations observations;
-
-    // load the forecast and observations. if either is null or error occurs, load last scene
-    try {
-      periods = periodFuture.get(3, TimeUnit.SECONDS);
-      observations = observationFuture.get();
-      if (periods == null || observations == null) {
-        primaryStage.setScene(lastScene);
-        sidebar.recievedInvalidLocation();
-        return;
-      }
-      todayScene.update(periods, observations);
-      threeDayScene.update(periods);
-
-    } catch (TimeoutException timeout) {
-
-      primaryStage.setScene(lastScene);
-      new NotificationBuilder()
-          .withMessage("Request timed out, check your internet connection and try again")
-          .ofType(NotificationType.ConnectionError).fire(lastScene.getRoot());
-      return;
-
-    } catch (Exception e) {
-
-      primaryStage.setScene(lastScene);
-      new NotificationBuilder().withMessage("Error retrieving forecast data")
-          .ofType(NotificationType.ConnectionError).fire(lastScene.getRoot());
-
-      return;
-    }
-
-    // successful data load, set new location and scene
-    sidebar.setTitle(point.location);
-    primaryStage.setScene(lastScene);
-    sidebar.recievedValidLocation();
-    Settings.setLastLoc(lat, lon);
+        new NotificationBuilder()
+            .withMessage(msg)
+            .ofType(type)
+            .showFor(3)
+            .fire(lastScene.getRoot());
+      });
+      return null;
+    });
   }
 
   /**
