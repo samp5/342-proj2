@@ -21,6 +21,7 @@ import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
+import views.util.UnitHandler;
 import weather_observations.Observations;
 import weather_observations.WeatherObservations;
 
@@ -117,8 +118,9 @@ public class JavaFX extends Application {
 
     // create new sidebar based on scenes
     sidebar = Sidebar.fromScenes(
-        new Pair<String, DayScene>("Daily Forecast", todayScene),
-        new Pair<String, DayScene>("Three Day Forecast", threeDayScene));
+      new Pair<String, DayScene>("Daily Forecast", todayScene),
+      new Pair<String, DayScene>("Three Day Forecast", threeDayScene)
+    );
 
     sidebar.setTitle(gridPoint.location);
     todayScene.setActiveScene();
@@ -226,6 +228,7 @@ public class JavaFX extends Application {
     sidebar.setTitle(point.location);
     primaryStage.setScene(lastScene);
     sidebar.recievedValidLocation();
+    Settings.setLastLoc(lat, lon);
   }
 
   /**
@@ -249,4 +252,15 @@ public class JavaFX extends Application {
     delay.play();
   }
 
+  /**
+   * stop the program.
+   * overriden to allow for settings to be saved.
+   */
+  @Override
+  public void stop() throws Exception {
+    super.stop();
+
+    // save state to settings
+    Settings.saveSettings();
+  }
 }

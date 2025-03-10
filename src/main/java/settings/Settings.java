@@ -1,15 +1,28 @@
 package settings;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class Settings {
   private static class SettingsLoader {
     public char tempUnit;
     public double[] lastLoc;
     public int lastPage;
+
+    private static SettingsLoader fromSettings() {
+      SettingsLoader sl = new SettingsLoader();
+      sl.tempUnit = Settings.tempUnit;
+      sl.lastLoc = Settings.lastLoc;
+      sl.lastPage = Settings.lastPage;
+      
+      return sl;
+    }
   }
 
   private static char tempUnit;
@@ -20,12 +33,24 @@ public class Settings {
     return tempUnit;
   }
 
+  public static void setTempUnit(char tempUnit) {
+    Settings.tempUnit = tempUnit;
+  }
+
   public static double[] getLastLoc() {
 	  return lastLoc;
   }
 
+  public static void setLastLoc(double lat, double lon) {
+    Settings.lastLoc = new double[] {lat, lon};
+  }
+
   public static int getLastPage() {
 	  return lastPage;
+  }
+
+  public static void setLastPage(int lastPage) {
+    Settings.lastPage = lastPage;
   }
 
   public static class SettingsLoadException extends Exception {}
@@ -46,6 +71,27 @@ public class Settings {
     Settings.tempUnit = s.tempUnit;
     Settings.lastLoc = s.lastLoc;
     Settings.lastPage = s.lastPage;
+  }
+
+  public static void saveSettings() {
+    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+    String json;
+    try {
+      json = ow.writeValueAsString(SettingsLoader.fromSettings());
+    } catch (JsonProcessingException e) {
+      System.err.println("Failed to process settings into json. Settings not saved.");
+      return;
+    } 
+
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    try {
+      PrintWriter writer = new PrintWriter(new File(cl.getResource("settings/settings.json").getPath()));
+      writer.write(json);
+      writer.close();
+    } catch (FileNotFoundException e) {
+      System.err.println("Failed to write settings to file. Settings not saved.");
+      return;
+    }
   }
 
   /**
