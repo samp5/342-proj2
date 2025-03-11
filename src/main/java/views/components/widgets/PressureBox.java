@@ -1,4 +1,4 @@
-package views.components;
+package views.components.widgets;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
