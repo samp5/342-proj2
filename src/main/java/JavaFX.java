@@ -185,7 +185,7 @@ public class JavaFX extends Application {
     // thenCompose is like flatMap but for CompletableFutures
     // i.e. takes a CF<T> and a function which maps T to another CF<U> and returns
     // CF<U> (as opposed to CF<CF<U>>)
-    MyWeatherAPI.getGridPointAsync(lat, lon).orTimeout(5, TimeUnit.SECONDS).thenCompose(point -> {
+    MyWeatherAPI.getGridPointAsync(lat, lon).orTimeout(8, TimeUnit.SECONDS).thenCompose(point -> {
       if (point == null) {
         throw new RuntimeException("National Weather Service does not have data for this location");
       }
@@ -202,7 +202,7 @@ public class JavaFX extends Application {
           throw new RuntimeException("Sorry, the National Weather Service does not provide data for " + point.location);
         }
         return new LocationChangeData(periods, observations, point, event.getName());
-      }).orTimeout(3, TimeUnit.SECONDS);
+      }).orTimeout(8, TimeUnit.SECONDS);
     }).thenAccept(result -> { // `thenAccept conditionally runs a consumer function on the previous Future's
                               // sucessful completion
 
