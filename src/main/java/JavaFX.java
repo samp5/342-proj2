@@ -129,7 +129,7 @@ public class JavaFX extends Application {
 
     // enumerate scenes
     sceneNdx = Settings.getLastScene();
-    Collections.addAll(scenes, todayScene, threeDayScene);
+    Collections.addAll(scenes, todayScene, threeDayScene, tenDayScene);
 
     // create new sidebar based on scenes
     sidebar = Sidebar.fromScenes(
