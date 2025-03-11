@@ -95,7 +95,7 @@ public class Sidebar {
         if (latValid && lonValid) {
           latInput.fireEvent(
               new LocationChangeEvent(Double.parseDouble(latInput.getText()),
-                  Double.parseDouble(lonInput.getText())));
+                  Double.parseDouble(lonInput.getText()), null));
         }
       });
 
@@ -109,7 +109,7 @@ public class Sidebar {
         if (latValid && lonValid) {
           lonInput.fireEvent(
               new LocationChangeEvent(Double.parseDouble(latInput.getText()),
-                  Double.parseDouble(lonInput.getText())));
+                  Double.parseDouble(lonInput.getText()), null));
         }
       });
     }
@@ -276,6 +276,14 @@ public class Sidebar {
     header.lonInput.getStyleClass().add("coord-input");
     header.latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
     header.latInput.getStyleClass().add("coord-input");
+  }
+
+  /**
+   * set the displaying latitude and longitude displayed on the sidebar
+   */
+  public void setLatLon(double lat, double lon) {
+    this.header.latInput.setText(String.valueOf(lat));
+    this.header.lonInput.setText(String.valueOf(lon));
   }
 
 }

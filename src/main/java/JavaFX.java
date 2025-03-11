@@ -31,7 +31,6 @@ import weather_observations.WeatherObservations;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import javafx.stage.Popup;
 
@@ -203,7 +202,7 @@ public class JavaFX extends Application {
         if (periods == null || observations == null) {
           throw new RuntimeException("Sorry, the National Weather Service does not provide data for " + point.location);
         }
-        return new LocationChangeData(periods, observations, point);
+        return new LocationChangeData(periods, observations, point, event.getName());
       }).orTimeout(3, TimeUnit.SECONDS);
     }).thenAccept(result -> { // `thenAccept conditionally runs a consumer function on the previous Future's
                               // sucessful completion
@@ -225,8 +224,13 @@ public class JavaFX extends Application {
         threeDayScene.update(result.periods);
         tenDayScene.update(result.periods);
 
-        // set new location and scene
-        sidebar.setTitle(result.point.location);
+        if (result.name == null) {
+          sidebar.setTitle(result.point.location);
+        } else {
+          // set new location and scene
+          sidebar.setTitle(result.name);
+        }
+        sidebar.setLatLon(lat, lon);
         primaryStage.setScene(lastScene);
         sidebar.recievedValidLocation();
         Settings.setLastLoc(lat, lon);

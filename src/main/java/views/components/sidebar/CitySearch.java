@@ -3,7 +3,6 @@ package views.components.sidebar;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
@@ -92,7 +91,8 @@ public class CitySearch {
       // we have to delay here otherwise the scene won't be loaded!
       new NotificationBuilder().ofType(NotificationType.Error)
           .withMessage("Failed to load city data, city search will not be available").showFor(3)
-          .fireAfter(Duration.seconds(2));;
+          .fireAfter(Duration.seconds(2));
+      ;
     }
 
     // build our filtered list
@@ -169,7 +169,7 @@ public class CitySearch {
       System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName, c.lat,
           c.lon);
 
-      content.fireEvent(new LocationChangeEvent(c.lat, c.lon));
+      content.fireEvent(new LocationChangeEvent(c.lat, c.lon, c.display));
       searchInput.clear();
     });
   }
@@ -200,11 +200,16 @@ public class CitySearch {
 
             // determine whether this city is selected
             boolean isSelected = getListView().getSelectionModel().getSelectedItem() == city;
+            String label = city.display;
+            if (city.county.length() > 0) {
+              label = label + " (" + city.county + ")";
+            }
+            Text cityLabel = new Text(label);
+            cityLabel.setWrappingWidth(200);
 
             if (isSelected) {
 
               // construct our HBox and label
-              Text cityLabel = new Text(city.display);
               HBox item = new HBox(cityLabel);
 
               // Add the appropriate style classes
@@ -217,7 +222,6 @@ public class CitySearch {
             } else {
 
               // construct our HBox and label
-              Text cityLabel = new Text(city.display);
               HBox item = new HBox(cityLabel);
 
               // Add the appropriate style classes
@@ -246,7 +250,7 @@ public class CitySearch {
                 System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName,
                     c.lat,
                     c.lon);
-                content.fireEvent(new LocationChangeEvent(c.lat, c.lon));
+                content.fireEvent(new LocationChangeEvent(c.lat, c.lon, c.display));
                 searchInput.clear();
               });
 
