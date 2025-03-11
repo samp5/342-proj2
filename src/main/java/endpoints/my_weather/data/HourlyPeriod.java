@@ -1,4 +1,4 @@
-package my_weather;
+package endpoints.my_weather.data;
 
 import java.util.Date;
 

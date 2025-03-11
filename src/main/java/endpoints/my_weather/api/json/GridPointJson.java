@@ -1,13 +1,13 @@
-package my_weather.gridPoint;
+package endpoints.my_weather.api.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * Root object for use with {@code GridPoint}s
- * Typically created by {@code MyWeatherAPI}
- */
+* Root object for use with {@code GridPoint}s
+ * Typically created by use of {@code MyWeatherAPI}
+*/
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Root {
+public class GridPointJson {
   public Properties properties;
 
   @JsonIgnoreProperties(ignoreUnknown = true)

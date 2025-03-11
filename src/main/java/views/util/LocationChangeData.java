@@ -3,9 +3,9 @@ package views.util;
 import java.util.ArrayList;
 import java.util.Optional;
 
-import my_weather.HourlyPeriod;
-import my_weather.gridPoint.GridPoint;
-import weather_observations.Observations;
+import endpoints.my_weather.data.GridPoint;
+import endpoints.my_weather.data.HourlyPeriod;
+import endpoints.weather_observations.data.Observations;
 
 /**
  * Hold all the relevant collections for a change of location.

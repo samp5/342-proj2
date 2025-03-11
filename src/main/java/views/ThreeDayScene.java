@@ -1,20 +1,20 @@
 package views;
 
 import java.util.ArrayList;
+
+import endpoints.my_weather.data.HourlyPeriod;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import my_weather.HourlyPeriod;
-import views.components.DayCollection;
-import views.components.Day.DayView.DayViewType;
 import views.components.Day;
-
+import views.components.Day.DayView.DayViewType;
+import views.components.DayCollection;
+import views.components.HumidityGraph;
 import views.components.TempGraph;
 import views.components.events.DaySelectionEvent;
 import views.components.events.TempUnitEvent;
 import views.util.UnitHandler;
-import views.components.HumidityGraph;
 
 /**
  * A three day scene for more days of information.

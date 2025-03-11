@@ -1,4 +1,4 @@
-package weather_observations;
+package endpoints.weather_observations.api;
 
 import java.net.ConnectException;
 import java.net.URI;
@@ -7,10 +7,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.concurrent.CompletableFuture;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import weather_observations.stations.Stations;
+import endpoints.weather_observations.data.Observations;
 
 /** 
  * used for getting weather observations statically.
@@ -54,7 +55,7 @@ public class WeatherObservations {
    */
   public static Observations getWeatherObservations(String region, int gridX, int gridY, double lat, double lon) throws ConnectException {
     // get the nearset weather station to the latitude and longitude given
-    String station = Stations.getNearestStation(region, gridX, gridY, lat, lon);
+    String station = WeatherStations.getNearestStation(region, gridX, gridY, lat, lon);
 
     // form api request
     HttpRequest request = HttpRequest.newBuilder()
@@ -87,6 +88,7 @@ public class WeatherObservations {
    * @param json the json to parse in string form
    * @return the {@code Root} object parsed
    */
+  @SuppressWarnings("unused")
   public static ObservationJson getObject(String json) {
     ObjectMapper om = new ObjectMapper();
     ObservationJson toRet = null;
@@ -99,5 +101,14 @@ public class WeatherObservations {
     }
     return toRet;
 
+  }
+
+  /**
+   * Root of data for a weather observation.
+   * return properties for use
+   */
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  private static class ObservationJson {
+    public Observations properties;
   }
 }

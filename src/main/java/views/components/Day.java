@@ -1,11 +1,5 @@
 package views.components;
 
-import views.util.IconResolver;
-import views.util.UnitHandler;
-import views.components.Day.DayView.DayViewType;
-import views.components.events.DaySelectionEvent;
-import views.util.UnitHandler.TemperatureUnit;
-
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +9,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import endpoints.my_weather.data.HourlyPeriod;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.image.Image;
@@ -26,7 +21,11 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
-import my_weather.HourlyPeriod;
+import views.components.Day.DayView.DayViewType;
+import views.components.events.DaySelectionEvent;
+import views.util.IconResolver;
+import views.util.UnitHandler;
+import views.util.UnitHandler.TemperatureUnit;
 
 /**
  * A simple object containing forecast information for a given {@code Date}.

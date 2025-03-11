@@ -1,4 +1,4 @@
-package weather_observations;
+package endpoints.weather_observations.data;
 
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;

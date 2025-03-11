@@ -3,6 +3,8 @@ package views;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
+import endpoints.my_weather.data.HourlyPeriod;
+import endpoints.weather_observations.data.Observations;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -14,21 +16,19 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
-import my_weather.HourlyPeriod;
-import views.components.TempGraph;
-import views.components.VisibilityBox;
-import views.components.events.TempUnitEvent;
 import views.components.CompassBox;
 import views.components.DewPointBox;
 import views.components.EmptyBox;
 import views.components.HumidityGraph;
 import views.components.PressureBox;
 import views.components.SmallBox;
+import views.components.TempGraph;
+import views.components.VisibilityBox;
+import views.components.events.TempUnitEvent;
 import views.util.IconResolver;
 import views.util.TextUtils;
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
-import weather_observations.Observations;
 
 /**
  * A single day view of the weather, extending {@code DayScene}.

@@ -3,12 +3,12 @@ package views.components;
 import java.util.ArrayList;
 import java.util.Date;
 
+import endpoints.my_weather.data.HourlyPeriod;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import my_weather.HourlyPeriod;
 import views.components.Day.DayView.DayViewType;
 import views.components.events.DaySelectionEvent;
 

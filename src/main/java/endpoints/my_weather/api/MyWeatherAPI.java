@@ -1,4 +1,4 @@
-package my_weather;
+package endpoints.my_weather.api;
 
 import java.net.ConnectException;
 import java.net.URI;
@@ -10,7 +10,11 @@ import java.util.concurrent.CompletableFuture;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import my_weather.gridPoint.GridPoint;
+
+import endpoints.my_weather.api.json.GridPointJson;
+import endpoints.my_weather.api.json.HourlyPeriodJson;
+import endpoints.my_weather.data.GridPoint;
+import endpoints.my_weather.data.HourlyPeriod;
 
 /** 
  * used for getting weather forecasts statically.
@@ -97,7 +101,7 @@ public class MyWeatherAPI {
     }
 
     // parse the response body json into an object
-    Root r = getObject(response.body());
+    HourlyPeriodJson r = getObject(response.body());
     if (r == null) {
       System.err.println("Failed to parse JSon");
       return null;
@@ -162,7 +166,7 @@ public class MyWeatherAPI {
     }
 
     // parse the response body json into an object
-    my_weather.gridPoint.Root r = getGridPointRoot(response.body());
+    GridPointJson r = getGridPointRoot(response.body());
     if (r == null) {
       System.err.println("Failed to parse JSon");
       return null;
@@ -180,11 +184,11 @@ public class MyWeatherAPI {
    * @param json the json to parse in string form
    * @return the {@code Root} object parsed
    */
-  public static my_weather.gridPoint.Root getGridPointRoot(String json) {
+  public static GridPointJson getGridPointRoot(String json) {
     ObjectMapper om = new ObjectMapper();
-    my_weather.gridPoint.Root toRet = null;
+    GridPointJson toRet = null;
     try {
-      toRet = om.readValue(json, my_weather.gridPoint.Root.class);
+      toRet = om.readValue(json, GridPointJson.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
@@ -197,11 +201,12 @@ public class MyWeatherAPI {
    * @param json the json to parse in string form
    * @return the {@code Root} object parsed
    */
-  public static Root getObject(String json) {
+  @SuppressWarnings("unused")
+  public static HourlyPeriodJson getObject(String json) {
     ObjectMapper om = new ObjectMapper();
-    Root toRet = null;
+    HourlyPeriodJson toRet = null;
     try {
-      toRet = om.readValue(json, Root.class);
+      toRet = om.readValue(json, HourlyPeriodJson.class);
       ArrayList<HourlyPeriod> p = toRet.properties.periods;
 
     } catch (JsonProcessingException e) {

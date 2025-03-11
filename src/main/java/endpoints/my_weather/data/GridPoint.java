@@ -1,4 +1,4 @@
-package my_weather.gridPoint;
+package endpoints.my_weather.data;
 
 /**
  * A gridpoint containing a region, location, and grid coordinates.

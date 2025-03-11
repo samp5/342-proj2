@@ -3,7 +3,6 @@ package views.util;
 import java.util.Optional;
 
 import javafx.animation.PauseTransition;
-import javafx.css.StyleClass;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;

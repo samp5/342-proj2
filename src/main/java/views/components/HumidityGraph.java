@@ -3,6 +3,7 @@ package views.components;
 import java.util.Date;
 import java.util.Vector;
 
+import endpoints.my_weather.data.HourlyPeriod;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.chart.AreaChart;
@@ -15,7 +16,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.StringConverter;
-import my_weather.HourlyPeriod;
 
 /**
  * {@code HumidityGraph} holds state for a humidity

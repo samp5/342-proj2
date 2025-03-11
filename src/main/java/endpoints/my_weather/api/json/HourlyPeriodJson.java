@@ -1,16 +1,18 @@
-package my_weather;
+package endpoints.my_weather.api.json;
 
 import java.util.ArrayList;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import endpoints.my_weather.data.HourlyPeriod;
+
 /**
  * Root object of data gathered from {@code MyWeatherAPI} calls.
  * Typically created by use of {@code MyWeatherAPI}
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Root {
+public class HourlyPeriodJson {
   public String type;
   public Geometry geometry;
   public Properties properties;

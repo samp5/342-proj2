@@ -1,17 +1,25 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import endpoints.my_weather.api.MyWeatherAPI;
+import endpoints.my_weather.data.GridPoint;
+import endpoints.my_weather.data.HourlyPeriod;
+import endpoints.weather_observations.api.WeatherObservations;
+import endpoints.weather_observations.data.Observations;
 import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.stage.Popup;
 import javafx.stage.PopupWindow.AnchorLocation;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.util.Pair;
-import my_weather.HourlyPeriod;
-import my_weather.gridPoint.GridPoint;
 import settings.Settings;
 import settings.Settings.SettingsLoadException;
-import my_weather.MyWeatherAPI;
 import views.DayScene;
 import views.LoadingScene;
 import views.TenDayScene;
@@ -25,14 +33,6 @@ import views.util.LocationChangeData;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 import views.util.UnitHandler;
-import weather_observations.Observations;
-import weather_observations.WeatherObservations;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
-import javafx.stage.Popup;
 
 /**
  * Main Application Class.
@@ -93,9 +93,8 @@ public class JavaFX extends Application {
     // try to load the forecast and weather observations.
     // fails gracefully. by setting loading scene and sending notification
     try {
-      gridPoint = my_weather.MyWeatherAPI.getGridPoint(lat, lon);
-      forecast = my_weather.MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX,
-          gridPoint.gridY);
+      gridPoint = MyWeatherAPI.getGridPoint(lat, lon);
+      forecast = MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
       observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat,
           lon);
     } catch (Exception e) {
