@@ -15,7 +15,7 @@ public class VisibilityBox extends SmallBox {
 
   // components
   TextField subtitleText;
-  Region backgroundRegion, squintRegionTop, squintRegionBottom, eyeRegion;
+  Region backgroundRegion, pupilRegion, squintRegionTop, squintRegionBottom, eyeRegion;
 
   /**
    * create a new {@code VisibilityBox} for a given visibility range
@@ -53,12 +53,14 @@ public class VisibilityBox extends SmallBox {
 	protected void assembleSVG() {
     // create all the SVGs from a path
     backgroundRegion = newSVG("M 0 5 A 1 1 0 0 0 10 5 A 1 1 0 0 0 0 5");
+    pupilRegion = newSVG("M 0 5 A 1 1 0 0 0 10 5 A 1 1 0 0 0 0 5 M 0.1 5 A 1 1 0 0 1 9.9 5 A 1 1 0 0 1 0.1 5 M 5 4 A 1 1 0 0 0 5 6 A 1 1 0 0 0 5 4");
     squintRegionTop = newSVG("M 0 0 L 0 1 L 1 1 L 1 0");
     squintRegionBottom = newSVG("M 0 0 L 0 1 L 1 1 L 1 0");
-    eyeRegion = newSVG("M 0 5 A 1 1 0 0 0 10 5 A 1 1 0 0 0 0 5 M 0.5 5 C 1.25 4 2.5 3 5 3 C 7.5 3 8.75 4 9.5 5 C 8.75 6 7.75 7 5 7 C 2.5 7 1.25 6 0.5 5 z M 5 4 A 1 1 0 0 0 5 6 A 1 1 0 0 0 5 4");
+    eyeRegion = newSVG("M 0 5 A 1 1 0 0 0 10 5 A 1 1 0 0 0 0 5 M 0.5 5 C 1.25 4 2.5 3 5 3 C 7.5 3 8.75 4 9.5 5 C 8.75 6 7.75 7 5 7 C 2.5 7 1.25 6 0.5 5 z");
     
     // add style classes
     backgroundRegion.getStyleClass().add("visibility-background");
+    pupilRegion.getStyleClass().add("visibility-pupil");
     squintRegionTop.getStyleClass().add("visibility-squint");
     squintRegionBottom.getStyleClass().add("visibility-squint");
     eyeRegion.getStyleClass().add("visibility-eye");
@@ -74,7 +76,7 @@ public class VisibilityBox extends SmallBox {
     squintRegionBottom.setTranslateY(.4 * -(qrtrSize * squintPercent - halfSize));
 
     // create the combined svg by stacking the components
-    svgStack.getChildren().setAll(backgroundRegion, squintRegionBottom, squintRegionTop, eyeRegion);
+    svgStack.getChildren().setAll(backgroundRegion, pupilRegion, squintRegionBottom, squintRegionTop, eyeRegion);
 	}
 
   /**
