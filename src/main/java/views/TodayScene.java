@@ -18,8 +18,11 @@ import my_weather.HourlyPeriod;
 import views.components.TempGraph;
 import views.components.events.TempUnitEvent;
 import views.components.CompassBox;
+import views.components.DewPointBox;
+import views.components.EmptyBox;
 import views.components.HumidityGraph;
 import views.components.PressureBox;
+import views.components.SmallBox;
 import views.util.IconResolver;
 import views.util.TextUtils;
 import views.util.UnitHandler;
@@ -64,6 +67,7 @@ public class TodayScene extends DayScene {
   HBox smallBoxes;
   VBox compassBox;
   VBox pressureBox;
+  VBox dewpointBox;
 
 
   /**
@@ -109,12 +113,15 @@ public class TodayScene extends DayScene {
    * update the scene with the {@code currentForecast}
    */
   protected void applyForecast() {
+    // use the most current forecast
     HourlyPeriod now = currentForecast.getFirst();
 
+    // update temperature, forecast, and other text fields
     setTemp(now.temperature);
     setShortForecast(now.shortForecast);
     updateTextFields();
 
+    // get the new weather icon. defaults to drizzle
     try {
       icon = new IconResolver().getIcon(now.shortForecast, now.isDaytime);
     } catch (FileNotFoundException e) {
@@ -122,14 +129,17 @@ public class TodayScene extends DayScene {
     }
     weatherIcon.setImage(icon);
 
+    // create data charts
     tempGraph =
         new TempGraph(currentForecast, UnitHandler.getUnit());
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
 
+    // place data charts
     graphContainer.getChildren().setAll(tempChart, humidChart);
 
+    // create the smaller data views
     createSmallGraphs();
   }
 
@@ -168,6 +178,7 @@ public class TodayScene extends DayScene {
     scene.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
       TemperatureUnit unit = event.getUnit();
       updateTempGraph(unit);
+      createSmallGraphs();
       updateTextFields();
     });
   }
@@ -256,7 +267,13 @@ public class TodayScene extends DayScene {
       fmt = "%d°F";
     }
 
-    feelsLikeTxt.setText("Feels like " + String.format(fmt, currentObservations.windChill.getTemperature()));
+    // add the feels like field. handle if null
+    if (currentObservations.windChill.value != null) {
+      feelsLikeTxt.setText("Feels like " + String.format(fmt, currentObservations.windChill.getTemperature()));
+    } else {
+      feelsLikeTxt.setText("Feels like the API didn't populate this field.");
+      feelsLikeTxt.setPrefWidth(400);
+    }
   }
 
   /**
@@ -296,14 +313,29 @@ public class TodayScene extends DayScene {
    */
   private void createSmallGraphs() {
     HourlyPeriod now = currentForecast.getFirst();
+    SmallBox compass, pressure, dewpoint;
 
-    CompassBox compass = new CompassBox(now.windSpeed, now.windDirection);
+    // add the wind speed box. handle if null.
+    if (currentObservations.windSpeed.value != null && currentObservations.windDirection.value != null) {
+      compass = new CompassBox(currentObservations.windSpeed.mph(), currentObservations.windDirection.value);
+    } else {
+      compass = new EmptyBox("Wind Direction");
+    }
     compassBox = compass.component();
 
-    PressureBox pressure = new PressureBox(currentObservations.barometricPressure.value);
+    // add the air pressure box. handle if null.
+    if (currentObservations.barometricPressure.value != null) {
+      pressure = new PressureBox(currentObservations.barometricPressure.value);
+    } else {
+      pressure = new EmptyBox("Air Pressure");
+    }
     pressureBox = pressure.component();
 
-    smallBoxes.getChildren().setAll(compassBox, pressureBox);
+    // always add dewpoint, as it is (theoretically) always present
+    dewpoint = new DewPointBox(now.dewpoint.value);
+    dewpointBox = dewpoint.component();
+
+    smallBoxes.getChildren().setAll(compassBox, pressureBox, dewpointBox);
   }
 
   /**

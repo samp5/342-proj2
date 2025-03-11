@@ -13,7 +13,7 @@ import views.util.TextUtils;
  * Wind speeds are always shown in mph.
  */
 public class CompassBox extends SmallBox {
-  String windSpeed, windDir;
+  double windSpeed, windDir;
 
   // components
   TextField compassText;
@@ -32,9 +32,9 @@ public class CompassBox extends SmallBox {
    * @param windSpeed the {@code String} speed of the wind
    * @param windDir the 16-point compass direction of the wind
    */
-  public CompassBox(String windSpeed, String windDir) {
-    this.windDir = windDir;
+  public CompassBox(double windSpeed, double windDir) {
     this.windSpeed = windSpeed;
+    this.windDir = windDir;
   }
 
   /**
@@ -47,7 +47,7 @@ public class CompassBox extends SmallBox {
     titleText.setText("Wind Direction");
 
     // add reading text
-    compassText = TextUtils.staticTextField(windSpeed + " " + windDir);
+    compassText = TextUtils.staticTextField(String.format("%.2fmph %s", windSpeed, getCompassDir()));
     compassText.setPadding(new Insets(10, 0, 0, 0));
     compassText.getStyleClass().add("font-reg");
 
@@ -72,7 +72,7 @@ public class CompassBox extends SmallBox {
     double needleW = CompassBox.SIZE / 8.;
     double needleH = CompassBox.SIZE / 1.9;
     setSize(needleRegion, needleW, needleH);
-    needleRegion.setRotate(getRotation());
+    needleRegion.setRotate(windDir);
 
     // add style classes
     bodyRegion.getStyleClass().add("compass-body");
@@ -86,46 +86,27 @@ public class CompassBox extends SmallBox {
   }
 
   /**
-   * get the rotation in degrees from stored wind direction
+   * get the 16-point compass direction abbreviation based on the current wind direction
    *
-   * @return rotation in degrees
+   * @return a {@code String} 16 point compass direction
    */
-  private double getRotation() {
-    switch (this.windDir) {
-      case "N":
-        return 0;
-      case "NNE":
-        return 22.5;
-      case "NE":
-        return 45;
-      case "ENE":
-        return 67.5;
-      case "E":
-        return 90;
-      case "ESE":
-        return 112.5;
-      case "SE":
-        return 135;
-      case "SSE":
-        return 157.5;
-      case "S":
-        return 180;
-      case "SSW":
-        return 202.5;
-      case "SW":
-        return 225;
-      case "WSW":
-        return 247.5;
-      case "W":
-        return 270;
-      case "WNW":
-        return 292.5;
-      case "NW":
-        return 315;
-      case "NNW":
-        return 337.5;
-      default:
-        return 0;
-    }
+  private String getCompassDir() {
+    if (windDir <= 11.25) return "N";
+    else if (windDir <= 33.75) return "NNE";
+    else if (windDir <= 56.25) return "NE";
+    else if (windDir <= 78.75) return "ENE";
+    else if (windDir <= 101.25) return "E";
+    else if (windDir <= 123.75) return "ESE";
+    else if (windDir <= 146.25) return "SE";
+    else if (windDir <= 168.75) return "SSE";
+    else if (windDir <= 191.25) return "S";
+    else if (windDir <= 213.75) return "SSW";
+    else if (windDir <= 236.25) return "SW";
+    else if (windDir <= 258.75) return "WSW";
+    else if (windDir <= 281.25) return "W";
+    else if (windDir <= 303.75) return "WNW";
+    else if (windDir <= 326.25) return "NW";
+    else if (windDir <= 348.75) return "NNW";
+    else return "N";
   }
 }

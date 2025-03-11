@@ -41,6 +41,16 @@ public class UnitHandler {
   }
 
   /**
+   * get the current unit as a character
+   *
+   * @return the {@code char} representation of the current temperature unit
+   */
+  public static char getUnitChar() {
+    if (currentUnit == TemperatureUnit.Fahrenheit) return 'F';
+    return 'C';
+  }
+
+  /**
    * set the current unit
    *
    * @param unit the unit to set to

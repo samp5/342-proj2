@@ -34,6 +34,7 @@ public abstract class DayScene {
     mainScrollable.setHbarPolicy(ScrollBarPolicy.NEVER);
     mainScrollable.setFitToWidth(true);
     mainScrollable.setVbarPolicy(ScrollBarPolicy.AS_NEEDED);
+    mainScrollable.getStyleClass().add("edge-to-edge");
 
     sceneBox = new HBox(sidebarBox, mainScrollable, focusVoid);
     scene = new Scene(sceneBox, 1440, 900);
