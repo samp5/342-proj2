@@ -80,7 +80,6 @@ public class LoadingScene extends DayScene {
     headerContainer.setMaxWidth(554);
     headerContainer.setMinHeight(200);
 
-
     // - forecast box
     forecastBox.getStyleClass().add("load-box");
     forecastBox.setMaxWidth(554);
@@ -120,14 +119,14 @@ public class LoadingScene extends DayScene {
 
   // Animate all our regions
   private void animateAll() {
-    Region[] boxes = {graphContainer, smallCharts, headerContainer, forecastBox, sidebarHeader,
-        sidebarInput, sidebarSection, sidebarSearch};
+    Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox, sidebarHeader,
+        sidebarInput, sidebarSection, sidebarSearch };
 
     for (Region box : boxes) {
       buildAnimation(box, Color.web("#f1f3f4"), Color.web("#d5d7da")).play();
     }
 
-    Region[] sidebarBoxes = {sidebarHeader, sidebarInput, sidebarSection, sidebarSearch};
+    Region[] sidebarBoxes = { sidebarHeader, sidebarInput, sidebarSection, sidebarSearch };
 
     for (Region box : sidebarBoxes) {
       buildAnimation(box, Color.web("#f9fafa"), Color.web("#f1f3f4")).play();
@@ -144,7 +143,7 @@ public class LoadingScene extends DayScene {
     for (double i = 0; i <= 1; i += 0.05) {
       double startX = i;
       double endX = i + 1; // Move gradient from left to right
-      timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i + 0.2), e -> {
+      timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i + 0.5), e -> {
 
         box.setBackground(new Background(new BackgroundFill(
             new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE,
