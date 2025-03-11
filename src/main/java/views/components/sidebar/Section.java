@@ -10,7 +10,8 @@ import javafx.scene.text.Text;
 
 /**
  * A portion of the {@code Sidebar}.
- * Combines {@code NavigationTarget}s into a single section for simple navigation,
+ * Combines {@code NavigationTarget}s into a single section for simple
+ * navigation,
  * along with a title and header.
  */
 public class Section {
@@ -22,7 +23,7 @@ public class Section {
   /**
    * create a new {@code Section} with a title and navigation targets
    *
-   * @param title the title of the section
+   * @param title       the title of the section
    * @param nav_targets the navigation targets that can be clicked
    */
   public <T extends Collection<NavigationTarget>> Section(String title, T nav_targets) {
@@ -35,6 +36,7 @@ public class Section {
     box.getChildren()
         .addAll(this.navTargerts.stream().map(e -> e.component()).collect(Collectors.toList()));
     box.setPadding(new Insets(0, 0, 0, 10));
+    box.setSpacing(10);
   }
 
   /**

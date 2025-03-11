@@ -60,13 +60,11 @@ public class DayCollection {
   /**
    * get the component for this {@code DayCollection}
    *
-   * @return the {@code HBox} containing each {@code Day} in this
+   * @return the {@code Region} containing each {@code Day} in this
    *         {@code DayCollection}
    */
   public Region component() {
     switch (this.viewType) {
-      case OneDay:
-        break;
       case TenDay:
         component = new VBox();
         ((VBox) component).getChildren().addAll(days.stream().map(d -> d.component(this.viewType)).toList());

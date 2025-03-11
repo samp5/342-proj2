@@ -21,6 +21,14 @@
   -fx-font-size: 20px;
 }
 
+.navigation-target-box:hover {
+  -fx-padding: 1px 5px 1px 20px ;
+}
+.navigation-target-box {
+  -fx-background-radius: 20px;
+  -fx-padding: 1px 5px 1px 25px ;
+}
+
 .search-input {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 18px;

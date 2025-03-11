@@ -1,7 +1,6 @@
 package views.components;
 
 import views.util.IconResolver;
-import views.util.TextUtils;
 import views.util.UnitHandler;
 import views.components.Day.DayView.DayViewType;
 import views.components.events.DaySelectionEvent;
@@ -89,10 +88,10 @@ public class Day {
 
   public class DayView {
     // default to OneDay view
-    public DayViewType type = DayViewType.OneDay;
+    public DayViewType type;
 
     public enum DayViewType {
-      OneDay, ThreeDay, TenDay
+      ThreeDay, TenDay
     }
 
     /**
@@ -112,8 +111,6 @@ public class Day {
     @Override
     public String toString() {
       switch (this.type) {
-        case OneDay:
-          return "one-day";
         case ThreeDay:
           return "three-day";
         case TenDay:
@@ -172,9 +169,9 @@ public class Day {
   }
 
   /**
-   * get the {@code VBox} component for this {@code Day}
+   * get the {@code Region} component for this {@code Day}
    *
-   * @return the {@code VBox} component for this {@code Day}
+   * @return the {@code Region} component for this {@code Day}
    */
   public Region component(DayView.DayViewType viewType) {
     // read view type
@@ -187,25 +184,41 @@ public class Day {
     VBox statistics = getStatistics();
 
     switch (this.viewType.type) {
-      case OneDay:
-        break;
       case TenDay:
+
         VBox leftBox = new VBox(title, icon);
         leftBox.setPadding(new Insets(20));
+
         VBox textBox = new VBox(temperature, statistics);
         textBox.setPadding(new Insets(20));
         textBox.setAlignment(Pos.CENTER_LEFT);
-        this.component = new HBox(leftBox, textBox,
-            new TempGraph(this.currentForecast, this.unit).smallComponent());
+
+        VBox graphBox = new VBox(new TempGraph(this.currentForecast, this.unit).smallComponent());
+        graphBox.setAlignment(Pos.CENTER);
+
+        this.component = new HBox(leftBox, textBox, graphBox);
+        this.component.setMaxHeight(75);
+
         ((ImageView) icon.getCenter()).setFitWidth(75);
         ((ImageView) icon.getCenter()).setFitHeight(75);
-        this.component.setMaxHeight(75);
+
         ((HBox) this.component).setSpacing(20);
+
         break;
 
       case ThreeDay:
         // create component
         this.component = new VBox(title, icon, temperature, statistics);
+
+        // add click functionality
+        // responds regardless of which part of the component is clicked
+        component.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
+          if (selected)
+            return;
+
+          select();
+          component.fireEvent(new DaySelectionEvent(this));
+        });
         break;
       default:
         break;
@@ -213,16 +226,6 @@ public class Day {
 
     // add style class based on viewType
     component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
-
-    // add click functionality
-    // responds regardless of which part of the component is clicked
-    component.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-      if (selected)
-        return;
-
-      select();
-      component.fireEvent(new DaySelectionEvent(this));
-    });
 
     return component;
   }
