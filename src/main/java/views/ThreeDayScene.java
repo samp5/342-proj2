@@ -19,7 +19,8 @@ import views.components.HumidityGraph;
 /**
  * A three day scene for more days of information.
  * This is the secondary view of the app.
- * Allows for seeing of multiple days data, and selecting of days to show temperature and humidity graphs.
+ * Allows for seeing of multiple days data, and selecting of days to show
+ * temperature and humidity graphs.
  */
 public class ThreeDayScene extends DayScene {
   // scene blocking
@@ -36,7 +37,8 @@ public class ThreeDayScene extends DayScene {
   /**
    * create a new {@code ThreeDayScene} to show the forecast for the next 3 days
    *
-   * @param forecast the forecast to use to make the view. must contain at least 3 days worth of data
+   * @param forecast the forecast to use to make the view. must contain at least 3
+   *                 days worth of data
    */
   public ThreeDayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
@@ -55,6 +57,11 @@ public class ThreeDayScene extends DayScene {
     DayCollection collection = new DayCollection(3, currentForecast, DayViewType.ThreeDay);
     dayCollectionBox.getChildren().setAll(collection.component());
     graphContainer.getChildren().setAll();
+
+    // always select the first day (I feel like this makes it clearer that you can
+    // click on them?)
+    showGraphs(collection.getDays().getFirst());
+    collection.getDays().getFirst().select();
   }
 
   /**
@@ -63,7 +70,7 @@ public class ThreeDayScene extends DayScene {
   protected void initComponents() {
     super.initComponents();
 
-    graphContainer = new HBox(); // don't add it to the mainview yet, only on selection
+    graphContainer = new HBox();
     dayCollectionBox = new HBox();
     mainView.getChildren().addAll(dayCollectionBox, graphContainer);
   }
@@ -98,7 +105,7 @@ public class ThreeDayScene extends DayScene {
   public void update(ArrayList<HourlyPeriod> forecast) {
     currentForecast = forecast;
     applyForecast();
-    //updateTempGraph();
+    // updateTempGraph();
   }
 
   /**
@@ -127,8 +134,7 @@ public class ThreeDayScene extends DayScene {
    * @param d the day to show graphs for
    */
   public void showGraphs(Day d) {
-    tempGraph =
-        new TempGraph(d.getForecast(), UnitHandler.getUnit());
+    tempGraph = new TempGraph(d.getForecast(), UnitHandler.getUnit());
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(d.getForecast(), d.getDate());
     humidChart = humidGraph.component();

@@ -14,6 +14,7 @@ import settings.Settings.SettingsLoadException;
 import my_weather.MyWeatherAPI;
 import views.DayScene;
 import views.LoadingScene;
+import views.TenDayScene;
 import views.ThreeDayScene;
 import views.TodayScene;
 import views.components.events.LocationChangeEvent;
@@ -42,6 +43,7 @@ public class JavaFX extends Application {
   // scenes to store
   TodayScene todayScene;
   ThreeDayScene threeDayScene;
+  TenDayScene tenDayScene;
   LoadingScene loadingScene;
 
   // enumerated scenes
@@ -125,6 +127,7 @@ public class JavaFX extends Application {
     // create weather scenes
     todayScene = new TodayScene(forecast, observations);
     threeDayScene = new ThreeDayScene(forecast);
+    tenDayScene = new TenDayScene(forecast);
 
     // enumerate scenes
     sceneNdx = Settings.getLastScene();
@@ -132,9 +135,10 @@ public class JavaFX extends Application {
 
     // create new sidebar based on scenes
     sidebar = Sidebar.fromScenes(
-      new Pair<String, DayScene>("Daily Forecast", todayScene),
-      new Pair<String, DayScene>("Three Day Forecast", threeDayScene)
-    );
+        new Pair<String, DayScene>("Daily Forecast", todayScene),
+        new Pair<String, DayScene>("Three Day Forecast", threeDayScene),
+        new Pair<String, DayScene>("Ten Day Forecast", tenDayScene));
+
     sidebar.setTitle(gridPoint.location);
 
     // set current scene
@@ -219,6 +223,7 @@ public class JavaFX extends Application {
         // Update scenes
         todayScene.update(result.periods, result.observations);
         threeDayScene.update(result.periods);
+        tenDayScene.update(result.periods);
 
         // set new location and scene
         sidebar.setTitle(result.point.location);

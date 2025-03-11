@@ -18,12 +18,12 @@ import java.util.regex.Pattern;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
@@ -32,12 +32,16 @@ import my_weather.HourlyPeriod;
 /**
  * A simple object containing forecast information for a given {@code Date}.
  * Typically created in a {@code DayCollection}.
- * Shows a given days temperature range, max precipitation, average windspeed, and average humidity.
- * Allows for additional graph shown to give more detailed temperature and humidity information.
+ * Shows a given days temperature range, max precipitation, average windspeed,
+ * and average humidity.
+ * Allows for additional graph shown to give more detailed temperature and
+ * humidity information.
+ * 
  * @see {@code DayCollection}.
  */
 public class Day {
-  // regex pattern for getting the wind number from a string in the format of `X mph`
+  // regex pattern for getting the wind number from a string in the format of `X
+  // mph`
   static Pattern windPattern = Pattern.compile("(\\d+)");
 
   // temperatures stored in {min, max} format
@@ -51,7 +55,7 @@ public class Day {
   Date date;
   DayView viewType;
   List<HourlyPeriod> currentForecast;
-  VBox component;
+  Region component;
   TemperatureUnit unit;
 
   /**
@@ -73,7 +77,8 @@ public class Day {
   }
 
   /**
-   * set the type of view for the day. 
+   * set the type of view for the day.
+   * 
    * @see DayViewType
    *
    * @param view the type of view
@@ -87,7 +92,7 @@ public class Day {
     public DayViewType type = DayViewType.OneDay;
 
     public enum DayViewType {
-      OneDay, ThreeDay,
+      OneDay, ThreeDay, TenDay
     }
 
     /**
@@ -111,6 +116,8 @@ public class Day {
           return "one-day";
         case ThreeDay:
           return "three-day";
+        case TenDay:
+          return "ten-day";
         default:
           return "";
       }
@@ -120,16 +127,17 @@ public class Day {
   }
 
   /**
-   * create a new {@code Day} from a list of {@code HourlyPeriod}s and a given {@code Date}
+   * create a new {@code Day} from a list of {@code HourlyPeriod}s and a given
+   * {@code Date}
    *
-   * @param data a list of {@code HourlyPeriod} containing data for the given {@code day}
-   * @param day the {@code Date} for the data to display
+   * @param data a list of {@code HourlyPeriod} containing data for the given
+   *             {@code day}
+   * @param day  the {@code Date} for the data to display
    */
   @SuppressWarnings("deprecation")
   public Day(ArrayList<HourlyPeriod> data, Date day) {
     this.date = day;
-    this.currentForecast =
-        data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
+    this.currentForecast = data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
     this.unit = UnitHandler.getUnit();
@@ -138,11 +146,12 @@ public class Day {
   /**
    * calculate the minimum and maximum temperature throughout the day
    * 
-   * @param celsius {@code true} to calculate celsius data, {@code false} to calculate fahrenheit data.
+   * @param celsius {@code true} to calculate celsius data, {@code false} to
+   *                calculate fahrenheit data.
    * @return an {@code Integer} array of size two in the format of {min, max}
    */
   private Integer[] getMinMaxTemp(boolean celsius) {
-    Integer[] minMax = new Integer[] {null, null};
+    Integer[] minMax = new Integer[] { null, null };
     int temperature;
     for (HourlyPeriod p : currentForecast) {
       if (celsius) {
@@ -167,18 +176,40 @@ public class Day {
    *
    * @return the {@code VBox} component for this {@code Day}
    */
-  public VBox component(DayView.DayViewType viewType) {
+  public Region component(DayView.DayViewType viewType) {
     // read view type
     this.viewType = new DayView(viewType);
 
     // gather data
     HBox title = dayTitle();
     BorderPane icon = getIcon();
-    TextField temperature = getTemperature();
+    HBox temperature = getTemperature();
     VBox statistics = getStatistics();
 
-    // create component
-    this.component = new VBox(title, icon, temperature, statistics);
+    switch (this.viewType.type) {
+      case OneDay:
+        break;
+      case TenDay:
+        VBox leftBox = new VBox(title, icon);
+        leftBox.setPadding(new Insets(20));
+        VBox textBox = new VBox(temperature, statistics);
+        textBox.setPadding(new Insets(20));
+        textBox.setAlignment(Pos.CENTER_LEFT);
+        this.component = new HBox(leftBox, textBox,
+            new TempGraph(this.currentForecast, this.unit).smallComponent());
+        ((ImageView) icon.getCenter()).setFitWidth(75);
+        ((ImageView) icon.getCenter()).setFitHeight(75);
+        this.component.setMaxHeight(75);
+        ((HBox) this.component).setSpacing(20);
+        break;
+
+      case ThreeDay:
+        // create component
+        this.component = new VBox(title, icon, temperature, statistics);
+        break;
+      default:
+        break;
+    }
 
     // add style class based on viewType
     component.getStyleClass().add("day-backdrop-" + this.viewType.toString());
@@ -186,8 +217,9 @@ public class Day {
     // add click functionality
     // responds regardless of which part of the component is clicked
     component.addEventFilter(MouseEvent.MOUSE_CLICKED, e -> {
-      if (selected) return;
-      
+      if (selected)
+        return;
+
       select();
       component.fireEvent(new DaySelectionEvent(this));
     });
@@ -225,28 +257,27 @@ public class Day {
     String humidity_str = "Humidity: " + stats[1] + "%";
     String wind_str = "Wind: " + stats[2] + " mph";
 
-    TextField precipitation = TextUtils.staticTextField(precipitation_str);
-    TextField humidity = TextUtils.staticTextField(humidity_str);
-    TextField wind = TextUtils.staticTextField(wind_str);
+    Text precipitation = new Text(precipitation_str);
+    Text humidity = new Text(humidity_str);
+    Text wind = new Text(wind_str);
 
-    precipitation.setAlignment(Pos.CENTER);
-    humidity.setAlignment(Pos.CENTER);
-    wind.setAlignment(Pos.CENTER);
-
-    precipitation.getStyleClass().add("day-statistics-" + this.viewType.toString());
     humidity.getStyleClass().add("day-statistics-" + this.viewType.toString());
     wind.getStyleClass().add("day-statistics-" + this.viewType.toString());
+    precipitation.getStyleClass().add("day-statistics-" + this.viewType.toString());
 
     VBox statbox = new VBox(precipitation, humidity, wind);
-    statbox.setPadding(new Insets(0, 0, 5, 0));
+    statbox.getStyleClass().add("day-statistics-box-" + this.viewType.toString());
+
     return statbox;
   }
 
   /**
    * takes the {@code currentForecast} and parses the data for displaying.
-   * finds the maximum precipitation, the average humidity, and the average windspeed.
+   * finds the maximum precipitation, the average humidity, and the average
+   * windspeed.
    *
-   * @return an {@code int} array of size 3, formatted {precipitation, humidity, windspeed}
+   * @return an {@code int} array of size 3, formatted {precipitation, humidity,
+   *         windspeed}
    */
   private int[] parseStats() {
     int maxPrep = 0;
@@ -272,7 +303,7 @@ public class Day {
 
     // divide for averages
     int size = currentForecast.size();
-    return new int[] {maxPrep, totalRelHumid / size, totalWindspeed / size};
+    return new int[] { maxPrep, totalRelHumid / size, totalWindspeed / size };
   }
 
   /**
@@ -280,7 +311,7 @@ public class Day {
    *
    * @return a {@code TextField} containing the labelled temperature range
    */
-  public TextField getTemperature() {
+  public HBox getTemperature() {
     String text = null;
     switch (this.unit) {
       case Celsius:
@@ -291,21 +322,24 @@ public class Day {
         break;
     }
 
-    TextField tempText = TextUtils.staticTextField(text);
-    tempText.getStyleClass().add("day-temperature-text-" + this.viewType.toString());
+    Text tempText = new Text(text);
+    tempText.getStyleClass().add("day-temperature-" + this.viewType.toString());
+    HBox box = new HBox(tempText);
+    box.getStyleClass().add("day-temperature-box-" + this.viewType.toString());
 
-    return tempText;
+    return box;
   }
 
   /**
    * gets the icon for the current {@code Day}
    *
-   * @return a {@code BorderPane} containing the icon for the average weather throughout the {@code Day}
+   * @return a {@code BorderPane} containing the icon for the average weather
+   *         throughout the {@code Day}
    */
   public BorderPane getIcon() {
     Image icon;
     ImageView weatherIcon = new ImageView();
-    
+
     // get the most common forecast string and whether or not it is night
     Pair<String, Boolean> commonForecast = getCommonForecast();
     // get the icon from above
@@ -326,7 +360,9 @@ public class Day {
   /**
    * gets the most common {@code shortForecast} string found throughout the day
    *
-   * @return a {@code Pair} of {@code String} and {@code Boolean} of the most common {@code shortForecast} and {@code true} if day, {@code false} if night.
+   * @return a {@code Pair} of {@code String} and {@code Boolean} of the most
+   *         common {@code shortForecast} and {@code true} if day, {@code false}
+   *         if night.
    */
   private Pair<String, Boolean> getCommonForecast() {
     // table of shortForecast to occurrence count, day/night
@@ -400,8 +436,8 @@ public class Day {
     Text title = new Text(text);
     title.getStyleClass().add("day-title-" + this.viewType.toString());
     HBox box = new HBox(title);
-    box.setAlignment(Pos.CENTER);
-    box.setPadding(new Insets(10, 0, 0, 0));
+    box.getStyleClass().add("day-title-box-" + this.viewType.toString());
+
     return box;
   }
 

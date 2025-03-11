@@ -137,7 +137,8 @@ public class TempGraph {
   }
 
   /**
-   * a single {@code DataPoint} to be graphed. implements {@code Comparable} to allow for propper plotting
+   * a single {@code DataPoint} to be graphed. implements {@code Comparable} to
+   * allow for propper plotting
    */
   private class DataPoint implements Comparable<DataPoint> {
     private Temperature temp;
@@ -147,7 +148,7 @@ public class TempGraph {
      * create a new {@code datapoint} given a day and temperature value
      *
      * @param day the {@code date} for the point
-     * @param t the temperature for the point
+     * @param t   the temperature for the point
      */
     public DataPoint(Date day, int t) {
       this.date = day;
@@ -174,7 +175,7 @@ public class TempGraph {
     /**
      * get a datapoint for the {@code LineChart}
      */
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public XYChart.Data asPoint() {
       XYChart.Data data = new XYChart.Data(this.time(), this.temperature());
       return data;
@@ -184,7 +185,8 @@ public class TempGraph {
      * part of {@code Comparable} implementation
      * compares another {@code DataPoint} to this one
      *
-     * @return {@code 1} if {@code this > other}; {@code -1} if {@code this < other}; {@code 0} if {@code this == other} 
+     * @return {@code 1} if {@code this > other}; {@code -1} if
+     *         {@code this < other}; {@code 0} if {@code this == other}
      */
     @Override
     public int compareTo(TempGraph.DataPoint arg0) {
@@ -200,8 +202,8 @@ public class TempGraph {
 
   /**
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day {@code Date} object representing the target day to generate the
-   *        graph
+   * @param day  {@code Date} object representing the target day to generate the
+   *             graph
    * @param unit {@code TempUnit} which unit to use for the axis
    */
   public <T extends Iterable<HourlyPeriod>> TempGraph(T data, TemperatureUnit unit) {
@@ -212,8 +214,8 @@ public class TempGraph {
    * Build container around {@code HourlyPeriod} extracting {@code DataPoint}s
    *
    * @param data {@code Iterable} container for {@code HourlyPeriod}
-   * @param day {@code Date} object representing the target day to generate the
-   *        graph
+   * @param day  {@code Date} object representing the target day to generate the
+   *             graph
    * @param unit {@code TempUnit} which unit to use for the axis
    */
   private <T extends Iterable<HourlyPeriod>> void initializeFromData(T data, TemperatureUnit unit) {
@@ -295,7 +297,7 @@ public class TempGraph {
     areaChart.getData().addAll(series);
 
     // styling
-    TempGraph.styleChart(areaChart);
+    this.styleChart(areaChart);
 
     // add and style the title
     Text title = new Text("Temperature");
@@ -313,7 +315,6 @@ public class TempGraph {
 
     return box;
   };
-
 
   /**
    * Update the contained data. Subsequent calls to {@code TempGraph.component()}
@@ -399,11 +400,7 @@ public class TempGraph {
     });
   }
 
-  /**
-   * Style the given {@code LineChart}
-   */
-  static public void styleChart(AreaChart<Number, Number> component) {
-    component.getStyleClass().addAll("temp-graph");
+  public void styleChartBase(AreaChart<Number, Number> component) {
     component.setHorizontalGridLinesVisible(false);
     component.setVerticalGridLinesVisible(false);
     component.setLegendVisible(false);
@@ -412,4 +409,70 @@ public class TempGraph {
     component.setCreateSymbols(false);
   }
 
+  /**
+   * Style the given {@code LineChart}
+   */
+  public void styleChart(AreaChart<Number, Number> component) {
+    component.getStyleClass().addAll("temp-graph");
+    styleChartBase(component);
+  }
+
+  /**
+   * Style the given {@code LineChart}
+   */
+  public void styleSmallChart(AreaChart<Number, Number> component) {
+    component.getStyleClass().addAll("temp-graph-small");
+    styleChartBase(component);
+  }
+
+  /**
+   * Get a {@code javafx.scene.chart.LineChart} representing this
+   * {@code TempGraph}
+   *
+   */
+  @SuppressWarnings("unchecked")
+  public VBox smallComponent() {
+
+    // initialize the axes
+    // NOTE: This is the recommended way to do this,
+    // see the tutorial for LineCharts here:
+    // https://docs.oracle.com/javafx/2/charts/line-chart.htm
+    NumberAxis hourAxis = new NumberAxis(data.firstElement().time(), data.lastElement().time(),
+        MILLISECONDS_IN_THREE_HOURS);
+    NumberAxis tempAxis;
+
+    // add padding to the limits
+    if (temp_limits.max() < 0) {
+      tempAxis = new NumberAxis(temp_limits.min() + temp_limits.padDown(),
+          temp_limits.max() - temp_limits.padDown(),
+          10);
+    } else {
+      tempAxis = new NumberAxis(temp_limits.min() - temp_limits.pad(),
+          temp_limits.max() + temp_limits.pad(),
+          10);
+    }
+
+    // style the axes
+    this.styleTimeAxis(hourAxis);
+    this.styleTempAxis(tempAxis);
+
+    // create the chart and series
+    AreaChart<Number, Number> areaChart = new AreaChart<>(hourAxis, tempAxis);
+    XYChart.Series<Number, Number> series = new XYChart.Series<>();
+
+    for (DataPoint d : this.data) {
+      series.getData().add(d.asPoint());
+    }
+    areaChart.getData().addAll(series);
+
+    // styling
+    this.styleSmallChart(areaChart);
+
+    // place the title above the box
+    VBox box = new VBox(areaChart);
+    box.setMaxHeight(100);
+    box.getStyleClass().add("chart-backdrop-small");
+
+    return box;
+  };
 }
