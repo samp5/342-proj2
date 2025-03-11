@@ -85,6 +85,11 @@ public class CompassBox extends SmallBox {
     svgStack.setPadding(new Insets(10, 0, 0, 0));
   }
 
+  /**
+   * get the 16-point compass direction abbreviation based on the current wind direction
+   *
+   * @return a {@code String} 16 point compass direction
+   */
   private String getCompassDir() {
     if (windDir <= 11.25) return "N";
     else if (windDir <= 33.75) return "NNE";

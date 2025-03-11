@@ -113,12 +113,15 @@ public class TodayScene extends DayScene {
    * update the scene with the {@code currentForecast}
    */
   protected void applyForecast() {
+    // use the most current forecast
     HourlyPeriod now = currentForecast.getFirst();
 
+    // update temperature, forecast, and other text fields
     setTemp(now.temperature);
     setShortForecast(now.shortForecast);
     updateTextFields();
 
+    // get the new weather icon. defaults to drizzle
     try {
       icon = new IconResolver().getIcon(now.shortForecast, now.isDaytime);
     } catch (FileNotFoundException e) {
@@ -126,14 +129,17 @@ public class TodayScene extends DayScene {
     }
     weatherIcon.setImage(icon);
 
+    // create data charts
     tempGraph =
         new TempGraph(currentForecast, UnitHandler.getUnit());
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
 
+    // place data charts
     graphContainer.getChildren().setAll(tempChart, humidChart);
 
+    // create the smaller data views
     createSmallGraphs();
   }
 
