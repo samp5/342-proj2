@@ -1,7 +1,20 @@
 package views;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.geometry.Insets;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.CycleMethod;
+import javafx.scene.paint.LinearGradient;
+import javafx.scene.paint.Stop;
+import javafx.util.Duration;
 
 /**
  * A loading scene which should not be seen for particularly long.
@@ -12,6 +25,12 @@ public class LoadingScene extends DayScene {
   HBox headerContainer, graphContainer;
   Pane forecastBox;
   HBox smallCharts;
+
+  HBox sidebarHeader;
+  HBox sidebarInput;
+  HBox sidebarSection;
+  HBox sidebarSearch;
+  VBox fakeSidebar;
 
   /**
    * create a new loading scene
@@ -32,12 +51,21 @@ public class LoadingScene extends DayScene {
    */
   protected void initComponents() {
     super.initComponents();
+
     headerContainer = new HBox();
     graphContainer = new HBox();
     forecastBox = new Pane();
     smallCharts = new HBox();
 
+    sidebarHeader = new HBox();
+    sidebarInput = new HBox();
+    sidebarSection = new HBox();
+    sidebarSearch = new HBox();
+    fakeSidebar = new VBox();
+    fakeSidebar.getChildren().addAll(sidebarHeader, sidebarInput, sidebarSection, sidebarSearch);
+
     mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallCharts);
+    sidebarBox.getChildren().setAll(fakeSidebar);
   }
 
   /**
@@ -69,6 +97,66 @@ public class LoadingScene extends DayScene {
     graphContainer.getStyleClass().add("load-box");
     graphContainer.setMaxWidth(1000);
     graphContainer.setMinHeight(300);
+
+    sidebarHeader.getStyleClass().add("load-box");
+    sidebarHeader.setMaxWidth(256);
+    sidebarHeader.setMinHeight(100);
+
+    sidebarInput.getStyleClass().add("load-box");
+    sidebarInput.setMaxWidth(256);
+    sidebarInput.setMinHeight(50);
+
+    sidebarSection.getStyleClass().add("load-box");
+    sidebarSection.setMaxWidth(256);
+    sidebarSection.setMinHeight(100);
+
+    sidebarSearch.getStyleClass().add("load-box");
+    sidebarSearch.setMaxWidth(256);
+    sidebarSearch.setMinHeight(20);
+    fakeSidebar.setSpacing(20);
+
+    animateAll();
+  }
+
+  // Animate all our regions
+  private void animateAll() {
+    Region[] boxes = {graphContainer, smallCharts, headerContainer, forecastBox, sidebarHeader,
+        sidebarInput, sidebarSection, sidebarSearch};
+
+    for (Region box : boxes) {
+      buildAnimation(box, Color.web("#f1f3f4"), Color.web("#d5d7da")).play();
+    }
+
+    Region[] sidebarBoxes = {sidebarHeader, sidebarInput, sidebarSection, sidebarSearch};
+
+    for (Region box : sidebarBoxes) {
+      buildAnimation(box, Color.web("#f9fafa"), Color.web("#f1f3f4")).play();
+    }
+  }
+
+  /**
+   * Build an "loading" animation for a given region
+   */
+  private Timeline buildAnimation(Region box, Color start, Color to) {
+
+    Timeline timeline = new Timeline();
+
+    for (double i = 0; i <= 1; i += 0.05) {
+      double startX = i;
+      double endX = i + 1; // Move gradient from left to right
+      timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i + 0.2), e -> {
+
+        box.setBackground(new Background(new BackgroundFill(
+            new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE,
+                new Stop(0, start), new Stop(1, to)),
+            new CornerRadii(20), Insets.EMPTY)));
+      }));
+    }
+
+    timeline.setCycleCount(Timeline.INDEFINITE);
+    timeline.setAutoReverse(true);
+
+    return timeline;
   }
 
   @Override

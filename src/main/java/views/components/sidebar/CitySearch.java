@@ -92,8 +92,7 @@ public class CitySearch {
       // we have to delay here otherwise the scene won't be loaded!
       new NotificationBuilder().ofType(NotificationType.Error)
           .withMessage("Failed to load city data, city search will not be available").showFor(3)
-          .fireAfter(Duration.seconds(2));
-      ;
+          .fireAfter(Duration.seconds(2));;
     }
 
     // build our filtered list
@@ -127,7 +126,6 @@ public class CitySearch {
 
   private void styleComponents() {
 
-    content.setPadding(new Insets(10));
     // style
     cityListView.getStyleClass().add("search-results");
 
@@ -137,6 +135,8 @@ public class CitySearch {
     // add style classes for our search box
     searchBox.getStyleClass().add("search-box");
     searchInput.getStyleClass().add("search-input");
+
+    content.getStyleClass().add("search");
   }
 
   private void registerEventHandlers() {
@@ -243,7 +243,8 @@ public class CitySearch {
                   searchInput.clear();
                   return;
                 }
-                System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName, c.lat,
+                System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName,
+                    c.lat,
                     c.lon);
                 content.fireEvent(new LocationChangeEvent(c.lat, c.lon));
                 searchInput.clear();

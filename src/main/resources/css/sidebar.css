@@ -34,7 +34,12 @@
   -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
 }
 
+.search {
+  -fx-padding: 30px 30px 0px 10px;
+}
+
 .search-results {
+  -fx-padding: 10 0px 0px 0px;
   -fx-background-color: transparent;
   -fx-background-color: transparent;
   -fx-border-color: transparent;
@@ -51,12 +56,14 @@
 }
 
 .search-result-box {
+    -fx-padding: 3px;
 }
 
 .search-result-box-selected {
     -fx-background: #D2E3FC;
     -fx-background-radius: 10px;
     -fx-background-color: #D2E3FC;
+    -fx-padding: 3px;
 }
 
 .list-view .scroll-bar:vertical,
@@ -73,5 +80,4 @@
     -fx-border-color: transparent;
     -fx-text-fill: black;
 }
-
 
