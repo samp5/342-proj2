@@ -145,13 +145,13 @@ public class CitySearch {
     //
     // As an additional side effect, always select the top result
     searchInput.textProperty().addListener(obs -> {
-      String filter = searchInput.getText().toLowerCase();
+      String filter = searchInput.getText();
       if (filter == null || filter.length() == 0) {
         cityListView.setVisible(false);
         filteredList.setPredicate(s -> false);
       } else {
         cityListView.setVisible(true);
-        filteredList.setPredicate(city -> city.display.toLowerCase().contains(filter));
+        filteredList.setPredicate(city -> city.display.toLowerCase().contains(filter.toLowerCase()));
       }
       if (!filteredList.isEmpty()) {
         cityListView.getSelectionModel().select(0);
