@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import my_weather.HourlyPeriod;
 import views.components.TempGraph;
+import views.components.VisibilityBox;
 import views.components.events.TempUnitEvent;
 import views.components.CompassBox;
 import views.components.DewPointBox;
@@ -65,9 +66,7 @@ public class TodayScene extends DayScene {
 
   // small charts blocking
   HBox smallBoxes;
-  VBox compassBox;
-  VBox pressureBox;
-  VBox dewpointBox;
+  VBox compassBox, pressureBox, dewpointBox, visibilityBox;
 
 
   /**
@@ -313,7 +312,7 @@ public class TodayScene extends DayScene {
    */
   private void createSmallGraphs() {
     HourlyPeriod now = currentForecast.getFirst();
-    SmallBox compass, pressure, dewpoint;
+    SmallBox compass, pressure, dewpoint, visibility;
 
     // add the wind speed box. handle if null.
     if (currentObservations.windSpeed.value != null && currentObservations.windDirection.value != null) {
@@ -335,7 +334,15 @@ public class TodayScene extends DayScene {
     dewpoint = new DewPointBox(now.dewpoint.value);
     dewpointBox = dewpoint.component();
 
-    smallBoxes.getChildren().setAll(compassBox, pressureBox, dewpointBox);
+    // add the visibility box. handle if null.
+    if (currentObservations.visibility.value != null) {
+      visibility = new VisibilityBox(currentObservations.visibility.value);
+    } else {
+      visibility = new EmptyBox("visibility");
+    }
+    visibilityBox = visibility.component();
+
+    smallBoxes.getChildren().setAll(compassBox, pressureBox, dewpointBox, visibilityBox);
   }
 
   /**

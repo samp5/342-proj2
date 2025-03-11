@@ -37,7 +37,7 @@ public abstract class DayScene {
     mainScrollable.getStyleClass().add("edge-to-edge");
 
     sceneBox = new HBox(sidebarBox, mainScrollable, focusVoid);
-    scene = new Scene(sceneBox, 1440, 900);
+    scene = new Scene(sceneBox, 1440, 800);
 
     // listen for click events
     scene.setOnMouseClicked(event -> {
