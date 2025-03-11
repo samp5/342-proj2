@@ -32,7 +32,8 @@ import weather_observations.Observations;
 /**
  * A single day view of the weather, extending {@code DayScene}.
  * This is the primary view of the app.
- * Allows for changing of units globally, and displays more detailed and useful information than other views.
+ * Allows for changing of units globally, and displays more detailed and useful
+ * information than other views.
  */
 public class TodayScene extends DayScene {
   // display text
@@ -69,13 +70,12 @@ public class TodayScene extends DayScene {
   VBox pressureBox;
   VBox dewpointBox;
 
-
   /**
    * initialize a TodayScene
    * to get the {@code Scene}, use {@code getScene()}
    *
    * @param forecast an {@code ArrayList} of {@code HourlyPeriod}, gathered from
-   *        {@code MyWeatherAPI}
+   *                 {@code MyWeatherAPI}
    */
   public TodayScene(ArrayList<HourlyPeriod> forecast, Observations observations) {
     initComponents();
@@ -100,7 +100,7 @@ public class TodayScene extends DayScene {
   /**
    * update the view to use a new forecast and observations
    *
-   * @param forecast the new forecast to use
+   * @param forecast     the new forecast to use
    * @param observations the new observations to use
    */
   public void update(ArrayList<HourlyPeriod> forecast, Observations observations) {
@@ -130,8 +130,7 @@ public class TodayScene extends DayScene {
     weatherIcon.setImage(icon);
 
     // create data charts
-    tempGraph =
-        new TempGraph(currentForecast, UnitHandler.getUnit());
+    tempGraph = new TempGraph(currentForecast, UnitHandler.getUnit());
     tempChart = tempGraph.component();
     humidGraph = new HumidityGraph(currentForecast, currentForecast.getFirst().startTime);
     humidChart = humidGraph.component();
@@ -262,9 +261,9 @@ public class TodayScene extends DayScene {
   private void updateTextFields() {
     String fmt;
     if (UnitHandler.getUnit() == TemperatureUnit.Celsius) {
-      fmt = "%d°C";
+      fmt = "%.0f°C";
     } else {
-      fmt = "%d°F";
+      fmt = "%.0f°F";
     }
 
     // add the feels like field. handle if null
@@ -272,7 +271,7 @@ public class TodayScene extends DayScene {
       feelsLikeTxt.setText("Feels like " + String.format(fmt, currentObservations.windChill.getTemperature()));
     } else {
       feelsLikeTxt.setText("Feels like the API didn't populate this field.");
-      feelsLikeTxt.setPrefWidth(400);
+      feelsLikeTxt.setPrefWidth(500);
     }
   }
 

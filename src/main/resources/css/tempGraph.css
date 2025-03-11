@@ -10,9 +10,21 @@
 
 .chart {
     -fx-background-color: transparent;
-    -fx-padding: 30px;
     -fx-border-color: transparent;
 }
+
+.temp-graph{
+    -fx-padding: 30px;
+}
+
+.temp-graph-small{
+    -fx-padding: 10px;
+}
+
+.humid-graph {
+    -fx-padding: 30px;
+}
+
 .chart-title {
     -fx-font-family: "Atkinson Hyperlegible Bold";
     -fx-font-size: 20px;
@@ -22,6 +34,10 @@
   -fx-background-color: #F8F9FA;
   -fx-background-radius: 50px;
   -fx-font-size: 18px;
+}
+
+.chart-backdrop-small {
+  -fx-background-color: #F8F9FA;
 }
 
 
@@ -45,6 +61,12 @@
 
 /* Line color */
 .temp-graph .default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
+
+/* Fill Color */
+.temp-graph-small .default-color0.chart-series-area-fill { -fx-fill: #ffcc0022} 
+
+/* Line color */
+.temp-graph-small .default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
 
 
 /* Fill Color */

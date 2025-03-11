@@ -8,47 +8,109 @@
   src: url("/fonts/AtkinsonHyperlegible-Bold.ttf");
 }
 
-.day-title-one-day {
-  -fx-font-family: "Atkinson Hyperlegible Bold";
-}
-.day-backdrop-one-day {
-  -fx-background-color: transparent;
-  -fx-padding: 10px, 10px, 10px,10px;
-}
 
-.day-temperature-text-one-day {
-  -fx-font-family: "Atkinson Hyperlegible Bold";
-  -fx-font-size: 40px;
-}
+/*
+* Each day has three componenets controllable through css
+*   1. The title of the day 
+*   2. The temperature display
+*   3. statistics (including wind, humidity, etc).
+*   4. The backdrop of the componenet
+*
+* Unfortunately, JavaFX doesn't really provide much of a css
+* interface for the imageview, so icons are a no go here and must
+* be done in the java code 
+*
+* Each of these text subcomponents  generally have text (for font + size)
+* and a text box (for alignment + padding)
+*/
 
-.day-statistis-one-day {
-  -fx-font-family: "Atkinson Hyperlegible Bold";
-  -fx-font-size: 18px;
-}
-
+/*
+ * THREE DAY 
+ */
 .day-title-three-day {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 20;
 }
 
+.day-title-box-three-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 20;
+  -fx-alignment: center;
+  -fx-padding: 10px 0px 0px 0px;
+}
+
+/* backdrop */
 .day-backdrop-three-day {
   -fx-background-color: white;
   -fx-font-size: 18px;
+  -fx-padding: 40px;
 }
 
 .day-backdrop-three-day-clicked {
   -fx-background-color: #F8F9FA;
   -fx-background-radius: 50px;
   -fx-font-size: 18px;
+  -fx-padding: 40px;
 }
 
-.day-temperature-text-three-day {
+/* temperature field */
+.day-temperature-three-day {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 40;
 }
 
+.day-temperature-box-three-day {
+}
+
+
+
+/* statistics field */
 .day-statistics-three-day {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 18px;
 }
 
+.day-statistics-box-three-day {
+  -fx-alignment: center;
+  -fx-padding: 0px 0px 5px 0px;
+}
+/*
+ * TEN DAY 
+ */
+.day-title-ten-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18;
+}
+
+.day-title-box-ten-day {
+  -fx-alignment: center-left;
+  -fx-padding: 10px;
+}
+
+/* backdrop */
+.day-backdrop-ten-day {
+  -fx-background-color: #F8F9FA;
+  -fx-background-radius: 50px;
+}
+
+/* temperature field */
+.day-temperature-ten-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 32;
+}
+
+.day-temperature-box-ten-day {
+  -fx-alignment: center-left;
+  -fx-padding: 10px;
+}
+
+/* statistics field */
+.day-statistics-ten-day {
+  -fx-font-family: "Atkinson Hyperlegible Bold";
+  -fx-font-size: 18px;
+}
+
+.day-statistics-box-ten-day {
+  -fx-alignment: center-left;
+  -fx-padding: 10px;
+}
