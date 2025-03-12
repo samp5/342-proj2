@@ -6,6 +6,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import views.util.SVGHelper;
 import views.util.TextUtils;
 
 /**
@@ -55,36 +56,6 @@ public abstract class SmallBox {
    * create a new {@code Region} containing an {@code SVG} just from a path
    */
   protected Region newSVG(String path) {
-    SVGPath svg = new SVGPath();
-    svg.setContent(path);
-
-    Region region = new Region();
-    region.setShape(svg);
-
-    setStandardSize(region);
-
-    return region;
-  }
-
-  /**
-   * set the size of a region to the standard 160x160px
-   *
-   * @param r the region to resize
-   */
-  protected void setStandardSize(Region r) {
-    setSize(r, SIZE, SIZE);
-  }
-
-  /**
-   * set the size of a region to the given width and height
-   *
-   * @param r the region to resize
-   * @param w width of the region
-   * @param h height of the region
-   */
-  protected void setSize(Region r, double w, double h) {
-    r.setMinSize(w, h);
-    r.setPrefSize(w, h);
-    r.setMaxSize(w, h);
+    return SVGHelper.newSVG(path, SIZE);
   }
 }

@@ -19,6 +19,7 @@ import views.components.events.LocationChangeEvent;
 import views.util.CityData;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
+import views.util.SVGHelper;
 import views.util.CityData.City;
 import javafx.util.Callback;
 import javafx.util.Duration;
@@ -102,17 +103,11 @@ public class CitySearch {
     filteredList = new FilteredList<>(this.cityList);
 
     // Load our search icon and set dimensions
-    Region imgView = new Region();
-    SVGPath img = new SVGPath();
-    img.setContent("M 0 5 A 1 1 0 0 0 5.85 5 A 1 1 0 0 0 0 5 M 5.8 5.5L 10 5.5 L 10 4.5L 5.8 4.5 z M 1 5 A 1 1 0 0 1 4.85 5 A 1 1 0 0 1 1 5");
-    imgView.setShape(img);
-    imgView.setMinSize(30, 18);
-    imgView.setPrefSize(30, 18);
-    imgView.setMaxSize(30, 18);
-    imgView.setRotate(45);
-    imgView.getStyleClass().add("search-icon");
+    Region svg = SVGHelper.newSVG("M 0 5 A 1 1 0 0 0 5.85 5 A 1 1 0 0 0 0 5 M 5.8 5.5L 10 5.5 L 10 4.5L 5.8 4.5 z M 1 5 A 1 1 0 0 1 4.85 5 A 1 1 0 0 1 1 5", 30, 18);
+    svg.setRotate(45);
+    svg.getStyleClass().add("search-icon");
 
-    searchIcon.setCenter(imgView);
+    searchIcon.setCenter(svg);
 
     // fill our search box
     searchBox.getChildren().setAll(searchIcon, searchInput);

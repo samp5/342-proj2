@@ -129,6 +129,15 @@ public class Settings {
   }
 
   /**
+   * set the color theme's filename
+   *
+   * @param filename the filname of the new color theme
+   */
+  public static void setThemeFile(String filename) {
+    themeFile = filename;
+  }
+
+  /**
    * An {@code Exception} caused by {@code Settings} being unable to load
    */
   public static class SettingsLoadException extends Exception {}

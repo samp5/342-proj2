@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import views.util.SVGHelper;
 import views.util.TextUtils;
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
@@ -70,7 +71,7 @@ public class DewPointBox extends SmallBox {
     double percent = getHeightPercent();
     double height = SIZE * .8 * percent;
     double halfSize = SIZE / 2;
-    setSize(fillRegion, SIZE * .4, height);
+    SVGHelper.setSize(fillRegion, SIZE * .4, height);
     fillRegion.setTranslateY((-halfSize * percent + halfSize) * .8);
 
     // add style classes

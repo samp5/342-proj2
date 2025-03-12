@@ -28,6 +28,7 @@ import views.ThreeDayScene;
 import views.TodayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.events.NotificationEvent;
+import views.components.events.ThemeChangeEvent;
 import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 import views.util.LocationChangeData;
@@ -137,8 +138,10 @@ public class JavaFX extends Application {
         new Pair<String, DayScene>("Daily Forecast", todayScene),
         new Pair<String, DayScene>("Three Day Forecast", threeDayScene),
         new Pair<String, DayScene>("Ten Day Forecast", tenDayScene));
-
     sidebar.setTitle(gridPoint.location);
+
+    // set color scheme
+    setGlobalTheme(Settings.getThemeFile());
 
     // set current scene
     DayScene curScene = scenes.get(sceneNdx);
@@ -166,6 +169,11 @@ public class JavaFX extends Application {
 
     primaryStage.addEventHandler(NotificationEvent.NOTIFCATION, event -> {
       showPopup(primaryStage, event.component(), event.duration());
+    });
+
+    primaryStage.addEventHandler(ThemeChangeEvent.THEMECHANGE, event -> {
+      String filename = event.getUnit();
+      setGlobalTheme(filename);
     });
   }
 
@@ -277,6 +285,21 @@ public class JavaFX extends Application {
     delay.setOnFinished(event -> p.hide());
 
     delay.play();
+  }
+
+  /**
+   * Set the color scheme of all scenes
+   *
+   * @param filename the filename of the theme file
+   */
+  private void setGlobalTheme(String filename) {
+    Settings.setThemeFile(filename);
+
+    for (DayScene scene : scenes) {
+      scene.setTheme(filename);
+    }
+
+    sidebar.setThemeButton();
   }
 
   /**

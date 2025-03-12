@@ -128,7 +128,9 @@ public class LoadingScene extends DayScene {
     animateAll();
   }
 
-  // Animate all our regions
+  /**
+   * Animate all regions
+   */
   private void animateAll() {
     Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox };
     // get the colors for the animation from CSS
@@ -145,6 +147,11 @@ public class LoadingScene extends DayScene {
     }
   }
 
+  /**
+   * gets colors for the {@code animateAll()} method from the current theme's css file
+   *
+   * @return an array of 4 {@code Colors} for animation use
+   */
   private Color[] getAnimationColors() {
     // init color list and name const
     Color[] colors = new Color[4];
@@ -179,7 +186,7 @@ public class LoadingScene extends DayScene {
   }
 
   /**
-   * Build an "loading" animation for a given region
+   * Build a "loading" animation for a given region
    */
   private Timeline buildAnimation(Region box, Color start, Color to) {
 
@@ -207,9 +214,11 @@ public class LoadingScene extends DayScene {
     return timeline;
   }
 
+  /**
+   * A loading scene has no forecast to apply, thus is empty
+   */
   @Override
   protected void applyForecast() {
     return;
   }
-
 }

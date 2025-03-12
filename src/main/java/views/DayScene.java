@@ -23,6 +23,8 @@ public abstract class DayScene {
   protected Scene scene;
   private Canvas focusVoid = new Canvas();
 
+  private String currentTheme;
+
   /**
    * initialize all components. most components will be added to or modified later
    * during initialization
@@ -65,7 +67,6 @@ public abstract class DayScene {
     scene.getStylesheets().add("css/sidebar.css");
     scene.getStylesheets().add("css/sidebarHeader.css");
     scene.getStylesheets().add("css/notifications.css");
-    scene.getStylesheets().add(Settings.getThemeFile());
   }
 
   /**
@@ -100,6 +101,22 @@ public abstract class DayScene {
   public void setActiveScene() {
     this.sidebarBox.getChildren().setAll(sidebar.component());
     voidFocus();
+  }
+
+  /**
+   * sets the theme of the current scene.
+   *
+   * @param filename the filename of the theme file
+   */
+  public void setTheme(String filename) {
+    // remove any current theme if there is one
+    if (currentTheme != null) {
+      scene.getStylesheets().remove(currentTheme);
+    }
+
+    // set new theme
+    currentTheme = filename;
+    scene.getStylesheets().add(filename);
   }
 
   /**

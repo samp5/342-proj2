@@ -4,6 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import views.util.SVGHelper;
 
 /**
  * A {@code SmallBox} used for displaying information about the current air pressure.
@@ -52,9 +53,9 @@ public class PressureBox extends SmallBox {
     // modify size, rotation, and position
     double needleW = CompassBox.SIZE / 5.;
     double needleH = CompassBox.SIZE;
-    setSize(needleRegion, needleW, needleH);
+    SVGHelper.setSize(needleRegion, needleW, needleH);
     needleRegion.setRotate(getRotation());
-    setSize(labelRegion, 70, 50);
+    SVGHelper.setSize(labelRegion, 70, 50);
     labelRegion.setTranslateY(10);
     pressureUnit.setTranslateY(20);
 

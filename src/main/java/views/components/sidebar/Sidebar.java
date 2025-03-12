@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -13,6 +14,7 @@ import javafx.util.Pair;
 import settings.Settings;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
+import views.components.events.ThemeChangeEvent;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 
@@ -33,11 +35,14 @@ public class Sidebar {
   Header header;
 
   // City searcher
-  //
   CitySearch search;
 
   // sections
   ArrayList<Section> sections;
+
+  // theme change button. 
+  HBox themeButtonBox;
+  Button themeButton;
 
   /**
    * a {@code Header} for the {@code Sidebar}
@@ -179,10 +184,35 @@ public class Sidebar {
   public <T extends Collection<Section>> Sidebar(T sections) {
     this.sections = new ArrayList<>(sections);
     this.header = new Header();
+
     container = new VBox(header.component());
     container.getChildren()
         .addAll(sections.stream().map(section -> section.component()).collect(Collectors.toList()));
-    container.getChildren().add(new CitySearch().component());
+
+    themeButton = new Button();
+    themeButtonBox = new HBox(themeButton);
+    themeButtonBox.setAlignment(Pos.BOTTOM_LEFT);
+    
+    container.getChildren().addAll(new CitySearch().component(), themeButtonBox);
+
+    setThemeButton();
+  }
+
+  /**
+   * set the theme button to the correct button and functionality based on the current theme
+   */
+  public void setThemeButton() {
+    if (Settings.getThemeFile().contains("light")) {
+      themeButton.setText("to dark");
+      themeButton.setOnAction(e -> {
+        themeButton.fireEvent(new ThemeChangeEvent("css/themes/dark.css"));
+      });
+    } else {
+      themeButton.setText("to light");
+      themeButton.setOnAction(e -> {
+        themeButton.fireEvent(new ThemeChangeEvent("css/themes/light.css"));
+      });
+    }
   }
 
   /**

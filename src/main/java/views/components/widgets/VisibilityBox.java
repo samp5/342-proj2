@@ -4,6 +4,7 @@ package views.components.widgets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import views.util.SVGHelper;
 import views.util.TextUtils;
 
 /**
@@ -70,8 +71,8 @@ public class VisibilityBox extends SmallBox {
     double height = SIZE * .2 * squintPercent;
     double halfSize = SIZE / 2;
     double qrtrSize = SIZE / 4;
-    setSize(squintRegionTop, SIZE * .9, height);
-    setSize(squintRegionBottom, SIZE * .9, height);
+    SVGHelper.setSize(squintRegionTop, SIZE * .9, height);
+    SVGHelper.setSize(squintRegionBottom, SIZE * .9, height);
     squintRegionTop.setTranslateY(.4 * (qrtrSize * squintPercent - halfSize));
     squintRegionBottom.setTranslateY(.4 * -(qrtrSize * squintPercent - halfSize));
 

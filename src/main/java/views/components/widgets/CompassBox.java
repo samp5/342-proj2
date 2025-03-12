@@ -5,6 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.SVGPath;
+import views.util.SVGHelper;
 import views.util.TextUtils;
 
 /**
@@ -71,7 +72,7 @@ public class CompassBox extends SmallBox {
     // resize the needle
     double needleW = CompassBox.SIZE / 8.;
     double needleH = CompassBox.SIZE / 1.9;
-    setSize(needleRegion, needleW, needleH);
+    SVGHelper.setSize(needleRegion, needleW, needleH);
     needleRegion.setRotate(windDir);
 
     // add style classes
