@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -43,6 +44,8 @@ public class LoadingScene extends DayScene {
   HBox sidebarSearch;
   VBox fakeSidebar;
 
+  ArrayList<Timeline> animations;
+
   /**
    * create a new loading scene
    */
@@ -77,6 +80,9 @@ public class LoadingScene extends DayScene {
 
     mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallCharts);
     sidebarBox.getChildren().setAll(fakeSidebar);
+
+    animations = new ArrayList<>();
+
   }
 
   /**
@@ -132,23 +138,33 @@ public class LoadingScene extends DayScene {
    * Animate all regions
    */
   private void animateAll() {
+    for (Timeline animation : animations) {
+      animation.stop();
+    }
+    animations.clear();
+
     Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox };
     // get the colors for the animation from CSS
     Color[] colors = getAnimationColors();
 
     for (Region box : boxes) {
-      buildAnimation(box, colors[0], colors[1]).play();
+      animations.add(buildAnimation(box, colors[0], colors[1]));
     }
 
     Region[] sidebarBoxes = { sidebarHeader, sidebarInput, sidebarSection, sidebarSearch };
 
     for (Region box : sidebarBoxes) {
-      buildAnimation(box, colors[2], colors[3]).play();
+      animations.add(buildAnimation(box, colors[0], colors[1]));
+    }
+
+    for (Timeline animation : animations) {
+      animation.play();
     }
   }
 
   /**
-   * gets colors for the {@code animateAll()} method from the current theme's css file
+   * gets colors for the {@code animateAll()} method from the current theme's css
+   * file
    *
    * @return an array of 4 {@code Colors} for animation use
    */
@@ -156,10 +172,10 @@ public class LoadingScene extends DayScene {
     // init color list and name const
     Color[] colors = new Color[4];
     final String[] names = new String[] {
-      "main-box-start-color",
-      "main-box-end-color",
-      "side-box-start-color",
-      "side-box-end-color"
+        "main-box-start-color",
+        "main-box-end-color",
+        "side-box-start-color",
+        "side-box-end-color"
     };
 
     try {
@@ -173,12 +189,12 @@ public class LoadingScene extends DayScene {
       for (int i = 0; i < 4; ++i) {
         final String name = names[i];
         colors[i] = rootRule.getDeclarations().stream()
-                    .filter(d -> d.getProperty().equals(name))
-                    .findFirst()
-                    .map(d -> ColorConverter.getInstance().convert(d.getParsedValue(), null))
-                    .get();
+            .filter(d -> d.getProperty().equals(name))
+            .findFirst()
+            .map(d -> ColorConverter.getInstance().convert(d.getParsedValue(), null))
+            .get();
       }
-    } catch (IOException e) { 
+    } catch (IOException e) {
       e.printStackTrace();
     }
 
@@ -198,13 +214,11 @@ public class LoadingScene extends DayScene {
       timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i + 0.5), e -> {
 
         box.setBackground(
-          new Background(
-            new BackgroundFill(
-              new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE, new Stop(0, start), new Stop(1, to)
-              ),
-            new CornerRadii(20), Insets.EMPTY)
-          )
-        );
+            new Background(
+                new BackgroundFill(
+                    new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE, new Stop(0, start),
+                        new Stop(1, to)),
+                    new CornerRadii(20), Insets.EMPTY)));
       }));
     }
 
