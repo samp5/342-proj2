@@ -6,6 +6,8 @@ import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.skin.ListViewSkin;
+import javafx.scene.control.skin.VirtualFlow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -91,8 +93,7 @@ public class CitySearch {
       // we have to delay here otherwise the scene won't be loaded!
       new NotificationBuilder().ofType(NotificationType.Error)
           .withMessage("Failed to load city data, city search will not be available").showFor(3)
-          .fireAfter(Duration.seconds(2));
-      ;
+          .fireAfter(Duration.seconds(2));;
     }
 
     // build our filtered list
@@ -151,10 +152,14 @@ public class CitySearch {
         filteredList.setPredicate(s -> false);
       } else {
         cityListView.setVisible(true);
-        filteredList.setPredicate(city -> city.display.toLowerCase().contains(filter.toLowerCase()));
+        filteredList
+            .setPredicate(city -> city.display.toLowerCase().contains(filter.toLowerCase()));
       }
       if (!filteredList.isEmpty()) {
         cityListView.getSelectionModel().select(0);
+
+        // make sure that the first result is visible to user
+        cityListView.scrollTo(0);
       }
     });
 
@@ -166,11 +171,36 @@ public class CitySearch {
         return;
       }
 
-      System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName, c.lat,
-          c.lon);
-
       content.fireEvent(new LocationChangeEvent(c.lat, c.lon, c.display));
       searchInput.clear();
+    });
+
+    searchInput.setOnKeyPressed(key -> {
+      // if we dont consume these events then the TextField moves the cursor around
+      switch (key.getCode()) {
+        case DOWN:
+          selectNext();
+          key.consume();
+          break;
+        case J:
+          if (key.isControlDown()) {
+            selectNext();
+            key.consume();
+          }
+          break;
+        case K:
+          if (key.isControlDown()) {
+            selectPrev();
+            key.consume();
+          }
+          break;
+        case UP:
+          selectPrev();
+          key.consume();
+          break;
+        default:
+          return;
+      }
     });
   }
 
@@ -269,5 +299,56 @@ public class CitySearch {
       };
 
     }
+  }
+
+  private void selectNext() {
+    int index = cityListView.getSelectionModel().getSelectedIndex();
+    int next_index = (index + 1) % cityListView.getItems().size();
+
+    // Okay this is gonna get ugly:
+    // https://forums.oracle.com/ords/apexds/post/listview-visible-items-8075
+    // https://stackoverflow.com/questions/30457708/visible-items-of-listview
+    ListViewSkin<?> ts = (ListViewSkin<?>) cityListView.getSkin();
+    VirtualFlow<?> vf = (VirtualFlow<?>) ts.getChildren().get(0);
+    int firstVisible = vf.getFirstVisibleCell().getIndex();
+    int lastVisible = vf.getLastVisibleCell().getIndex();
+
+    // handle scroll down
+    if (next_index >= lastVisible) {
+      cityListView.scrollTo(firstVisible + 1);
+    }
+    // handle loop around
+    if (next_index <= firstVisible) {
+      cityListView.scrollTo(next_index);
+    }
+
+    cityListView.getSelectionModel().select(next_index);
+  }
+
+  private void selectPrev() {
+    int index = cityListView.getSelectionModel().getSelectedIndex();
+    int prev_index = index - 1;
+
+    // loop around
+    if (prev_index < 0) {
+      prev_index = cityListView.getItems().size() - 1;
+    }
+
+    // see selectNext for links to this
+    ListViewSkin<?> ts = (ListViewSkin<?>) cityListView.getSkin();
+    VirtualFlow<?> vf = (VirtualFlow<?>) ts.getChildren().get(0);
+    int firstVisible = vf.getFirstVisibleCell().getIndex();
+    int lastVisible = vf.getLastVisibleCell().getIndex();
+
+    // handle normal scroll up
+    if (prev_index <= firstVisible) {
+      cityListView.scrollTo(prev_index);
+    }
+
+    // handle loop around
+    if (prev_index > lastVisible) {
+      cityListView.scrollTo(prev_index - (lastVisible - firstVisible));
+    }
+    cityListView.getSelectionModel().select(prev_index);
   }
 }
