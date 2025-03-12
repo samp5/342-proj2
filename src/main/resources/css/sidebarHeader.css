@@ -16,7 +16,7 @@
 }
 .invalid-input {
   -fx-font-size: 18px;
-  -fx-text-fill: #A50E0E;
+  -fx-text-fill: invalid-text-color;
   -fx-border-width: 0;
   -fx-background-color: transparent;
   -fx-font-family: "Atkinson Hyperlegible Bold";

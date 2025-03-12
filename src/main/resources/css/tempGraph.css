@@ -31,13 +31,13 @@
 }
 
 .chart-backdrop {
-  -fx-background-color: #F8F9FA;
+  -fx-background-color: graph-backdrop-color;
   -fx-background-radius: 50px;
   -fx-font-size: 18px;
 }
 
 .chart-backdrop-small {
-  -fx-background-color: #F8F9FA;
+  -fx-background-color: graph-backdrop-color;
 }
 
 
@@ -57,21 +57,21 @@
 }
 
 /* Fill Color */
-.temp-graph .default-color0.chart-series-area-fill { -fx-fill: #ffcc0022} 
+.temp-graph .default-color0.chart-series-area-fill { -fx-fill: temp-graph-area-fill-color; } 
 
 /* Line color */
-.temp-graph .default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
+.temp-graph .default-color0.chart-series-area-line { -fx-stroke: temp-graph-area-line-color; }
 
 /* Fill Color */
-.temp-graph-small .default-color0.chart-series-area-fill { -fx-fill: #ffcc0022} 
+.temp-graph-small .default-color0.chart-series-area-fill { -fx-fill: temp-graph-area-fill-color; } 
 
 /* Line color */
-.temp-graph-small .default-color0.chart-series-area-line { -fx-stroke: #ffcc00; }
+.temp-graph-small .default-color0.chart-series-area-line { -fx-stroke: temp-graph-area-line-color; }
 
 
 /* Fill Color */
-.humid-graph .default-color0.chart-series-area-fill { -fx-fill: #4285F422} 
+.humid-graph .default-color0.chart-series-area-fill { -fx-fill: humid-graph-area-fill-color; } 
 
 /* Line color */
-.humid-graph .default-color0.chart-series-area-line { -fx-stroke: #4285F4; }
+.humid-graph .default-color0.chart-series-area-line { -fx-stroke: humid-graph-area-line-color; }
 

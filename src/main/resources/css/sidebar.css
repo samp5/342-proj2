@@ -12,7 +12,7 @@
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 24px;
   -fx-border-width: 2px 0px 0px 0px;
-  -fx-border-color: rgb(0, 0, 0);
+  -fx-border-color: section-header-border-color;
   -fx-border-insets: 16px 0 0 16px;
   -fx-padding: 0 0 0 10px;
 }
@@ -35,11 +35,10 @@
 }
 
 .search-box {
-  -fx-background-color: white;
+  -fx-background-color: search-body-color;
   -fx-background-radius: 5px;
   -fx-padding: 5px;
-  /*                      type      color         radius  spread offsets */
-  -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
+  -fx-effect: drop-shadow-effect;
 }
 
 .search {
@@ -68,9 +67,9 @@
 }
 
 .search-result-box-selected {
-    -fx-background: #D2E3FC;
+    -fx-background: search-selected-color;
     -fx-background-radius: 10px;
-    -fx-background-color: #D2E3FC;
+    -fx-background-color: search-selected-color;
     -fx-padding: 3px;
 }
 

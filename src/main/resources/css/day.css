@@ -41,13 +41,13 @@
 
 /* backdrop */
 .day-backdrop-three-day {
-  -fx-background-color: white;
+  -fx-background-color: day-backdrop-color;
   -fx-font-size: 18px;
   -fx-padding: 40px;
 }
 
 .day-backdrop-three-day-clicked {
-  -fx-background-color: #F8F9FA;
+  -fx-background-color: day-clicked-color;
   -fx-background-radius: 50px;
   -fx-font-size: 18px;
   -fx-padding: 40px;
@@ -89,7 +89,7 @@
 
 /* backdrop */
 .day-backdrop-ten-day {
-  -fx-background-color: #F8F9FA;
+  -fx-background-color: day-clicked-color;
   -fx-background-radius: 50px;
 }
 

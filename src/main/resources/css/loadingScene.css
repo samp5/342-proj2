@@ -2,5 +2,5 @@
   -fx-background-radius: 20px;
   -fx-padding: 20px;
   /*                      type      color         radius  spread offsets */
- -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
+  -fx-effect: drop-shadow-effect;
 }
