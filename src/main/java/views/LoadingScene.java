@@ -221,4 +221,11 @@ public class LoadingScene extends DayScene {
   protected void applyForecast() {
     return;
   }
+
+  @Override
+  public void setTheme(String filename) {
+    super.setTheme(filename);
+
+    animateAll();
+  }
 }

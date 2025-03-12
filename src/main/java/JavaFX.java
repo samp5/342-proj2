@@ -298,6 +298,7 @@ public class JavaFX extends Application {
     for (DayScene scene : scenes) {
       scene.setTheme(filename);
     }
+    loadingScene.setTheme(filename);
 
     sidebar.setThemeButton();
   }
