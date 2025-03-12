@@ -16,8 +16,14 @@
   day-backdrop-color: #212121;
 
   /* util style */
-  notification-color: #070605;
+  notification-color: #272625;
   drop-shadow-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
+
+  /* loading style */
+  main-box-start-color: #1A1816;
+  main-box-end-color: #2A2826;
+  side-box-start-color: #1B1A19;
+  side-box-end-color: #2B2A29;
 
   /* search bar and sidebar style */
   section-header-border-color: #000000;

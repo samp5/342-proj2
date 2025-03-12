@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import settings.Settings;
@@ -155,8 +156,8 @@ public class JavaFX extends Application {
       sceneNdx = scenes.indexOf(newScene);
       Settings.setLastScene(sceneNdx);
 
-      newScene.setActiveScene();
       primaryStage.setScene(newScene.getScene());
+      newScene.setActiveScene();
     });
 
     primaryStage.addEventHandler(LocationChangeEvent.LOCATIONCHANGE, event -> {

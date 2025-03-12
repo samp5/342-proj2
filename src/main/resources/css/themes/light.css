@@ -19,6 +19,12 @@
   notification-color: #F8F9FA;
   drop-shadow-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
 
+  /* loading style */
+  main-box-start-color: #F1F3F5;
+  main-box-end-color: #D5D7D9;
+  side-box-start-color: #F9FAFB;
+  side-box-end-color: #D4D5D6;
+
   /* search bar and sidebar style */
   section-header-border-color: #000000;
   search-body-color: #FFFFFF;

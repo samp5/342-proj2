@@ -23,6 +23,7 @@ public class Settings {
     public char tempUnit;
     public double[] lastLoc;
     public int lastScene;
+    public String themeFile;
 
     /**
      * create a new {@code SettingsLoader} from current global {@code Settings}
@@ -37,6 +38,7 @@ public class Settings {
 
       sl.lastLoc = Settings.lastLoc;
       sl.lastScene = Settings.lastScene;
+      sl.themeFile = Settings.themeFile;
       
       return sl;
     }
@@ -53,12 +55,14 @@ public class Settings {
 
       Settings.lastScene = this.lastScene;
       Settings.lastLoc = this.lastLoc;
+      Settings.themeFile = this.themeFile;
     }
   }
 
   private static TemperatureUnit tempUnit;
   private static double[] lastLoc;
   private static int lastScene;
+  private static String themeFile;
 
   /**
    * get the current temp unit saved in settings
@@ -113,6 +117,15 @@ public class Settings {
    */
   public static void setLastScene(int lastScene) {
     Settings.lastScene = lastScene;
+  }
+
+  /**
+   * get the current color theme's filename
+   *
+   * @return the filname of the current color theme
+   */
+  public static String getThemeFile() {
+    return themeFile;
   }
 
   /**

@@ -1,7 +1,17 @@
 package views;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.css.CssParser;
+import javafx.css.Rule;
+import javafx.css.Stylesheet;
+import javafx.css.converter.ColorConverter;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -15,6 +25,7 @@ import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.util.Duration;
+import settings.Settings;
 
 /**
  * A loading scene which should not be seen for particularly long.
@@ -119,18 +130,52 @@ public class LoadingScene extends DayScene {
 
   // Animate all our regions
   private void animateAll() {
-    Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox, sidebarHeader,
-        sidebarInput, sidebarSection, sidebarSearch };
+    Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox };
+    // get the colors for the animation from CSS
+    Color[] colors = getAnimationColors();
 
     for (Region box : boxes) {
-      buildAnimation(box, Color.web("#f1f3f4"), Color.web("#d5d7da")).play();
+      buildAnimation(box, colors[0], colors[1]).play();
     }
 
     Region[] sidebarBoxes = { sidebarHeader, sidebarInput, sidebarSection, sidebarSearch };
 
     for (Region box : sidebarBoxes) {
-      buildAnimation(box, Color.web("#f9fafa"), Color.web("#f1f3f4")).play();
+      buildAnimation(box, colors[2], colors[3]).play();
     }
+  }
+
+  private Color[] getAnimationColors() {
+    // init color list and name const
+    Color[] colors = new Color[4];
+    final String[] names = new String[] {
+      "main-box-start-color",
+      "main-box-end-color",
+      "side-box-start-color",
+      "side-box-end-color"
+    };
+
+    try {
+      // create a CSS parser, and get the root rule
+      ClassLoader cl = Thread.currentThread().getContextClassLoader();
+      CssParser parser = new CssParser();
+      Stylesheet css = parser.parse(cl.getResource(Settings.getThemeFile()));
+      final Rule rootRule = css.getRules().get(0);
+
+      // for each name, get the color
+      for (int i = 0; i < 4; ++i) {
+        final String name = names[i];
+        colors[i] = rootRule.getDeclarations().stream()
+                    .filter(d -> d.getProperty().equals(name))
+                    .findFirst()
+                    .map(d -> ColorConverter.getInstance().convert(d.getParsedValue(), null))
+                    .get();
+      }
+    } catch (IOException e) { 
+      e.printStackTrace();
+    }
+
+    return colors;
   }
 
   /**
@@ -145,10 +190,14 @@ public class LoadingScene extends DayScene {
       double endX = i + 1; // Move gradient from left to right
       timeline.getKeyFrames().add(new KeyFrame(Duration.seconds(i + 0.5), e -> {
 
-        box.setBackground(new Background(new BackgroundFill(
-            new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE,
-                new Stop(0, start), new Stop(1, to)),
-            new CornerRadii(20), Insets.EMPTY)));
+        box.setBackground(
+          new Background(
+            new BackgroundFill(
+              new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE, new Stop(0, start), new Stop(1, to)
+              ),
+            new CornerRadii(20), Insets.EMPTY)
+          )
+        );
       }));
     }
 

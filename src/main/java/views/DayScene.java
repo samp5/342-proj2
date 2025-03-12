@@ -7,6 +7,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import settings.Settings;
 import views.components.sidebar.Sidebar;
 
 /**
@@ -64,7 +65,7 @@ public abstract class DayScene {
     scene.getStylesheets().add("css/sidebar.css");
     scene.getStylesheets().add("css/sidebarHeader.css");
     scene.getStylesheets().add("css/notifications.css");
-    scene.getStylesheets().add("css/themes/dark.css");
+    scene.getStylesheets().add(Settings.getThemeFile());
   }
 
   /**
