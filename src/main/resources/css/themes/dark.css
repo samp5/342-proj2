@@ -1,0 +1,60 @@
+* {
+  /* view blocking style */
+  sidebar-color: #323232;
+  main-view-color: #212121;
+  separator-bar-color: #505050;
+  text-fill: #DEDEDE;
+
+  /* buttons */
+  btn-color: transparent;
+  btn-text-color: #DEDEDE;
+  btn-pressed-color: #FFFFFF;
+  btn-pressed-text-color: #212121;
+
+  /* day styles */
+  day-clicked-color: #323232;
+  day-backdrop-color: #212121;
+
+  /* util style */
+  notification-color: #070605;
+  drop-shadow-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
+
+  /* search bar and sidebar style */
+  section-header-border-color: #000000;
+  search-body-color: #212121;
+  search-selected-color: #2D1C03;
+  invalid-text-color: #A50E0E;
+  search-icon-color: #DEDEDE;
+
+  /* widget style */
+  widget-background-color: #323232;
+  widget-border-color: #000000;
+  /* compass style */
+  compass-background-color: #212121;
+  compass-tickline-color: #004F03;
+  compass-north-color: #00CC07;
+  compass-needle-color: #1CE64B;
+  /* pressure style */
+  pressure-body-color: #404040;
+  pressure-background-color: #212121;
+  pressure-feature-color: #004F03;
+  pressure-needle-color: #00CC07;
+  pressure-label-color: #212121;
+  /* dewpoint style */
+  dewpoint-body-color: #222563;
+  dewpoint-water-gradient: linear-gradient(to top, #174EA6, #4285F4);
+  /* visibility style */
+  visibility-background-color: #FFFFFF;
+  visibility-pupil-color: #222563;
+  visibility-squint-color: #222563AE;
+  visibility-eye-color: #222563;
+  /* blank widget style */
+  blank-background-color: #8A8A8A;
+
+  /* graph style */
+  graph-backdrop-color: #323232;
+  temp-graph-area-fill-color: #FFCC0022;
+  temp-graph-area-line-color: #FFCC00;
+  humid-graph-area-fill-color: #4285F422;
+  humid-graph-area-line-color: #4285F4;
+}

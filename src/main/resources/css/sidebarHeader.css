@@ -37,3 +37,6 @@
   -fx-background-color: transparent;
   -fx-font-family: "Atkinson Hyperlegible Bold";
 }
+.search-icon {
+  -fx-background-color: search-icon-color;
+}

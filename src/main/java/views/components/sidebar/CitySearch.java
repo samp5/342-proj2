@@ -12,6 +12,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import views.components.events.LocationChangeEvent;
 import views.util.CityData;
@@ -100,10 +102,15 @@ public class CitySearch {
     filteredList = new FilteredList<>(this.cityList);
 
     // Load our search icon and set dimensions
-    Image img = new Image("/ui/search.png");
-    ImageView imgView = new ImageView(img);
-    imgView.setFitWidth(30);
-    imgView.setFitHeight(30);
+    Region imgView = new Region();
+    SVGPath img = new SVGPath();
+    img.setContent("M 0 5 A 1 1 0 0 0 5.85 5 A 1 1 0 0 0 0 5 M 5.8 5.5L 10 5.5 L 10 4.5L 5.8 4.5 z M 1 5 A 1 1 0 0 1 4.85 5 A 1 1 0 0 1 1 5");
+    imgView.setShape(img);
+    imgView.setMinSize(30, 18);
+    imgView.setPrefSize(30, 18);
+    imgView.setMaxSize(30, 18);
+    imgView.setRotate(45);
+    imgView.getStyleClass().add("search-icon");
 
     searchIcon.setCenter(imgView);
 

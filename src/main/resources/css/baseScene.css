@@ -21,7 +21,7 @@
   -fx-border-width: 0;
   -fx-background-radius: 0;
   -fx-background-color: btn-color;
-  -fx-font-color: btn-text-color;
+  -fx-text-fill: btn-text-color;
   -fx-font-family: "Atkinson Hyperlegible Regular";
 }
 
@@ -35,14 +35,15 @@
   -fx-font-family: "Atkinson Hyperlegible Bold";
 }
 
-.text-field {
+.text-field, Label {
   -fx-border-width: 0;
   -fx-background-color: transparent;
   -fx-text-fill: text-fill;
+  -fx-border-width: 0;
 }
 
-.text-field {
-  -fx-border-width: 0;
+Text {
+  -fx-fill: text-fill;
 }
 
 .mainview-scroll-bar {
