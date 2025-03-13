@@ -87,8 +87,7 @@
 }
 
 .day-title-box-ten-day {
-  -fx-alignment: center-left;
-  -fx-padding: 10px;
+  -fx-alignment: center;
 }
 
 /* backdrop */
@@ -116,5 +115,4 @@
 
 .day-statistics-box-ten-day {
   -fx-alignment: center-left;
-  -fx-padding: 10px;
 }

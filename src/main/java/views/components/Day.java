@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import endpoints.my_weather.data.HourlyPeriod;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +25,7 @@ import javafx.util.Pair;
 import views.components.Day.DayView.DayViewType;
 import views.components.events.DaySelectionEvent;
 import views.util.IconResolver;
+import views.util.TextUtils;
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
 
@@ -186,10 +188,11 @@ public class Day {
       case TenDay:
 
         VBox leftBox = new VBox(title, icon);
-        leftBox.setPadding(new Insets(20));
+        leftBox.setPadding(new Insets(0));
+        leftBox.setAlignment(Pos.CENTER);
 
         VBox textBox = new VBox(temperature, statistics);
-        textBox.setPadding(new Insets(20));
+        textBox.setPadding(new Insets(20, 40, 20, -20));
         textBox.setAlignment(Pos.CENTER_LEFT);
 
         VBox graphBox = new VBox(new TempGraph(this.currentForecast, this.unit).smallComponent());
@@ -435,8 +438,10 @@ public class Day {
     }
 
     // create the hbox
-    Text title = new Text(text);
+    TextField title = TextUtils.staticTextField(text);
+    title.setAlignment(Pos.CENTER);
     title.getStyleClass().add("day-title-" + this.viewType.toString());
+    title.setMinWidth(64);
     HBox box = new HBox(title);
     box.getStyleClass().add("day-title-box-" + this.viewType.toString());
 
