@@ -19,8 +19,8 @@ public class DewPointBox extends SmallBox {
   double dewpointC;
 
   // components
-  Region meterRegion;
-  Region fillRegion;
+  TextField subtitle;
+  Region meterRegion, fillRegion;
   
   /**
    * create a new {@code DewPointBox} for a given dewpoint in °C
@@ -48,13 +48,14 @@ public class DewPointBox extends SmallBox {
     else temp = dewpointF;
 
     // make the subtitle
-    TextField subTitle = TextUtils.staticTextField("Dew at " + String.format("%.1f°", temp) + UnitHandler.getUnitChar());
-    subTitle.getStyleClass().add("font-reg");
+    TextField subtitle = TextUtils.staticTextField("Dew at " + String.format("%.1f°", temp) + UnitHandler.getUnitChar());
+    subtitle.getStyleClass().add("font-reg");
+    subtitle.setPadding(new Insets(10));
 
     // create svg, populate component
     assembleSVG();
     svgStack.setPadding(new Insets(15, 0, 0, 0));
-    comp.getChildren().setAll(titleText, svgStack, subTitle);
+    comp.getChildren().setAll(titleText, svgStack, subtitle);
 
     return comp;
 	}

@@ -1,6 +1,7 @@
 package views.components.widgets;
 
 
+import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
@@ -15,7 +16,7 @@ public class VisibilityBox extends SmallBox {
   double visibility;
 
   // components
-  TextField subtitleText;
+  TextField subtitle;
   Region backgroundRegion, pupilRegion, squintRegionTop, squintRegionBottom, eyeRegion;
 
   /**
@@ -40,11 +41,13 @@ public class VisibilityBox extends SmallBox {
     assembleSVG();
 
     // make the subtitle
-    subtitleText = TextUtils.staticTextField(String.format("Visibility up to %.2f miles", visibility));
-    subtitleText.getStyleClass().add("font-reg");
+    subtitle = TextUtils.staticTextField(String.format("Visibility up to %.2f miles", visibility));
+    subtitle.setPadding(new Insets(10));
+    subtitle.getStyleClass().add("font-reg");
 
     // populate the component
-    comp.getChildren().setAll(titleText, svgStack, subtitleText);
+    svgStack.setPadding(new Insets(15, 0, 0, 0));
+    comp.getChildren().setAll(titleText, svgStack, subtitle);
     return comp;
 	}
 

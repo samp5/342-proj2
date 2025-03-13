@@ -14,8 +14,7 @@ public class EmptyBox extends SmallBox {
   String title;
 
   // components
-  Region blackRegion;
-  Region questionRegion;
+  Region blackRegion, questionRegion;
 
   /**
    * Create a new {@code EmptyBox} with the given title

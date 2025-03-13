@@ -5,7 +5,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 import views.util.SVGHelper;
 import views.util.TextUtils;
 

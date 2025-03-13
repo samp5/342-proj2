@@ -19,15 +19,8 @@ public class CompassBox extends SmallBox {
   double windSpeed, windDir;
 
   // components
-  TextField compassText;
-  Region bodyRegion;
-  SVGPath compassBody;
-  Region markRegion;
-  SVGPath compassMarks;
-  Region northRegion;
-  SVGPath compassNorth;
-  Region needleRegion;
-  SVGPath compassNeedle;
+  TextField subtitle;
+  Region bodyRegion, markRegion, northRegion, needleRegion;
 
   /**
    * create a new {@code CompassBox} for a given windspeed and direction
@@ -50,13 +43,13 @@ public class CompassBox extends SmallBox {
     titleText.setText("Wind Direction");
 
     // add reading text
-    compassText = TextUtils.staticTextField(String.format("%.2fmph %s", windSpeed, getCompassDir()));
-    compassText.setPadding(new Insets(10, 0, 0, 0));
-    compassText.getStyleClass().add("font-reg");
+    subtitle = TextUtils.staticTextField(String.format("%.2fmph %s", windSpeed, getCompassDir()));
+    subtitle.setPadding(new Insets(10, 0, 0, 0));
+    subtitle.getStyleClass().add("font-reg");
 
     // create svg, populate component
     assembleSVG();
-    comp.getChildren().setAll(titleText, svgStack, compassText);
+    comp.getChildren().setAll(titleText, svgStack, subtitle);
 
     return comp;
   }
