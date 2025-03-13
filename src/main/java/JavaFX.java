@@ -12,11 +12,12 @@ import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.stage.PopupWindow.AnchorLocation;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.Pair;
 import settings.Settings;
@@ -175,6 +176,12 @@ public class JavaFX extends Application {
       String filename = event.getUnit();
       setGlobalTheme(filename);
     });
+
+    primaryStage.addEventFilter(KeyEvent.KEY_PRESSED, e -> {
+      if (e.getCode() == KeyCode.F1) {
+        setGlobalTheme("css/themes/kanagawa.css");
+      }
+    });
   }
 
   /**
@@ -299,7 +306,6 @@ public class JavaFX extends Application {
       scene.setTheme(filename);
     }
     loadingScene.setTheme(filename);
-
     sidebar.setThemeButton();
   }
 

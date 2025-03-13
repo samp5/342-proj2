@@ -1,0 +1,71 @@
+* {
+  /* view blocking style */
+  sidebar-color: #16161D;
+  main-view-color: #1f1f28;
+  separator-bar-color: #2a2a37;
+  text-fill: #c8c093;
+
+  /* buttons */
+  btn-color: transparent;
+  btn-text-color: #c8c093;
+  btn-pressed-color: #76946A;
+  btn-pressed-text-color: #212121;
+
+  /* day styles */
+  day-clicked-color: #16161d;
+  day-backdrop-color: #1f1f28;
+
+  /* util style */
+  notification-color: #16161d;
+  drop-shadow-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 0.5, 5, 5);
+
+  /* loading style */
+  main-box-start-color: #1A1816;
+  main-box-end-color: #2A2826;
+  side-box-start-color: #1B1A19;
+  side-box-end-color: #2B2A29;
+
+  /* search bar and sidebar style */
+  section-header-border-color: #000000;
+  search-body-color: #212121;
+  search-selected-color: #2D4F67;
+  invalid-text-color: #C34043;
+  search-icon-color: #DEDEDE;
+
+  /* widget style */
+  widget-background-color: #16161D;
+  widget-border-color: #54546d;
+
+  /* compass style */
+  compass-background-color: #212121;
+  compass-tickline-color: #004F03;
+  compass-north-color: #00CC07;
+  compass-needle-color: #1CE64B;
+
+  /* pressure style */
+  pressure-body-color: #404040;
+  pressure-background-color: #212121;
+  pressure-feature-color: #004F03;
+  pressure-needle-color: #00CC07;
+  pressure-label-color: #212121;
+
+  /* dewpoint style */
+  dewpoint-body-color: #7FB4CA;
+  dewpoint-water-gradient: linear-gradient(to top, #A3D4D5, #7AA89F);
+
+  /* visibility style */
+  visibility-background-color: #FFFFFF;
+  visibility-pupil-color: #222563;
+  visibility-squint-color: #222563AE;
+  visibility-eye-color: #222563;
+
+  /* blank widget style */
+  blank-background-color: #8A8A8A;
+
+  /* graph style */
+  graph-backdrop-color: #16161d;
+  temp-graph-area-fill-color: #93805622;
+  temp-graph-area-line-color: #938056;
+  humid-graph-area-fill-color: #7e9cd822;
+  humid-graph-area-line-color: #7E9CD8;
+}

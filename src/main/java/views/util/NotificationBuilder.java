@@ -12,6 +12,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import settings.Settings;
 import views.components.events.NotificationEvent;
 
 /**
@@ -229,7 +230,15 @@ public class NotificationBuilder {
         this.imagePath = Optional.of("/notification_icons/info.png");
         break;
       case ConnectionError:
-        this.imagePath = Optional.of("/notification_icons/wifi.png");
+        switch (Settings.getTheme()) {
+          case Dark:
+            this.imagePath = Optional.of("/notification_icons/wifi_dark.png");
+            break;
+          case Light:
+            this.imagePath = Optional.of("/notification_icons/wifi_light.png");
+          default:
+            break;
+        }
         break;
       default:
         this.imagePath = Optional.empty();

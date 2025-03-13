@@ -39,7 +39,7 @@ public class Settings {
       sl.lastLoc = Settings.lastLoc;
       sl.lastScene = Settings.lastScene;
       sl.themeFile = Settings.themeFile;
-      
+
       return sl;
     }
 
@@ -56,13 +56,37 @@ public class Settings {
       Settings.lastScene = this.lastScene;
       Settings.lastLoc = this.lastLoc;
       Settings.themeFile = this.themeFile;
+      Settings.theme = Settings.themeFromFile(this.themeFile);
     }
+  }
+
+  public enum Theme {
+    Dark,
+    Light,
+    Kanagawa,
+  };
+
+  private static Theme themeFromFile(String filename) {
+    String fn = filename.substring(filename.lastIndexOf("/") + 1);
+    switch (fn) {
+      case "dark.css":
+        return Theme.Dark;
+      case "light.css":
+        return Theme.Light;
+      case "kanagawa.css":
+        return Theme.Kanagawa;
+      default:
+        return Theme.Light;
+
+    }
+
   }
 
   private static TemperatureUnit tempUnit;
   private static double[] lastLoc;
   private static int lastScene;
   private static String themeFile;
+  private static Theme theme;
 
   /**
    * get the current temp unit saved in settings
@@ -88,7 +112,7 @@ public class Settings {
    * @return the last location saved in settings
    */
   public static double[] getLastLoc() {
-	  return lastLoc;
+    return lastLoc;
   }
 
   /**
@@ -98,7 +122,7 @@ public class Settings {
    * @param lon the longitude
    */
   public static void setLastLoc(double lat, double lon) {
-    Settings.lastLoc = new double[] {lat, lon};
+    Settings.lastLoc = new double[] { lat, lon };
   }
 
   /**
@@ -107,7 +131,7 @@ public class Settings {
    * @return the last scene saved in settings
    */
   public static int getLastScene() {
-	  return lastScene;
+    return lastScene;
   }
 
   /**
@@ -129,18 +153,29 @@ public class Settings {
   }
 
   /**
+   * get the current color theme's filename
+   *
+   * @return the filname of the current color theme
+   */
+  public static Theme getTheme() {
+    return theme;
+  }
+
+  /**
    * set the color theme's filename
    *
    * @param filename the filname of the new color theme
    */
   public static void setThemeFile(String filename) {
     themeFile = filename;
+    theme = themeFromFile(filename);
   }
 
   /**
    * An {@code Exception} caused by {@code Settings} being unable to load
    */
-  public static class SettingsLoadException extends Exception {}
+  public static class SettingsLoadException extends Exception {
+  }
 
   /**
    * statically load {@code Settings} with settings from the saved file
@@ -183,7 +218,7 @@ public class Settings {
     } catch (JsonProcessingException e) {
       System.err.println("Failed to process settings into json. Settings not saved.");
       return;
-    } 
+    }
 
     try {
       // open the settings file

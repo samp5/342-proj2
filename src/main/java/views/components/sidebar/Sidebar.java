@@ -13,6 +13,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import settings.Settings;
+import settings.Settings.Theme;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.events.ThemeChangeEvent;
@@ -48,9 +49,13 @@ public class Sidebar {
   static final Region sunBtn, moonBtn;
 
   static {
-    sunBtn = SVGHelper.newSVG("M 2 0 A 1 1 0 0 0 -2 0 A 1 1 0 0 0 2 0 M 0.26168 4.99315 L -0.26168 4.99315 L -0.1887 3.60061 L 0.1887 3.60061 z M 0.26168 -4.99315 L -0.26168 -4.99315 L -0.1887 -3.60061 L 0.1887 -3.60061 z M 4.99315 0.26168 L 4.99315 -0.26168 L 3.60061 -0.1887 L 3.60061 0.1887 z M -4.99315 0.26168 L -4.99315 -0.26168 L -3.60061 -0.1887 L -3.60061 0.1887 z M 3.34565 3.71572 L 3.71572 3.34565 L 2.67945 2.41258 L 2.41258 2.67945 z M -3.34565 3.71572 L -3.71572 3.34565 L -2.67945 2.41258 L -2.41258 2.67945 z M 3.34565 -3.71572 L 3.71572 -3.34565 L 2.67945 -2.41258 L 2.41258 -2.67945 z M -3.34565 -3.71572 L -3.71572 -3.34565 L -2.67945 -2.41258 L -2.41258 -2.67945 z", 40);
+    sunBtn = SVGHelper.newSVG(
+        "M 2 0 A 1 1 0 0 0 -2 0 A 1 1 0 0 0 2 0 M 0.26168 4.99315 L -0.26168 4.99315 L -0.1887 3.60061 L 0.1887 3.60061 z M 0.26168 -4.99315 L -0.26168 -4.99315 L -0.1887 -3.60061 L 0.1887 -3.60061 z M 4.99315 0.26168 L 4.99315 -0.26168 L 3.60061 -0.1887 L 3.60061 0.1887 z M -4.99315 0.26168 L -4.99315 -0.26168 L -3.60061 -0.1887 L -3.60061 0.1887 z M 3.34565 3.71572 L 3.71572 3.34565 L 2.67945 2.41258 L 2.41258 2.67945 z M -3.34565 3.71572 L -3.71572 3.34565 L -2.67945 2.41258 L -2.41258 2.67945 z M 3.34565 -3.71572 L 3.71572 -3.34565 L 2.67945 -2.41258 L 2.41258 -2.67945 z M -3.34565 -3.71572 L -3.71572 -3.34565 L -2.67945 -2.41258 L -2.41258 -2.67945 z",
+        40);
     sunBtn.getStyleClass().add("sun-btn");
-    moonBtn = SVGHelper.newSVG("M 5 0 C 5 3 3 5 0 5 C -3 5 -5 3 -5 0 C -5 -3 -3 -5 0 -5 C -3.25 -3.95 -3.05 0 -1.5 1.5 C 0 3.05 3.95 3.25 5 0", 40);
+    moonBtn = SVGHelper.newSVG(
+        "M 5 0 C 5 3 3 5 0 5 C -3 5 -5 3 -5 0 C -5 -3 -3 -5 0 -5 C -3.25 -3.95 -3.05 0 -1.5 1.5 C 0 3.05 3.95 3.25 5 0",
+        40);
     moonBtn.getStyleClass().add("moon-btn");
   }
 
@@ -203,26 +208,38 @@ public class Sidebar {
     themeButtonBox = new HBox(themeButton);
     themeButtonBox.setAlignment(Pos.BOTTOM_LEFT);
     themeButtonBox.setPadding(new Insets(20));
-    
+
     container.getChildren().addAll(new CitySearch().component(), themeButtonBox);
 
     setThemeButton();
   }
 
   /**
-   * set the theme button to the correct button and functionality based on the current theme
+   * set the theme button to the correct button and functionality based on the
+   * current theme
    */
   public void setThemeButton() {
-    if (Settings.getThemeFile().contains("light")) {
-      themeButtonBox.getChildren().setAll(moonBtn);
-      moonBtn.setOnMouseClicked(e -> {
-        moonBtn.fireEvent(new ThemeChangeEvent("css/themes/dark.css"));
-      });
-    } else {
-      themeButtonBox.getChildren().setAll(sunBtn);
-      sunBtn.setOnMouseClicked(e -> {
-        sunBtn.fireEvent(new ThemeChangeEvent("css/themes/light.css"));
-      });
+    switch (Settings.getTheme()) {
+      case Light:
+        themeButtonBox.getChildren().setAll(moonBtn);
+        moonBtn.setOnMouseClicked(e -> {
+          moonBtn.fireEvent(new ThemeChangeEvent("css/themes/dark.css"));
+        });
+        break;
+      case Dark:
+        themeButtonBox.getChildren().setAll(sunBtn);
+        sunBtn.setOnMouseClicked(e -> {
+          sunBtn.fireEvent(new ThemeChangeEvent("css/themes/light.css"));
+        });
+        break;
+      case Kanagawa:
+        themeButtonBox.getChildren().setAll(sunBtn);
+        sunBtn.setOnMouseClicked(e -> {
+          sunBtn.fireEvent(new ThemeChangeEvent("css/themes/light.css"));
+        });
+        break;
+      default:
+        break;
     }
   }
 

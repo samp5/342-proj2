@@ -77,6 +77,7 @@ public class LoadingScene extends DayScene {
     sidebarSearch = new HBox();
     fakeSidebar = new VBox();
     fakeSidebar.getChildren().addAll(sidebarHeader, sidebarInput, sidebarSection, sidebarSearch);
+    fakeSidebar.setPadding(new Insets(10));
 
     mainView.getChildren().addAll(headerContainer, forecastBox, graphContainer, smallCharts);
     sidebarBox.getChildren().setAll(fakeSidebar);
@@ -168,6 +169,7 @@ public class LoadingScene extends DayScene {
    *
    * @return an array of 4 {@code Colors} for animation use
    */
+  @SuppressWarnings("unchecked")
   private Color[] getAnimationColors() {
     // init color list and name const
     Color[] colors = new Color[4];
