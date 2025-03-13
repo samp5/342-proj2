@@ -13,7 +13,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.util.Pair;
 import settings.Settings;
-import settings.Settings.Theme;
 import views.DayScene;
 import views.components.events.LocationChangeEvent;
 import views.components.events.ThemeChangeEvent;
