@@ -13,29 +13,32 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import endpoints.my_weather.api.json.GridPointJson;
 import endpoints.my_weather.api.json.HourlyPeriodJson;
+import endpoints.my_weather.api.json.PeriodJson;
 import endpoints.my_weather.data.GridPoint;
 import endpoints.my_weather.data.HourlyPeriod;
+import endpoints.my_weather.data.Period;
 
-/** 
+/**
  * used for getting weather forecasts statically.
  * likely should not be instantiated.
  *
  * most useful methods:
- *  - {@code getHourlyForecastAsync}
- *  - {@code getHourlyForecast}
+ * - {@code getHourlyForecastAsync}
+ * - {@code getHourlyForecast}
  */
 public class MyWeatherAPI {
   // amount of retries to attempt if status code 301 is read
   private static int MAX_RETRIES = 5;
 
-
   /**
    * asynchronously gather hourly forecasts given a region and gridpoints
    *
-   * @param region the weather region. typically found from a {@code my_weather.gridPoint} object
-   * @param gridx the x value for the grid point found similarly to above.
-   * @param gridy the y value for the grid point found similarly to above.
-   * @return a {@code CompletableFuture} of a list of {@code HourlyPeriod}s containing the weather forecasts
+   * @param region the weather region. typically found from a
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
+   * @return a {@code CompletableFuture} of a list of {@code HourlyPeriod}s
+   *         containing the weather forecasts
    */
   public static CompletableFuture<ArrayList<HourlyPeriod>> getHourlyForecastAsync(String region,
       int gridx, int gridy) {
@@ -43,6 +46,28 @@ public class MyWeatherAPI {
         .supplyAsync(() -> {
           try {
             return MyWeatherAPI.getHourlyForecast(region, gridx, gridy);
+          } catch (ConnectException ce) {
+            throw new RuntimeException("Failed to connect");
+          }
+        });
+  }
+
+  /**
+   * asynchronously gather forecast given a region and gridpoints
+   *
+   * @param region the weather region. typically found from a
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
+   * @return a {@code CompletableFuture} of a list of {@code HourlyPeriod}s
+   *         containing the weather forecasts
+   */
+  public static CompletableFuture<Period> getForecastAsync(String region,
+      int gridx, int gridy) {
+    return CompletableFuture
+        .supplyAsync(() -> {
+          try {
+            return MyWeatherAPI.getForecast(region, gridx, gridy);
           } catch (ConnectException ce) {
             throw new RuntimeException("Failed to connect");
           }
@@ -69,9 +94,10 @@ public class MyWeatherAPI {
   /**
    * gather hourly forecasts given a region and gridpoints
    *
-   * @param region the weather region. typically found from a {@code my_weather.gridPoint} object
-   * @param gridx the x value for the grid point found similarly to above.
-   * @param gridy the y value for the grid point found similarly to above.
+   * @param region the weather region. typically found from a
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
    * @return a list of {@code HourlyPeriod}s containing the weather forecasts
    */
   public static ArrayList<HourlyPeriod> getHourlyForecast(String region, int gridx, int gridy)
@@ -101,7 +127,7 @@ public class MyWeatherAPI {
     }
 
     // parse the response body json into an object
-    HourlyPeriodJson r = getObject(response.body());
+    HourlyPeriodJson r = getHourlyObject(response.body());
     if (r == null) {
       System.err.println("Failed to parse JSon");
       return null;
@@ -111,6 +137,53 @@ public class MyWeatherAPI {
     ArrayList<HourlyPeriod> periods = new ArrayList<>();
     r.properties.periods.iterator().forEachRemaining(period -> periods.add((HourlyPeriod) period));
     return periods;
+  }
+
+  /**
+   * gather forecasts given a region and gridpoints
+   *
+   * @param region the weather region. typically found from a
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
+   * @return a list of {@code HourlyPeriod}s containing the weather forecasts
+   */
+  public static Period getForecast(String region, int gridx, int gridy)
+      throws ConnectException {
+    // form the api request
+    HttpRequest request = HttpRequest.newBuilder()
+        .uri(URI.create("https://api.weather.gov/gridpoints/" + region + "/" + String.valueOf(gridx)
+            + "," + String.valueOf(gridy) + "/forecast"))
+        .build();
+    HttpResponse<String> response = null;
+
+    // send the request, fail gracefully if needed
+    try {
+      response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    } catch (ConnectException ce) {
+      throw new ConnectException("Failed to connect to the internet");
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+
+    // if a bad status code was recieved, fail gracefully, log to system err
+    if (response.statusCode() < 200 || response.statusCode() > 299) {
+      System.err.println("Response was: " + response.toString() + "\n"
+          + "Request was: " + request.toString());
+      return null;
+    }
+
+    // parse the response body json into an object
+    PeriodJson r = getObject(response.body());
+    if (r == null) {
+      System.err.println("Failed to parse JSon");
+      return null;
+    }
+
+    // parse the object into a list of periods
+    Period period = r.properties.periods.getFirst();
+    return period;
   }
 
   /**
@@ -140,13 +213,14 @@ public class MyWeatherAPI {
     // if the response gave back a 301 (redirect), attempt to redirect up to 5 times
     int retries = 0;
     while (response.statusCode() == 301) {
-      if (retries >= MAX_RETRIES) break;
+      if (retries >= MAX_RETRIES)
+        break;
       retries++;
 
       // form the new request
       request = HttpRequest.newBuilder()
-        .uri(URI.create("https://api.weather.gov" + response.headers().firstValue("location").get()))
-        .build();
+          .uri(URI.create("https://api.weather.gov" + response.headers().firstValue("location").get()))
+          .build();
 
       // send the request, fail gracefully if needed
       try {
@@ -202,12 +276,32 @@ public class MyWeatherAPI {
    * @return the {@code Root} object parsed
    */
   @SuppressWarnings("unused")
-  public static HourlyPeriodJson getObject(String json) {
+  public static HourlyPeriodJson getHourlyObject(String json) {
     ObjectMapper om = new ObjectMapper();
     HourlyPeriodJson toRet = null;
     try {
       toRet = om.readValue(json, HourlyPeriodJson.class);
       ArrayList<HourlyPeriod> p = toRet.properties.periods;
+
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return toRet;
+  }
+
+  /**
+   * parse a json string into a {@code Root} object
+   *
+   * @param json the json to parse in string form
+   * @return the {@code Root} object parsed
+   */
+  @SuppressWarnings("unused")
+  public static PeriodJson getObject(String json) {
+    ObjectMapper om = new ObjectMapper();
+    PeriodJson toRet = null;
+    try {
+      toRet = om.readValue(json, PeriodJson.class);
+      ArrayList<Period> p = toRet.properties.periods;
 
     } catch (JsonProcessingException e) {
       e.printStackTrace();
