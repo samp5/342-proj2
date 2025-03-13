@@ -93,6 +93,7 @@ public class ThreeDayScene extends DayScene {
    * style all view components
    */
   private void styleComponents() {
+    dayCollectionBox.setAlignment(Pos.CENTER);
     graphContainer.setSpacing(40);
     graphContainer.setAlignment(Pos.CENTER);
     scene.getStylesheets().add("css/day.css");

@@ -59,9 +59,11 @@
 .day-temperature-three-day {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 40;
+  -fx-alignment: center;
 }
 
 .day-temperature-box-three-day {
+  -fx-alignment: center;
 }
 
 
