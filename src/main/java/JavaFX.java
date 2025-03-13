@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import endpoints.my_weather.api.MyWeatherAPI;
 import endpoints.my_weather.data.GridPoint;
 import endpoints.my_weather.data.HourlyPeriod;
+import endpoints.my_weather.data.Period;
 import endpoints.weather_observations.api.WeatherObservations;
 import endpoints.weather_observations.data.Observations;
 import javafx.animation.PauseTransition;
@@ -83,7 +84,8 @@ public class JavaFX extends Application {
 
     // data to load
     GridPoint gridPoint;
-    ArrayList<HourlyPeriod> forecast;
+    ArrayList<HourlyPeriod> hourlyForecast;
+    Period today;
     Observations observations;
 
     loadingScene = new LoadingScene();
@@ -97,7 +99,8 @@ public class JavaFX extends Application {
     // fails gracefully. by setting loading scene and sending notification
     try {
       gridPoint = MyWeatherAPI.getGridPoint(lat, lon);
-      forecast = MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
+      hourlyForecast = MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
+      today = MyWeatherAPI.getForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
       observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat,
           lon);
     } catch (Exception e) {
@@ -121,14 +124,14 @@ public class JavaFX extends Application {
     }
 
     // if for some reason the forecast is still null, exit hard.
-    if (forecast == null) {
+    if (hourlyForecast == null) {
       throw new RuntimeException("Forecast did not load");
     }
 
     // create weather scenes
-    todayScene = new TodayScene(forecast, observations);
-    threeDayScene = new ThreeDayScene(forecast);
-    tenDayScene = new TenDayScene(forecast);
+    todayScene = new TodayScene(hourlyForecast, observations, today);
+    threeDayScene = new ThreeDayScene(hourlyForecast);
+    tenDayScene = new TenDayScene(hourlyForecast);
 
     // enumerate scenes
     sceneNdx = Settings.getLastScene();
@@ -209,15 +212,21 @@ public class JavaFX extends Application {
       // Start async calls for forecast and weather observations
       CompletableFuture<ArrayList<HourlyPeriod>> periodFuture = MyWeatherAPI.getHourlyForecastAsync(point.region,
           point.gridX, point.gridY);
+      CompletableFuture<Period> todayPeriod = MyWeatherAPI.getForecastAsync(point.region,
+          point.gridX, point.gridY);
       CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region,
           point.gridX, point.gridY, lat, lon);
 
+      // return a combination of both the period future and observation future
       // return a combination of both the period future and observation future
       return periodFuture.thenCombine(observationFuture, (periods, observations) -> {
         if (periods == null || observations == null) {
           throw new RuntimeException("Sorry, the National Weather Service does not provide data for " + point.location);
         }
-        return new LocationChangeData(periods, observations, point, event.getName());
+        return new LocationChangeData(periods, observations, point, event.getName(), null);
+      }).thenCombine(todayPeriod, (locChange, todayP) -> {
+        locChange.today = todayP;
+        return locChange;
       }).orTimeout(8, TimeUnit.SECONDS);
     }).thenAccept(result -> { // `thenAccept conditionally runs a consumer function on the previous Future's
                               // sucessful completion
@@ -235,7 +244,7 @@ public class JavaFX extends Application {
 
       Platform.runLater(() -> {
         // Update scenes
-        todayScene.update(result.periods, result.observations);
+        todayScene.update(result.periods, result.observations, result.today);
         threeDayScene.update(result.periods);
         tenDayScene.update(result.periods);
 

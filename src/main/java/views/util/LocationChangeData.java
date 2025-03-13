@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import endpoints.my_weather.data.GridPoint;
 import endpoints.my_weather.data.HourlyPeriod;
+import endpoints.my_weather.data.Period;
 import endpoints.weather_observations.data.Observations;
 
 /**
@@ -17,15 +18,17 @@ public class LocationChangeData {
   public Observations observations;
   public GridPoint point;
   public String name;
+  public Period today;
 
   public LocationChangeData(
       ArrayList<HourlyPeriod> periods,
       Observations observations,
-      GridPoint point, String name) {
+      GridPoint point, String name, Period today) {
 
     this.periods = periods;
     this.observations = observations;
     this.point = point;
     this.name = name;
+    this.today = today;
   }
 }
