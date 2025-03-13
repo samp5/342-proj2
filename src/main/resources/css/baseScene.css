@@ -23,6 +23,7 @@
   -fx-background-color: btn-color;
   -fx-text-fill: btn-text-color;
   -fx-font-family: "Atkinson Hyperlegible Regular";
+  -fx-cursor: hand;
 }
 
 .button:pressed {

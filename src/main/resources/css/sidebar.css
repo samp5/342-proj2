@@ -27,6 +27,7 @@
 .navigation-target-box {
   -fx-background-radius: 20px;
   -fx-padding: 1px 5px 1px 25px ;
+  -fx-cursor: hand;
 }
 
 .search-input {
@@ -93,10 +94,12 @@
   -fx-border-width: 3px;
   -fx-border-color: #EBC923;
   -fx-border-insets: -3px;
+  -fx-cursor: hand;
 }
 
 .moon-btn {
   -fx-background-color: #000042;
   -fx-border-width: 3px;
   -fx-border-color: #210042;
+  -fx-cursor: hand;
 }

@@ -44,6 +44,7 @@
   -fx-background-color: day-backdrop-color;
   -fx-font-size: 18px;
   -fx-padding: 40px;
+  -fx-cursor: hand;
 }
 
 .day-backdrop-three-day-clicked {
@@ -51,6 +52,7 @@
   -fx-background-radius: 50px;
   -fx-font-size: 18px;
   -fx-padding: 40px;
+  -fx-cursor: default;
 }
 
 /* temperature field */
