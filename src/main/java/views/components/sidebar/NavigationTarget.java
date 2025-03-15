@@ -1,10 +1,10 @@
 package views.components.sidebar;
 
-import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import views.DayScene;
+import views.components.events.NavigationEvent;
 import views.util.TextUtils;
 
 /**
@@ -18,7 +18,7 @@ public class NavigationTarget {
   /**
    * create a new {@code NavigationTarget} for use with a {@code Sidebar}
    *
-   * @param target  a {@code DayScene} to set as the scene when clicked
+   * @param target a {@code DayScene} to set as the scene when clicked
    * @param display the display name of the button
    */
   public NavigationTarget(DayScene target, String display) {

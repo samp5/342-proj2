@@ -8,12 +8,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.skin.ListViewSkin;
 import javafx.scene.control.skin.VirtualFlow;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
-import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import views.components.events.LocationChangeEvent;
 import views.util.CityData;
@@ -103,7 +100,9 @@ public class CitySearch {
     filteredList = new FilteredList<>(this.cityList);
 
     // Load our search icon and set dimensions
-    Region svg = SVGHelper.newSVG("M 0 5 A 1 1 0 0 0 5.85 5 A 1 1 0 0 0 0 5 M 5.8 5.5L 10 5.5 L 10 4.5L 5.8 4.5 z M 1 5 A 1 1 0 0 1 4.85 5 A 1 1 0 0 1 1 5", 30, 18);
+    Region svg = SVGHelper.newSVG(
+        "M 0 5 A 1 1 0 0 0 5.85 5 A 1 1 0 0 0 0 5 M 5.8 5.5L 10 5.5 L 10 4.5L 5.8 4.5 z M 1 5 A 1 1 0 0 1 4.85 5 A 1 1 0 0 1 1 5",
+        30, 18);
     svg.setRotate(45);
     svg.getStyleClass().add("search-icon");
 
@@ -209,7 +208,7 @@ public class CitySearch {
   /**
    * A factory that can control the elements displayed by a {@code ListView<City>}
    * by providing a new {@code updateItem} implementation for
-   * {@code ListCell<City}
+   * {@code ListCell<City>}
    */
   public class CityCellFactory implements Callback<ListView<City>, ListCell<City>> {
 
@@ -232,10 +231,13 @@ public class CitySearch {
 
             // determine whether this city is selected
             boolean isSelected = getListView().getSelectionModel().getSelectedItem() == city;
+
+            // Append the county of the city (to deal with city repeats)
             String label = city.display;
             if (city.county.length() > 0) {
               label = label + " (" + city.county + ")";
             }
+
             Text cityLabel = new Text(label);
             cityLabel.setWrappingWidth(200);
 
@@ -279,9 +281,6 @@ public class CitySearch {
                   searchInput.clear();
                   return;
                 }
-                System.out.printf("%s is located at %f, %f\n Updating location\n", c.cityName,
-                    c.lat,
-                    c.lon);
                 content.fireEvent(new LocationChangeEvent(c.lat, c.lon, c.display));
                 searchInput.clear();
               });
