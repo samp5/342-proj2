@@ -16,6 +16,11 @@
   -fx-border-insets: 16px 0 0 16px;
   -fx-padding: 0 0 0 10px;
 }
+
+.section-header-box  {
+  -fx-padding: 0 0 0 10px;
+  -fx-spacing: 10px;
+}
 .navigation-target {
   -fx-font-family: "Atkinson Hyperlegible Bold";
   -fx-font-size: 20px;
@@ -87,6 +92,11 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-text-fill: black;
+}
+
+.theme-button-box {
+  -fx-padding: 20px;
+  -fx-alignment: bottom-left;
 }
 
 .sun-btn {

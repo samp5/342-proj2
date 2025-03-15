@@ -1,10 +1,6 @@
 package views;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import javafx.animation.KeyFrame;
@@ -144,7 +140,7 @@ public class LoadingScene extends DayScene {
     }
     animations.clear();
 
-    Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox };
+    Region[] boxes = {graphContainer, smallCharts, headerContainer, forecastBox};
     // get the colors for the animation from CSS
     Color[] colors = getAnimationColors();
 
@@ -152,7 +148,7 @@ public class LoadingScene extends DayScene {
       animations.add(buildAnimation(box, colors[0], colors[1]));
     }
 
-    Region[] sidebarBoxes = { sidebarHeader, sidebarInput, sidebarSection, sidebarSearch };
+    Region[] sidebarBoxes = {sidebarHeader, sidebarInput, sidebarSection, sidebarSearch};
 
     for (Region box : sidebarBoxes) {
       animations.add(buildAnimation(box, colors[0], colors[1]));
@@ -218,7 +214,8 @@ public class LoadingScene extends DayScene {
         box.setBackground(
             new Background(
                 new BackgroundFill(
-                    new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE, new Stop(0, start),
+                    new LinearGradient(startX, 0, endX, 0, true, CycleMethod.NO_CYCLE,
+                        new Stop(0, start),
                         new Stop(1, to)),
                     new CornerRadii(20), Insets.EMPTY)));
       }));

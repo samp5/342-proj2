@@ -38,7 +38,7 @@ public class ThreeDayScene extends DayScene {
    * create a new {@code ThreeDayScene} to show the forecast for the next 3 days
    *
    * @param forecast the forecast to use to make the view. must contain at least 3
-   *                 days worth of data
+   *        days worth of data
    */
   public ThreeDayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();
@@ -107,26 +107,6 @@ public class ThreeDayScene extends DayScene {
     currentForecast = forecast;
     applyForecast();
     // updateTempGraph();
-  }
-
-  /**
-   * updates the temperature graph with a new one from the stored forecast.
-   * used for changing units while in this view
-   */
-  private void updateTempGraph() {
-    // find the location of the current chart
-    int chartNdx = graphContainer.getChildren().indexOf(tempChart);
-
-    // get the new graph
-    tempGraph.update(currentForecast, UnitHandler.getUnit());
-    tempChart = tempGraph.component();
-
-    // replace the old graph with the new one
-    graphContainer.getChildren().remove(chartNdx);
-    graphContainer.getChildren().add(chartNdx, tempChart);
-
-    // re-set the max width again
-    tempChart.setMaxWidth(1000);
   }
 
   /**

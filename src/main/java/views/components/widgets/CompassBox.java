@@ -4,7 +4,6 @@ import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.SVGPath;
 import views.util.SVGHelper;
 import views.util.TextUtils;
 
@@ -26,7 +25,7 @@ public class CompassBox extends SmallBox {
    * create a new {@code CompassBox} for a given windspeed and direction
    *
    * @param windSpeed the {@code String} speed of the wind
-   * @param windDir   the 16-point compass direction of the wind
+   * @param windDir the 16-point compass direction of the wind
    */
   public CompassBox(double windSpeed, double windDir) {
     this.windSpeed = windSpeed;

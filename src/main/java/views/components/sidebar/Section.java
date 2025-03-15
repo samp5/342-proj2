@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-import javafx.geometry.Insets;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
@@ -23,7 +22,7 @@ public class Section {
   /**
    * create a new {@code Section} with a title and navigation targets
    *
-   * @param title       the title of the section
+   * @param title the title of the section
    * @param nav_targets the navigation targets that can be clicked
    */
   public <T extends Collection<NavigationTarget>> Section(String title, T nav_targets) {
@@ -35,8 +34,7 @@ public class Section {
     box = new VBox(section_header);
     box.getChildren()
         .addAll(this.navTargerts.stream().map(e -> e.component()).collect(Collectors.toList()));
-    box.setPadding(new Insets(0, 0, 0, 10));
-    box.setSpacing(10);
+    box.getStyleClass().add("section-header-box");
   }
 
   /**

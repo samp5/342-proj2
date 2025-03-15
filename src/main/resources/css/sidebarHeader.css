@@ -27,9 +27,10 @@
   -fx-background-color: transparent;
   -fx-font-family: "Atkinson Hyperlegible Bold";
 }
-.side-bar-coord-label {
-}
-.side-bar-coord-input {
+
+.coord-box{
+  -fx-padding: 0px 0px 0px 10px;
+  -fx-alignment: center-left;
 }
 .side-bar-header {
   -fx-font-size: 36;

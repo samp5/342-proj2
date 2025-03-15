@@ -1,7 +1,6 @@
 package views.util;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import endpoints.my_weather.data.GridPoint;
 import endpoints.my_weather.data.HourlyPeriod;

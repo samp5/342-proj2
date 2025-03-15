@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
 import endpoints.my_weather.data.HourlyPeriod;
-import endpoints.my_weather.data.Period;
 import endpoints.weather_observations.data.Observations;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

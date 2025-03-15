@@ -137,7 +137,7 @@ public class Sidebar {
      * highlight a {@code TextField} based on its input. invalid input is
      * highlighted red
      *
-     * @param tf     the {@code TextField} to check
+     * @param tf the {@code TextField} to check
      * @param newVal the new string value
      * @return {@code true} if input is valid, {@code false} otherwise
      */
@@ -149,7 +149,7 @@ public class Sidebar {
         tf.getStyleClass().add("invalid-input");
         return false;
       }
-      tf.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+      tf.getStyleClass().remove("invalid-input");
       tf.getStyleClass().add("coord-input");
       return true;
     }
@@ -176,11 +176,8 @@ public class Sidebar {
       latBox = new HBox(latLabel, latInput);
       lonBox = new HBox(lonLabel, lonInput);
 
-      latBox.setPadding(new Insets(0, 0, 0, 10));
-      lonBox.setPadding(new Insets(0, 0, 0, 10));
-
-      latBox.setAlignment(Pos.CENTER_LEFT);
-      lonBox.setAlignment(Pos.CENTER_LEFT);
+      latBox.getStyleClass().addAll("coord-box");
+      lonBox.getStyleClass().addAll("coord-box");
 
       coordInputBox = new VBox(latBox, lonBox);
     }
@@ -205,8 +202,7 @@ public class Sidebar {
 
     themeButton = new Button();
     themeButtonBox = new HBox(themeButton);
-    themeButtonBox.setAlignment(Pos.BOTTOM_LEFT);
-    themeButtonBox.setPadding(new Insets(20));
+    themeButtonBox.getStyleClass().add("theme-button-box");
 
     container.getChildren().addAll(new CitySearch().component(), themeButtonBox);
 
@@ -247,7 +243,7 @@ public class Sidebar {
    * {@code DayScene}s
    *
    * @param namedScenes an amount of {@code Pair} scenes. given in the format of
-   *                    {{@code String} display name, {@code DayScene} scene}
+   *        {{@code String} display name, {@code DayScene} scene}
    */
   @SafeVarargs
   public static Sidebar fromScenes(Pair<String, DayScene>... namedScenes) {
@@ -313,9 +309,9 @@ public class Sidebar {
    */
   public void recievedInvalidLocation() {
 
-    header.lonInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+    header.lonInput.getStyleClass().remove("coord-input");
     header.lonInput.getStyleClass().add("invalid-input");
-    header.latInput.getStyleClass().removeIf(s -> s.equals("coord-input"));
+    header.latInput.getStyleClass().remove("coord-input");
     header.latInput.getStyleClass().add("invalid-input");
   }
 
@@ -329,9 +325,9 @@ public class Sidebar {
     new NotificationBuilder("Changed location to " + this.title).ofType(NotificationType.Info)
         .fire(this.container);
 
-    header.lonInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+    header.lonInput.getStyleClass().remove("invalid-input");
     header.lonInput.getStyleClass().add("coord-input");
-    header.latInput.getStyleClass().removeIf(s -> s.equals("invalid-input"));
+    header.latInput.getStyleClass().remove("invalid-input");
     header.latInput.getStyleClass().add("coord-input");
   }
 

@@ -129,13 +129,14 @@ public class Day {
    * {@code Date}
    *
    * @param data a list of {@code HourlyPeriod} containing data for the given
-   *             {@code day}
-   * @param day  the {@code Date} for the data to display
+   *        {@code day}
+   * @param day the {@code Date} for the data to display
    */
   @SuppressWarnings("deprecation")
   public Day(ArrayList<HourlyPeriod> data, Date day) {
     this.date = day;
-    this.currentForecast = data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
+    this.currentForecast =
+        data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
     this.unit = UnitHandler.getUnit();
@@ -145,11 +146,11 @@ public class Day {
    * calculate the minimum and maximum temperature throughout the day
    * 
    * @param celsius {@code true} to calculate celsius data, {@code false} to
-   *                calculate fahrenheit data.
+   *        calculate fahrenheit data.
    * @return an {@code Integer} array of size two in the format of {min, max}
    */
   private Integer[] getMinMaxTemp(boolean celsius) {
-    Integer[] minMax = new Integer[] { null, null };
+    Integer[] minMax = new Integer[] {null, null};
     int temperature;
     for (HourlyPeriod p : currentForecast) {
       if (celsius) {
@@ -308,7 +309,7 @@ public class Day {
 
     // divide for averages
     int size = currentForecast.size();
-    return new int[] { maxPrep, totalRelHumid / size, totalWindspeed / size };
+    return new int[] {maxPrep, totalRelHumid / size, totalWindspeed / size};
   }
 
   /**
@@ -439,7 +440,6 @@ public class Day {
 
     // create the hbox
     TextField title = TextUtils.staticTextField(text);
-    title.setAlignment(Pos.CENTER);
     title.getStyleClass().add("day-title-" + this.viewType.toString());
     title.setMinWidth(64);
     HBox box = new HBox(title);

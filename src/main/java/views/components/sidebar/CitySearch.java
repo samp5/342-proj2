@@ -309,6 +309,7 @@ public class CitySearch {
     // Okay this is gonna get ugly:
     // https://forums.oracle.com/ords/apexds/post/listview-visible-items-8075
     // https://stackoverflow.com/questions/30457708/visible-items-of-listview
+
     ListViewSkin<?> ts = (ListViewSkin<?>) cityListView.getSkin();
     VirtualFlow<?> vf = (VirtualFlow<?>) ts.getChildren().get(0);
     int firstVisible = vf.getFirstVisibleCell().getIndex();
