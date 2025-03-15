@@ -7,20 +7,20 @@ import views.components.events.TempUnitEvent;
 
 /**
  * A global unit manager and handler.
- * Tracks the current state of and allows for the firing of events relating to the currently used units.
+ * Tracks the current state of and allows for the firing of events relating to the currently used
+ * units.
  */
 public class UnitHandler {
   /**
    * allowed temperature units
    */
   public static enum TemperatureUnit {
-    Fahrenheit,
-    Celsius,
+    Fahrenheit, Celsius,
   }
 
   private static TemperatureUnit currentUnit; // current unit
-  private static Node emitter;                // the element to fire events
-  private static boolean changed = false;     // whether or not the unit has changed
+  private static Node emitter; // the element to fire events
+  private static boolean changed = false; // whether or not the unit has changed
 
   /**
    * set the event emitter
@@ -46,7 +46,8 @@ public class UnitHandler {
    * @return the {@code char} representation of the current temperature unit
    */
   public static char getUnitChar() {
-    if (currentUnit == TemperatureUnit.Fahrenheit) return 'F';
+    if (currentUnit == TemperatureUnit.Fahrenheit)
+      return 'F';
     return 'C';
   }
 
@@ -60,7 +61,8 @@ public class UnitHandler {
     Settings.setTempUnit(unit);
     changed = true;
 
-    if (emitter != null) Event.fireEvent(emitter, new TempUnitEvent(unit));
+    if (emitter != null)
+      Event.fireEvent(emitter, new TempUnitEvent(unit));
   }
 
   /**

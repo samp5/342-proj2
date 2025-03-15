@@ -17,6 +17,8 @@ import endpoints.my_weather.api.json.PeriodJson;
 import endpoints.my_weather.data.GridPoint;
 import endpoints.my_weather.data.HourlyPeriod;
 import endpoints.my_weather.data.Period;
+import views.util.LocationChangeData.DetailedForecasts;
+import views.util.UnitHandler.TemperatureUnit;
 
 /**
  * used for getting weather forecasts statically.
@@ -34,9 +36,9 @@ public class MyWeatherAPI {
    * asynchronously gather hourly forecasts given a region and gridpoints
    *
    * @param region the weather region. typically found from a
-   *               {@code my_weather.gridPoint} object
-   * @param gridx  the x value for the grid point found similarly to above.
-   * @param gridy  the y value for the grid point found similarly to above.
+   *        {@code my_weather.gridPoint} object
+   * @param gridx the x value for the grid point found similarly to above.
+   * @param gridy the y value for the grid point found similarly to above.
    * @return a {@code CompletableFuture} of a list of {@code HourlyPeriod}s
    *         containing the weather forecasts
    */
@@ -55,23 +57,42 @@ public class MyWeatherAPI {
   /**
    * asynchronously gather forecast given a region and gridpoints
    *
+   * This method is mainly used to obtain the detailed forecast for "today"
+   *
+   * The reason this has a {@code TemperatureUnit} parameter is because
+   * the detailed forecast would not be possible to convert
+   *
    * @param region the weather region. typically found from a
-   *               {@code my_weather.gridPoint} object
-   * @param gridx  the x value for the grid point found similarly to above.
-   * @param gridy  the y value for the grid point found similarly to above.
-   * @return a {@code CompletableFuture} of a list of {@code HourlyPeriod}s
-   *         containing the weather forecasts
+   *        {@code my_weather.gridPoint} object
+   * @param gridx the x value for the grid point found similarly to above.
+   * @param gridy the y value for the grid point found similarly to above.
+   * @param
+   * @return a {@code CompletableFuture} of a list of a {@code Period}
+   *         containing the weather forecast
+   *
    */
-  public static CompletableFuture<Period> getForecastAsync(String region,
+  public static CompletableFuture<DetailedForecasts> getForecastAsync(String region,
       int gridx, int gridy) {
-    return CompletableFuture
-        .supplyAsync(() -> {
-          try {
-            return MyWeatherAPI.getForecast(region, gridx, gridy);
-          } catch (ConnectException ce) {
-            throw new RuntimeException("Failed to connect");
-          }
-        });
+
+    CompletableFuture<Period> todayF = CompletableFuture.supplyAsync(() -> {
+      try {
+        return MyWeatherAPI.getForecast(region, gridx, gridy, TemperatureUnit.Fahrenheit);
+      } catch (ConnectException ce) {
+        throw new RuntimeException("Failed to Connect");
+      }
+    });
+    CompletableFuture<Period> todayC = CompletableFuture.supplyAsync(() -> {
+      try {
+        return MyWeatherAPI.getForecast(region, gridx, gridy, TemperatureUnit.Celsius);
+      } catch (ConnectException ce) {
+        throw new RuntimeException("Failed to Connect");
+      }
+    });
+
+    return todayF.thenCombine(todayC, (periodF, periodC) -> {
+      return new DetailedForecasts(periodF.detailedForecast, periodC.detailedForecast);
+    });
+
   }
 
   /**
@@ -95,9 +116,9 @@ public class MyWeatherAPI {
    * gather hourly forecasts given a region and gridpoints
    *
    * @param region the weather region. typically found from a
-   *               {@code my_weather.gridPoint} object
-   * @param gridx  the x value for the grid point found similarly to above.
-   * @param gridy  the y value for the grid point found similarly to above.
+   *        {@code my_weather.gridPoint} object
+   * @param gridx the x value for the grid point found similarly to above.
+   * @param gridy the y value for the grid point found similarly to above.
    * @return a list of {@code HourlyPeriod}s containing the weather forecasts
    */
   public static ArrayList<HourlyPeriod> getHourlyForecast(String region, int gridx, int gridy)
@@ -143,17 +164,31 @@ public class MyWeatherAPI {
    * gather forecasts given a region and gridpoints
    *
    * @param region the weather region. typically found from a
-   *               {@code my_weather.gridPoint} object
-   * @param gridx  the x value for the grid point found similarly to above.
-   * @param gridy  the y value for the grid point found similarly to above.
+   *        {@code my_weather.gridPoint} object
+   * @param gridx the x value for the grid point found similarly to above.
+   * @param gridy the y value for the grid point found similarly to above.
    * @return a list of {@code HourlyPeriod}s containing the weather forecasts
    */
-  public static Period getForecast(String region, int gridx, int gridy)
+  public static Period getForecast(String region, int gridx, int gridy, TemperatureUnit unit)
       throws ConnectException {
+
+    final String unitString;
+    switch (unit) {
+      case Celsius:
+        unitString = "si";
+        break;
+      case Fahrenheit:
+        unitString = "us";
+        break;
+      default:
+        unitString = "";
+        break;
+    }
+
     // form the api request
     HttpRequest request = HttpRequest.newBuilder()
         .uri(URI.create("https://api.weather.gov/gridpoints/" + region + "/" + String.valueOf(gridx)
-            + "," + String.valueOf(gridy) + "/forecast"))
+            + "," + String.valueOf(gridy) + "/forecast?units=" + unitString))
         .build();
     HttpResponse<String> response = null;
 
@@ -219,7 +254,8 @@ public class MyWeatherAPI {
 
       // form the new request
       request = HttpRequest.newBuilder()
-          .uri(URI.create("https://api.weather.gov" + response.headers().firstValue("location").get()))
+          .uri(URI
+              .create("https://api.weather.gov" + response.headers().firstValue("location").get()))
           .build();
 
       // send the request, fail gracefully if needed

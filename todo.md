@@ -7,7 +7,7 @@
     - [x] add title (left aligned)
 
 ## features
-- [ ] fix units on long forecast
+- [x] fix units on long forecast
 - [x] implement lat/lon
 - [x] more filled space on one day view
 - [x] 10 days

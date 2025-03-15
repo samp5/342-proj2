@@ -28,6 +28,7 @@ import views.components.widgets.PressureBox;
 import views.components.widgets.SmallBox;
 import views.components.widgets.VisibilityBox;
 import views.util.IconResolver;
+import views.util.LocationChangeData.DetailedForecasts;
 import views.util.TextUtils;
 import views.util.UnitHandler;
 import views.util.UnitHandler.TemperatureUnit;
@@ -70,7 +71,7 @@ public class TodayScene extends DayScene {
   // currently stored forecast and observations
   ArrayList<HourlyPeriod> currentForecast;
   Observations currentObservations;
-  Period todayForecast;
+  DetailedForecasts detailedForecasts;
 
   // small charts blocking
   HBox smallBoxes;
@@ -81,13 +82,14 @@ public class TodayScene extends DayScene {
    * to get the {@code Scene}, use {@code getScene()}
    *
    * @param forecast an {@code ArrayList} of {@code HourlyPeriod}, gathered from
-   *                 {@code MyWeatherAPI}
+   *        {@code MyWeatherAPI}
    */
-  public TodayScene(ArrayList<HourlyPeriod> forecast, Observations observations, Period today) {
+  public TodayScene(ArrayList<HourlyPeriod> forecast, Observations observations,
+      DetailedForecasts detailed) {
     initComponents();
 
     // populate fields with forecast
-    todayForecast = today;
+    detailedForecasts = detailed;
     currentForecast = forecast;
     currentObservations = observations;
 
@@ -107,13 +109,14 @@ public class TodayScene extends DayScene {
   /**
    * update the view to use a new forecast and observations
    *
-   * @param forecast     the new forecast to use
+   * @param forecast the new forecast to use
    * @param observations the new observations to use
    */
-  public void update(ArrayList<HourlyPeriod> forecast, Observations observations, Period today) {
+  public void update(ArrayList<HourlyPeriod> forecast, Observations observations,
+      DetailedForecasts detailed) {
     currentForecast = forecast;
     currentObservations = observations;
-    todayForecast = today;
+    detailedForecasts = detailed;
     applyForecast();
   }
 
@@ -126,7 +129,7 @@ public class TodayScene extends DayScene {
 
     // update temperature, forecast, and other text fields
     setTemp(now.temperature);
-    setLongForecast(todayForecast.detailedForecast);
+    setLongForecast(detailedForecasts.getDetailedForecast(UnitHandler.getUnit()));
 
     // get the new weather icon. defaults to drizzle
     try {
@@ -185,8 +188,18 @@ public class TodayScene extends DayScene {
     scene.addEventHandler(TempUnitEvent.TEMPUNITCHANGE, event -> {
       TemperatureUnit unit = event.getUnit();
       updateTempGraph(unit);
+      updateDetailedForecast();
       createSmallGraphs();
     });
+  }
+
+  /**
+   * sets the {@code forecast} string
+   * 
+   * @param forecast string to set {@code forecast} to
+   */
+  private void updateDetailedForecast() {
+    setLongForecast(this.detailedForecasts.getDetailedForecast(UnitHandler.getUnit()));
   }
 
   /**
@@ -302,8 +315,10 @@ public class TodayScene extends DayScene {
     SmallBox compass, pressure, dewpoint, visibility;
 
     // add the wind speed box. handle if null.
-    if (currentObservations.windSpeed.value != null && currentObservations.windDirection.value != null) {
-      compass = new CompassBox(currentObservations.windSpeed.mph(), currentObservations.windDirection.value);
+    if (currentObservations.windSpeed.value != null
+        && currentObservations.windDirection.value != null) {
+      compass = new CompassBox(currentObservations.windSpeed.mph(),
+          currentObservations.windDirection.value);
     } else {
       compass = new EmptyBox("Wind Direction");
     }

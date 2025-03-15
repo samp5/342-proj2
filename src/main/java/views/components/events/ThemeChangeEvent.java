@@ -7,7 +7,8 @@ import javafx.event.EventType;
  * an {@code Event} that fires when the active theme changes
  */
 public class ThemeChangeEvent extends Event {
-  public static final EventType<ThemeChangeEvent> THEMECHANGE = new EventType<>(Event.ANY, "THEMECHANGE");
+  public static final EventType<ThemeChangeEvent> THEMECHANGE =
+      new EventType<>(Event.ANY, "THEMECHANGE");
 
   private final String fileLoc;
 
@@ -27,7 +28,7 @@ public class ThemeChangeEvent extends Event {
    *
    * @return the new file location
    */
-  public String getUnit() {
+  public String getFileLoc() {
     return fileLoc;
   }
 }

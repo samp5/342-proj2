@@ -34,9 +34,11 @@ import views.components.events.ThemeChangeEvent;
 import views.components.sidebar.NavigationEvent;
 import views.components.sidebar.Sidebar;
 import views.util.LocationChangeData;
+import views.util.LocationChangeData.DetailedForecasts;
 import views.util.NotificationBuilder;
 import views.util.NotificationType;
 import views.util.UnitHandler;
+import views.util.UnitHandler.TemperatureUnit;
 
 /**
  * Main Application Class.
@@ -85,7 +87,8 @@ public class JavaFX extends Application {
     // data to load
     GridPoint gridPoint;
     ArrayList<HourlyPeriod> hourlyForecast;
-    Period today;
+    Period todayF;
+    Period todayC;
     Observations observations;
 
     loadingScene = new LoadingScene();
@@ -99,9 +102,14 @@ public class JavaFX extends Application {
     // fails gracefully. by setting loading scene and sending notification
     try {
       gridPoint = MyWeatherAPI.getGridPoint(lat, lon);
-      hourlyForecast = MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
-      today = MyWeatherAPI.getForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
-      observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX, gridPoint.gridY, lat,
+      hourlyForecast =
+          MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
+      todayF = MyWeatherAPI.getForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY,
+          TemperatureUnit.Fahrenheit);
+      todayC = MyWeatherAPI.getForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY,
+          TemperatureUnit.Celsius);
+      observations = WeatherObservations.getWeatherObservations(gridPoint.region, gridPoint.gridX,
+          gridPoint.gridY, lat,
           lon);
     } catch (Exception e) {
       primaryStage.setScene(loadingScene.getScene());
@@ -114,8 +122,7 @@ public class JavaFX extends Application {
             .withMessage(
                 "Failed to connect to the internet, Connect to the internet and restart the application")
             .ofType(NotificationType.ConnectionError).showFor(25)
-            .fire(loadingScene.getScene().getRoot());
-        ;
+            .fire(loadingScene.getScene().getRoot());;
       });
 
       delay.play();
@@ -129,7 +136,8 @@ public class JavaFX extends Application {
     }
 
     // create weather scenes
-    todayScene = new TodayScene(hourlyForecast, observations, today);
+    todayScene = new TodayScene(hourlyForecast, observations,
+        new DetailedForecasts(todayF.detailedForecast, todayC.detailedForecast));
     threeDayScene = new ThreeDayScene(hourlyForecast);
     tenDayScene = new TenDayScene(hourlyForecast);
 
@@ -176,7 +184,7 @@ public class JavaFX extends Application {
     });
 
     primaryStage.addEventHandler(ThemeChangeEvent.THEMECHANGE, event -> {
-      String filename = event.getUnit();
+      String filename = event.getFileLoc();
       setGlobalTheme(filename);
     });
 
@@ -204,31 +212,37 @@ public class JavaFX extends Application {
     // thenCompose is like flatMap but for CompletableFutures
     // i.e. takes a CF<T> and a function which maps T to another CF<U> and returns
     // CF<U> (as opposed to CF<CF<U>>)
-    MyWeatherAPI.getGridPointAsync(lat, lon).orTimeout(8, TimeUnit.SECONDS).thenCompose(point -> {
+    MyWeatherAPI.getGridPointAsync(lat, lon).orTimeout(10, TimeUnit.SECONDS).thenCompose(point -> {
       if (point == null) {
         throw new RuntimeException("National Weather Service does not have data for this location");
       }
 
       // Start async calls for forecast and weather observations
-      CompletableFuture<ArrayList<HourlyPeriod>> periodFuture = MyWeatherAPI.getHourlyForecastAsync(point.region,
-          point.gridX, point.gridY);
-      CompletableFuture<Period> todayPeriod = MyWeatherAPI.getForecastAsync(point.region,
-          point.gridX, point.gridY);
-      CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region,
-          point.gridX, point.gridY, lat, lon);
+      CompletableFuture<ArrayList<HourlyPeriod>> periodFuture =
+          MyWeatherAPI.getHourlyForecastAsync(point.region,
+              point.gridX, point.gridY);
+      CompletableFuture<Observations> observationFuture =
+          WeatherObservations.getWeatherObservationsAsync(point.region,
+              point.gridX, point.gridY, lat, lon);
 
-      // return a combination of both the period future and observation future
+      // Get the detailed forecast
+      CompletableFuture<DetailedForecasts> detailedForecasts =
+          MyWeatherAPI.getForecastAsync(point.region, point.gridX, point.gridY);
+
       // return a combination of both the period future and observation future
       return periodFuture.thenCombine(observationFuture, (periods, observations) -> {
         if (periods == null || observations == null) {
-          throw new RuntimeException("Sorry, the National Weather Service does not provide data for " + point.location);
+          throw new RuntimeException(
+              "Sorry, the National Weather Service does not provide data for " + point.location);
         }
         return new LocationChangeData(periods, observations, point, event.getName(), null);
-      }).thenCombine(todayPeriod, (locChange, todayP) -> {
-        locChange.today = todayP;
+      }).thenCombine(detailedForecasts, (locChange, detailed) -> {
+        locChange.detailedForecasts = detailed;
         return locChange;
-      }).orTimeout(8, TimeUnit.SECONDS);
-    }).thenAccept(result -> { // `thenAccept conditionally runs a consumer function on the previous Future's
+      }).orTimeout(10, TimeUnit.SECONDS);
+
+    }).thenAccept(result -> { // `thenAccept conditionally runs a consumer function on the previous
+                              // Future's
                               // sucessful completion
 
       // NOTE:
@@ -244,7 +258,7 @@ public class JavaFX extends Application {
 
       Platform.runLater(() -> {
         // Update scenes
-        todayScene.update(result.periods, result.observations, result.today);
+        todayScene.update(result.periods, result.observations, result.detailedForecasts);
         threeDayScene.update(result.periods);
         tenDayScene.update(result.periods);
 
@@ -259,15 +273,18 @@ public class JavaFX extends Application {
         sidebar.recievedValidLocation();
         Settings.setLastLoc(lat, lon);
       });
-    }).exceptionally(ex -> { // This is the error case and only runs the enclosed func with an exceptional
-                             // completion from the calling future (where ex is the exception thrown)
+    }).exceptionally(ex -> { // This is the error case and only runs the enclosed func with an
+                             // exceptional
+                             // completion from the calling future (where ex is the exception
+                             // thrown)
 
       // Again, see note above for necesscity of this `runLater` call
       Platform.runLater(() -> {
         String msg = ex.getMessage().substring(ex.getMessage().indexOf(":") + 2);
         NotificationType type = NotificationType.Error;
         if (msg.toLowerCase().contains("timeout")) {
-          msg = "Request timed out, check your internet connection";
+          msg =
+              "Request timed out, please wait a few moments and try again";
           type = NotificationType.ConnectionError;
         }
         primaryStage.setScene(lastScene);
