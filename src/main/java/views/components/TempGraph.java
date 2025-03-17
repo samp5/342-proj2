@@ -346,9 +346,7 @@ public class TempGraph {
       @Override
       public String toString(Number object) {
         Date time = new Date(object.longValue());
-        if (time.getTime() == min_time.getTime()) {
-          return "Now";
-        } else if (time.getHours() == 12) {
+        if (time.getHours() == 12) {
           return String.format("%d pm", 12);
         } else if (time.getHours() == 0) {
           return String.format("%d am", 12);

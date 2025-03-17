@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.concurrent.CompletableFuture;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -13,6 +14,7 @@ import java.sql.ResultSet;
  * Reads a local SQL database to create the data.
  */
 public class CityData {
+  private final static String resourceString = "/db/us_cities.db";
 
   /**
    * Contains data related to cities, such as location and name
@@ -54,7 +56,7 @@ public class CityData {
     ObservableList<City> cityList = FXCollections.observableArrayList();
 
     // get path to our db
-    String url = getClass().getResource("/db/us_cities.db").toExternalForm();
+    String url = getClass().getResource(resourceString).toExternalForm();
     String sql = "select CITY, STATE_NAME, STATE_CODE, COUNTY, LATITUDE, LONGITUDE from US_CITIES inner join US_STATES on US_CITIES.ID_STATE = US_STATES.ID";
 
     // parse the data from the db

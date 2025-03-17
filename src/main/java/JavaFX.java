@@ -102,8 +102,7 @@ public class JavaFX extends Application {
     // fails gracefully. by setting loading scene and sending notification
     try {
       gridPoint = MyWeatherAPI.getGridPoint(lat, lon);
-      hourlyForecast =
-          MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
+      hourlyForecast = MyWeatherAPI.getHourlyForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY);
       todayF = MyWeatherAPI.getForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY,
           TemperatureUnit.Fahrenheit);
       todayC = MyWeatherAPI.getForecast(gridPoint.region, gridPoint.gridX, gridPoint.gridY,
@@ -122,7 +121,8 @@ public class JavaFX extends Application {
             .withMessage(
                 "Failed to connect to the internet, Connect to the internet and restart the application")
             .ofType(NotificationType.ConnectionError).showFor(25)
-            .fire(loadingScene.getScene().getRoot());;
+            .fire(loadingScene.getScene().getRoot());
+        ;
       });
 
       delay.play();
@@ -218,16 +218,14 @@ public class JavaFX extends Application {
       }
 
       // Start async calls for forecast and weather observations
-      CompletableFuture<ArrayList<HourlyPeriod>> periodFuture =
-          MyWeatherAPI.getHourlyForecastAsync(point.region,
-              point.gridX, point.gridY);
-      CompletableFuture<Observations> observationFuture =
-          WeatherObservations.getWeatherObservationsAsync(point.region,
-              point.gridX, point.gridY, lat, lon);
+      CompletableFuture<ArrayList<HourlyPeriod>> periodFuture = MyWeatherAPI.getHourlyForecastAsync(point.region,
+          point.gridX, point.gridY);
+      CompletableFuture<Observations> observationFuture = WeatherObservations.getWeatherObservationsAsync(point.region,
+          point.gridX, point.gridY, lat, lon);
 
       // Get the detailed forecast
-      CompletableFuture<DetailedForecasts> detailedForecasts =
-          MyWeatherAPI.getForecastAsync(point.region, point.gridX, point.gridY);
+      CompletableFuture<DetailedForecasts> detailedForecasts = MyWeatherAPI.getForecastAsync(point.region, point.gridX,
+          point.gridY);
 
       // return a combination of both the period future and observation future
       return periodFuture.thenCombine(observationFuture, (periods, observations) -> {
@@ -283,8 +281,7 @@ public class JavaFX extends Application {
         String msg = ex.getMessage().substring(ex.getMessage().indexOf(":") + 2);
         NotificationType type = NotificationType.Error;
         if (msg.toLowerCase().contains("timeout")) {
-          msg =
-              "Request timed out, please wait a few moments and try again";
+          msg = "Request timed out, please wait a few moments and try again";
           type = NotificationType.ConnectionError;
         }
         primaryStage.setScene(lastScene);

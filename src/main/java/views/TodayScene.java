@@ -81,7 +81,7 @@ public class TodayScene extends DayScene {
    * to get the {@code Scene}, use {@code getScene()}
    *
    * @param forecast an {@code ArrayList} of {@code HourlyPeriod}, gathered from
-   *        {@code MyWeatherAPI}
+   *                 {@code MyWeatherAPI}
    */
   public TodayScene(ArrayList<HourlyPeriod> forecast, Observations observations,
       DetailedForecasts detailed) {
@@ -108,7 +108,7 @@ public class TodayScene extends DayScene {
   /**
    * update the view to use a new forecast and observations
    *
-   * @param forecast the new forecast to use
+   * @param forecast     the new forecast to use
    * @param observations the new observations to use
    */
   public void update(ArrayList<HourlyPeriod> forecast, Observations observations,

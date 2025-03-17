@@ -11,7 +11,8 @@ import views.components.sidebar.Sidebar;
 
 /**
  * A generic and abstract class for all scenes to extend.
- * Shares a sidebar will all other scenes, transfered automatically if given during sidebar
+ * Shares a sidebar will all other scenes, transfered automatically if given
+ * during sidebar
  * initialization.
  * Has functionality to void focus and is otherwise a base scene.
  */

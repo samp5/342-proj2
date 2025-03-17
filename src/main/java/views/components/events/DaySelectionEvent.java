@@ -5,11 +5,11 @@ import javafx.event.EventType;
 import views.components.Day;
 
 /**
- * an {@code Event} that fires when the {@code Day} in a {@code ThreeDayScene} is clicked
+ * an {@code Event} that fires when the {@code Day} in a {@code ThreeDayScene}
+ * is clicked
  */
 public class DaySelectionEvent extends Event {
-  public static final EventType<DaySelectionEvent> DAY_SELECTION =
-      new EventType<>(Event.ANY, "DAY_SELECTION");
+  public static final EventType<DaySelectionEvent> DAY_SELECTION = new EventType<>(Event.ANY, "DAY_SELECTION");
 
   private final Day selection;
 

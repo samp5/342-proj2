@@ -36,9 +36,9 @@ public class MyWeatherAPI {
    * asynchronously gather hourly forecasts given a region and gridpoints
    *
    * @param region the weather region. typically found from a
-   *        {@code my_weather.gridPoint} object
-   * @param gridx the x value for the grid point found similarly to above.
-   * @param gridy the y value for the grid point found similarly to above.
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
    * @return a {@code CompletableFuture} of a list of {@code HourlyPeriod}s
    *         containing the weather forecasts
    */
@@ -59,14 +59,10 @@ public class MyWeatherAPI {
    *
    * This method is mainly used to obtain the detailed forecast for "today"
    *
-   * The reason this has a {@code TemperatureUnit} parameter is because
-   * the detailed forecast would not be possible to convert
-   *
    * @param region the weather region. typically found from a
-   *        {@code my_weather.gridPoint} object
-   * @param gridx the x value for the grid point found similarly to above.
-   * @param gridy the y value for the grid point found similarly to above.
-   * @param
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
    * @return a {@code CompletableFuture} of a list of a {@code Period}
    *         containing the weather forecast
    *
@@ -116,9 +112,9 @@ public class MyWeatherAPI {
    * gather hourly forecasts given a region and gridpoints
    *
    * @param region the weather region. typically found from a
-   *        {@code my_weather.gridPoint} object
-   * @param gridx the x value for the grid point found similarly to above.
-   * @param gridy the y value for the grid point found similarly to above.
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
    * @return a list of {@code HourlyPeriod}s containing the weather forecasts
    */
   public static ArrayList<HourlyPeriod> getHourlyForecast(String region, int gridx, int gridy)
@@ -156,7 +152,9 @@ public class MyWeatherAPI {
 
     // parse the object into a list of periods
     ArrayList<HourlyPeriod> periods = new ArrayList<>();
-    r.properties.periods.iterator().forEachRemaining(period -> periods.add((HourlyPeriod) period));
+    r.properties.periods.iterator().forEachRemaining(period -> {
+      periods.add((HourlyPeriod) period);
+    });
     return periods;
   }
 
@@ -164,10 +162,13 @@ public class MyWeatherAPI {
    * gather forecasts given a region and gridpoints
    *
    * @param region the weather region. typically found from a
-   *        {@code my_weather.gridPoint} object
-   * @param gridx the x value for the grid point found similarly to above.
-   * @param gridy the y value for the grid point found similarly to above.
-   * @return a list of {@code HourlyPeriod}s containing the weather forecasts
+   *               {@code my_weather.gridPoint} object
+   * @param gridx  the x value for the grid point found similarly to above.
+   * @param gridy  the y value for the grid point found similarly to above.
+   * @param unit   a temperature unit for the long forecast. (this otherwise is
+   *               not easily convertable because of the lack of standard format
+   *               in the long forecast string)
+   * @return a single {@code Period} containing the weather for today
    */
   public static Period getForecast(String region, int gridx, int gridy, TemperatureUnit unit)
       throws ConnectException {

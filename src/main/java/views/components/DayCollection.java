@@ -67,12 +67,16 @@ public class DayCollection {
     switch (this.viewType) {
       case TenDay:
         component = new VBox();
+
+        // add all day components
         ((VBox) component).getChildren().addAll(days.stream().map(d -> d.component(this.viewType)).toList());
         component.setPadding(new Insets(50));
         ((VBox) component).setSpacing(60);
         break;
       case ThreeDay:
         component = new HBox();
+
+        // add all day components
         ((HBox) component).getChildren().addAll(days.stream().map(d -> d.component(this.viewType)).toList());
         component.setPadding(new Insets(50));
         ((HBox) component).setSpacing(60);

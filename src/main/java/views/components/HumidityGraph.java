@@ -19,7 +19,8 @@ import javafx.util.StringConverter;
 
 /**
  * {@code HumidityGraph} holds state for a humidity
- * line graph. The component can be obtained via {@code HumidityGraph.component()}
+ * line graph. The component can be obtained via
+ * {@code HumidityGraph.component()}
  */
 public class HumidityGraph {
   Vector<DataPoint> data;
@@ -123,7 +124,8 @@ public class HumidityGraph {
   }
 
   /**
-   * a single {@code DataPoint} to be graphed. implements {@code Comparable} to allow for propper plotting
+   * a single {@code DataPoint} to be graphed. implements {@code Comparable} to
+   * allow for propper plotting
    */
   private class DataPoint implements Comparable<DataPoint> {
     private Humidity temp;
@@ -133,7 +135,7 @@ public class HumidityGraph {
      * create a new {@code datapoint} given a day and humidity value
      *
      * @param day the {@code date} for the point
-     * @param t the humidity for the point
+     * @param t   the humidity for the point
      */
     public DataPoint(Date day, int t) {
       this.date = day;
@@ -170,7 +172,8 @@ public class HumidityGraph {
      * part of {@code Comparable} implementation
      * compares another {@code DataPoint} to this one
      *
-     * @return {@code 1} if {@code this > other}; {@code -1} if {@code this < other}; {@code 0} if {@code this == other} 
+     * @return {@code 1} if {@code this > other}; {@code -1} if
+     *         {@code this < other}; {@code 0} if {@code this == other}
      */
     @Override
     public int compareTo(HumidityGraph.DataPoint arg0) {
@@ -316,9 +319,7 @@ public class HumidityGraph {
       @Override
       public String toString(Number object) {
         Date time = new Date(object.longValue());
-        if (time.getTime() == min_time.getTime()) {
-          return "Now";
-        } else if (time.getHours() == 12) {
+        if (time.getHours() == 12) {
           return String.format("%d pm", 12);
         } else if (time.getHours() == 0) {
           return String.format("%d am", 12);

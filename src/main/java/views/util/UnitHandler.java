@@ -7,7 +7,8 @@ import views.components.events.TempUnitEvent;
 
 /**
  * A global unit manager and handler.
- * Tracks the current state of and allows for the firing of events relating to the currently used
+ * Tracks the current state of and allows for the firing of events relating to
+ * the currently used
  * units.
  */
 public class UnitHandler {

@@ -137,7 +137,7 @@ public class Sidebar {
      * highlight a {@code TextField} based on its input. invalid input is
      * highlighted red
      *
-     * @param tf the {@code TextField} to check
+     * @param tf     the {@code TextField} to check
      * @param newVal the new string value
      * @return {@code true} if input is valid, {@code false} otherwise
      */
@@ -216,19 +216,25 @@ public class Sidebar {
   public void setThemeButton() {
     switch (Settings.getTheme()) {
       case Light:
+        // set theme button
         themeButtonBox.getChildren().setAll(moonBtn);
+        // fire theme change event
         moonBtn.setOnMouseClicked(e -> {
           moonBtn.fireEvent(new ThemeChangeEvent("css/themes/dark.css"));
         });
         break;
       case Dark:
+        // set theme button
         themeButtonBox.getChildren().setAll(sunBtn);
+        // fire theme change event
         sunBtn.setOnMouseClicked(e -> {
           sunBtn.fireEvent(new ThemeChangeEvent("css/themes/light.css"));
         });
         break;
       case Kanagawa:
+        // set theme button
         themeButtonBox.getChildren().setAll(sunBtn);
+        // fire theme change event
         sunBtn.setOnMouseClicked(e -> {
           sunBtn.fireEvent(new ThemeChangeEvent("css/themes/light.css"));
         });
@@ -243,7 +249,7 @@ public class Sidebar {
    * {@code DayScene}s
    *
    * @param namedScenes an amount of {@code Pair} scenes. given in the format of
-   *        {{@code String} display name, {@code DayScene} scene}
+   *                    {{@code String} display name, {@code DayScene} scene}
    */
   @SafeVarargs
   public static Sidebar fromScenes(Pair<String, DayScene>... namedScenes) {

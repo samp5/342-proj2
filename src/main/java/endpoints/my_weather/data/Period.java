@@ -3,7 +3,7 @@ package endpoints.my_weather.data;
 import java.util.Date;
 
 /**
- * A one hour period of weather forecast data.
+ * A period of weather forecast data.
  * Typically created by use of {@code MyWeatherAPI}
  */
 public class Period {

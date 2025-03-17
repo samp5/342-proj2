@@ -129,14 +129,13 @@ public class Day {
    * {@code Date}
    *
    * @param data a list of {@code HourlyPeriod} containing data for the given
-   *        {@code day}
-   * @param day the {@code Date} for the data to display
+   *             {@code day}
+   * @param day  the {@code Date} for the data to display
    */
   @SuppressWarnings("deprecation")
   public Day(ArrayList<HourlyPeriod> data, Date day) {
     this.date = day;
-    this.currentForecast =
-        data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
+    this.currentForecast = data.stream().filter(hperiod -> hperiod.startTime.getDate() == day.getDate()).toList();
     this.fahrenheit = getMinMaxTemp(false);
     this.celsius = getMinMaxTemp(true);
     this.unit = UnitHandler.getUnit();
@@ -146,11 +145,11 @@ public class Day {
    * calculate the minimum and maximum temperature throughout the day
    * 
    * @param celsius {@code true} to calculate celsius data, {@code false} to
-   *        calculate fahrenheit data.
+   *                calculate fahrenheit data.
    * @return an {@code Integer} array of size two in the format of {min, max}
    */
   private Integer[] getMinMaxTemp(boolean celsius) {
-    Integer[] minMax = new Integer[] {null, null};
+    Integer[] minMax = new Integer[] { null, null };
     int temperature;
     for (HourlyPeriod p : currentForecast) {
       if (celsius) {
@@ -188,24 +187,24 @@ public class Day {
     switch (this.viewType.type) {
       case TenDay:
 
-        VBox leftBox = new VBox(title, icon);
-        leftBox.setPadding(new Insets(0));
-        leftBox.setAlignment(Pos.CENTER);
+        VBox titleIconBox = new VBox(title, icon);
+        titleIconBox.setPadding(new Insets(0));
+        titleIconBox.setAlignment(Pos.CENTER);
 
-        VBox textBox = new VBox(temperature, statistics);
-        textBox.setPadding(new Insets(20, 40, 20, -20));
-        textBox.setAlignment(Pos.CENTER_LEFT);
+        VBox statBox = new VBox(temperature, statistics);
+        statBox.setPadding(new Insets(20, 40, 20, -20));
+        statBox.setAlignment(Pos.CENTER_LEFT);
 
         VBox graphBox = new VBox(new TempGraph(this.currentForecast, this.unit).smallComponent());
         graphBox.setAlignment(Pos.CENTER);
 
-        this.component = new HBox(leftBox, textBox, graphBox);
+        this.component = new HBox(titleIconBox, statBox, graphBox);
         this.component.setMaxHeight(75);
+        ((HBox) this.component).setSpacing(20);
 
+        // we know this is a image view so cast it
         ((ImageView) icon.getCenter()).setFitWidth(75);
         ((ImageView) icon.getCenter()).setFitHeight(75);
-
-        ((HBox) this.component).setSpacing(20);
 
         break;
 
@@ -309,7 +308,7 @@ public class Day {
 
     // divide for averages
     int size = currentForecast.size();
-    return new int[] {maxPrep, totalRelHumid / size, totalWindspeed / size};
+    return new int[] { maxPrep, totalRelHumid / size, totalWindspeed / size };
   }
 
   /**
@@ -350,7 +349,7 @@ public class Day {
     Pair<String, Boolean> commonForecast = getCommonForecast();
     // get the icon from above
     try {
-      icon = new IconResolver().getIcon(commonForecast.getKey(), commonForecast.getValue());
+      icon = new IconResolver().getIcon(commonForecast.getKey(), false);
     } catch (FileNotFoundException e) {
       icon = new Image("/icons/drizzle.png");
     }

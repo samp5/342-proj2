@@ -7,7 +7,8 @@ import javafx.scene.layout.VBox;
 import views.util.SVGHelper;
 
 /**
- * A {@code SmallBox} used for displaying information about the current air pressure.
+ * A {@code SmallBox} used for displaying information about the current air
+ * pressure.
  * The graphic maxes out at 900mmHg, and bottoms out at 620mmHg.
  */
 public class PressureBox extends SmallBox {
@@ -43,8 +44,10 @@ public class PressureBox extends SmallBox {
 
   protected void assembleSVG() {
     // create all internal components
-    bodyRegion = newSVG("M 5 0 A 1 1 0 0 0 5 10 A 1 1 0 0 0 5 0 M 1 4.5 A 1.1 1 0 0 1 9 4.5 A 0.1 0.1 0 0 1 8 4.5 A 1 0.9 0 0 0 2 4.5 A 0.1 0.1 0 0 1 1 4.5");
-    meterRegion = newSVG("M 5 0 A 1 1 0 0 0 5 10 A 1 1 0 0 0 5 0 M 5 1 l 0 1 M 1 5 l 1 0  M 9 5 l -1 0  M 2.87868 2.87868 L 2.17157 2.17157  M 7.12132 2.87868 L 7.82843 2.17157  M 2.22836 3.85195 L 1.30448 3.46927  M 2.22836 3.85195 L 1.30448 3.46927  M 7.77164 3.85195 L 8.69552 3.46927  M 3.46927 1.30448 L 3.85195 2.22836  M 6.53073 1.30448 L 6.14805 2.22836");
+    bodyRegion = newSVG(
+        "M 5 0 A 1 1 0 0 0 5 10 A 1 1 0 0 0 5 0 M 1 4.5 A 1.1 1 0 0 1 9 4.5 A 0.1 0.1 0 0 1 8 4.5 A 1 0.9 0 0 0 2 4.5 A 0.1 0.1 0 0 1 1 4.5");
+    meterRegion = newSVG(
+        "M 5 0 A 1 1 0 0 0 5 10 A 1 1 0 0 0 5 0 M 5 1 l 0 1 M 1 5 l 1 0  M 9 5 l -1 0  M 2.87868 2.87868 L 2.17157 2.17157  M 7.12132 2.87868 L 7.82843 2.17157  M 2.22836 3.85195 L 1.30448 3.46927  M 2.22836 3.85195 L 1.30448 3.46927  M 7.77164 3.85195 L 8.69552 3.46927  M 3.46927 1.30448 L 3.85195 2.22836  M 6.53073 1.30448 L 6.14805 2.22836");
     needleRegion = newSVG("M 4.5 5 C 4.333 6.5 5.666 6.5 5.5 5 L 5 2 z");
     labelRegion = newSVG("M 0 0 L 0 1 L 1 1 L 1 0 z");
     pressureReading = new Label(String.format("%.2f", pressure));
@@ -84,8 +87,10 @@ public class PressureBox extends SmallBox {
   // measurement constants
   private static final double MAX_MMHG = 900;
   private static final double MIN_MMHG = 620;
+
   /**
-   * calculate the rotation based on the pressure. max pressure reading is 900mmHg, min of 620mmHg
+   * calculate the rotation based on the pressure. max pressure reading is
+   * 900mmHg, min of 620mmHg
    *
    * @return the {@code double} rotation in degrees
    */

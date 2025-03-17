@@ -11,8 +11,10 @@ import views.util.TextUtils;
 /**
  * A simple and small container for certain information graphs or icons.
  * Always has some title and image made from SVGs.
- * Also has some helper functions for private use, such as setting standard size.
- * All {@code SmallBox}es can have their component gathered from the {@code SmallBox.component()} method.
+ * Also has some helper functions for private use, such as setting standard
+ * size.
+ * All {@code SmallBox}es can have their component gathered from the
+ * {@code SmallBox.component()} method.
  */
 public abstract class SmallBox {
   // default size of internal icons
@@ -24,7 +26,8 @@ public abstract class SmallBox {
   protected StackPane svgStack;
 
   /**
-   * constructor of an abstract class is implicicly called by superclass constructors.
+   * constructor of an abstract class is implicicly called by superclass
+   * constructors.
    * as such this code is always called.
    *
    * initializes the component, svgStack, and the title
@@ -46,6 +49,7 @@ public abstract class SmallBox {
    * @return the {@code VBox} component for this element
    */
   public abstract VBox component();
+
   /**
    * create the SVG and place it into the {@code svgStack}
    */

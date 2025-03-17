@@ -38,7 +38,7 @@ public class ThreeDayScene extends DayScene {
    * create a new {@code ThreeDayScene} to show the forecast for the next 3 days
    *
    * @param forecast the forecast to use to make the view. must contain at least 3
-   *        days worth of data
+   *                 days worth of data
    */
   public ThreeDayScene(ArrayList<HourlyPeriod> forecast) {
     initComponents();

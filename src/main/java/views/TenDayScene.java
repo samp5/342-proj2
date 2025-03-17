@@ -85,7 +85,6 @@ public class TenDayScene extends DayScene {
   public void update(ArrayList<HourlyPeriod> forecast) {
     currentForecast = forecast;
     applyForecast();
-    // updateTempGraph();
   }
 
 }

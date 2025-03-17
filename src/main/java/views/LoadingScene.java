@@ -140,7 +140,7 @@ public class LoadingScene extends DayScene {
     }
     animations.clear();
 
-    Region[] boxes = {graphContainer, smallCharts, headerContainer, forecastBox};
+    Region[] boxes = { graphContainer, smallCharts, headerContainer, forecastBox };
     // get the colors for the animation from CSS
     Color[] colors = getAnimationColors();
 
@@ -148,7 +148,7 @@ public class LoadingScene extends DayScene {
       animations.add(buildAnimation(box, colors[0], colors[1]));
     }
 
-    Region[] sidebarBoxes = {sidebarHeader, sidebarInput, sidebarSection, sidebarSearch};
+    Region[] sidebarBoxes = { sidebarHeader, sidebarInput, sidebarSection, sidebarSearch };
 
     for (Region box : sidebarBoxes) {
       animations.add(buildAnimation(box, colors[0], colors[1]));

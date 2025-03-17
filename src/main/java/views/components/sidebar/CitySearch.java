@@ -1,5 +1,7 @@
 package views.components.sidebar;
 
+import java.util.concurrent.CompletableFuture;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -93,7 +95,7 @@ public class CitySearch {
       // we have to delay here otherwise the scene won't be loaded!
       new NotificationBuilder().ofType(NotificationType.Error)
           .withMessage("Failed to load city data, city search will not be available").showFor(3)
-          .fireAfter(Duration.seconds(2));;
+          .fireAfter(Duration.seconds(2));
     }
 
     // build our filtered list
@@ -275,6 +277,7 @@ public class CitySearch {
                 item.getStyleClass().remove("search-result-box-selected");
               });
 
+              // register an on-click hander for mouse use
               setOnMouseClicked(e -> {
                 City c = getListView().getItems().get(this.getIndex());
                 if (c == null) {
@@ -303,6 +306,8 @@ public class CitySearch {
   }
 
   private void selectNext() {
+
+    // grab our current and next index (with loop around)
     int index = cityListView.getSelectionModel().getSelectedIndex();
     int next_index = (index + 1) % cityListView.getItems().size();
 
@@ -319,24 +324,27 @@ public class CitySearch {
     if (next_index >= lastVisible) {
       cityListView.scrollTo(firstVisible + 1);
     }
+
     // handle loop around
     if (next_index <= firstVisible) {
       cityListView.scrollTo(next_index);
     }
 
+    // select the next index
     cityListView.getSelectionModel().select(next_index);
   }
 
   private void selectPrev() {
+    // grab our current and previous index
     int index = cityListView.getSelectionModel().getSelectedIndex();
     int prev_index = index - 1;
 
-    // loop around
+    // loop the prev index around
     if (prev_index < 0) {
       prev_index = cityListView.getItems().size() - 1;
     }
 
-    // see selectNext for links to this
+    // see selectNext for an explanation on this to this
     ListViewSkin<?> ts = (ListViewSkin<?>) cityListView.getSkin();
     VirtualFlow<?> vf = (VirtualFlow<?>) ts.getChildren().get(0);
     int firstVisible = vf.getFirstVisibleCell().getIndex();

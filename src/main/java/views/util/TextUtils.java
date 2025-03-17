@@ -1,5 +1,5 @@
 package views.util;
- 
+
 import javafx.geometry.Pos;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
@@ -7,9 +7,11 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextBoundsType;
 
 /**
- * Utilities based around text and {@code TextField}s. 
- * Allows for measurement and re-sizing of text, as well as creating new {@code Textfield}s.
- * Some code, particularly for text measurement, was taken directly from {@link https://stackoverflow.com/a/18608568}.
+ * Utilities based around text and {@code TextField}s.
+ * Allows for measurement and re-sizing of text, as well as creating new
+ * {@code Textfield}s.
+ * Some code, particularly for text measurement, was taken directly from
+ * {@link https://stackoverflow.com/a/18608568}.
  */
 public class TextUtils {
   static final Text helper;
@@ -28,9 +30,10 @@ public class TextUtils {
   /**
    * calculates the width of a given text element
    *
-   * @param font the {@code Font} for the text
-   * @param text the text to compute the width of
-   * @param help0 value to compare with for finding the preffered width. typically 0.
+   * @param font  the {@code Font} for the text
+   * @param text  the text to compute the width of
+   * @param help0 value to compare with for finding the preffered width. typically
+   *              0.
    */
   public static double computeTextWidth(Font font, String text, double help0) {
     helper.setText(text);
@@ -51,7 +54,7 @@ public class TextUtils {
   /**
    * computes then sets the text field's width to the width of its content
    *
-   * @param t the {@code TextField} to resize
+   * @param t       the {@code TextField} to resize
    * @param padding any additional padding to add to the width
    */
   public static void setFitWidth(TextField t, double padding) {
@@ -62,7 +65,8 @@ public class TextUtils {
   }
 
   /**
-   * computes then sets the text field's width to the width of its content with a padding of 10
+   * computes then sets the text field's width to the width of its content with a
+   * padding of 10
    *
    * @param t the {@code TextField} to resize
    */

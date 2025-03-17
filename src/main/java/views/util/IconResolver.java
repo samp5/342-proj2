@@ -39,8 +39,30 @@ public class IconResolver {
     return null;
   }
 
-  private double distance(String png, String short_forecast) {
-    return stringComp.distance(png, short_forecast);
+  private double similarity(String png, String short_forecast) {
+    return stringComp.similarity(png, short_forecast);
+  }
+
+  private String clean(String png) {
+    String ret = png;
+
+    int night_start = ret.indexOf("_night");
+    if (night_start != -1) {
+      ret = ret.substring(0, night_start);
+    }
+
+    int day_start = ret.indexOf("_day");
+    if (day_start != -1) {
+      ret = ret.substring(0, day_start);
+    }
+
+    int png_start = ret.indexOf(".png");
+    if (png_start != -1) {
+      ret = ret.substring(0, png_start);
+    }
+
+    return ret;
+
   }
 
   /**
@@ -68,18 +90,18 @@ public class IconResolver {
         } else if (name.contains("night") && !isNight) {
           continue;
         }
-        name.replace(".png", "");
-        double distance = distance(name, short_forecast);
-        if (1.0 - distance > bestScore) {
+
+        double sim = similarity(clean(name), short_forecast);
+
+        if (sim > bestScore) {
           bestMatch = img_path;
-          bestScore = 1.0 - distance;
+          bestScore = sim;
         }
       }
 
       if (bestMatch == null) {
         throw new FileNotFoundException();
       }
-
       return bestMatch;
 
     } catch (Exception e) {

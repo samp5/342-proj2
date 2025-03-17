@@ -25,7 +25,7 @@ public class CompassBox extends SmallBox {
    * create a new {@code CompassBox} for a given windspeed and direction
    *
    * @param windSpeed the {@code String} speed of the wind
-   * @param windDir the 16-point compass direction of the wind
+   * @param windDir   the 16-point compass direction of the wind
    */
   public CompassBox(double windSpeed, double windDir) {
     this.windSpeed = windSpeed;
